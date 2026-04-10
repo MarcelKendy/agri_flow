@@ -1,0 +1,23 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /TemplateApp/
+
+    # Disable directory listing
+    Options -Indexes
+
+    # Allow requests for actual files and directories to pass through
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Rewrite all other requests to index.html (Vue SPA handling)
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+# Prevent caching of index.html (requires mod_headers to be enabled)
+<IfModule mod_headers.c>
+    <FilesMatch "index\.html$">
+        Header always set Cache-Control "no-cache, no-store, must-revalidate"
+        Header always set Pragma "no-cache"
+        Header always set Expires 0
+    </FilesMatch>
+</IfModule>

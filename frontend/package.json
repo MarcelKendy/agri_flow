@@ -1,0 +1,34 @@
+{
+  "name": "templateapp",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.2.96",
+    "axios": "^1.4.0",
+    "chart.js": "^4.5.0",
+    "crypto-js": "^4.2.0",
+    "particles.js": "^2.0.0",
+    "particles.vue3": "^2.12.0",
+    "pinia": "^2.1.4",
+    "tsparticles": "^2.12.0",
+    "v-money3": "^3.24.0",
+    "vue": "^3.2.47",
+    "vue-axios": "^3.5.2",
+    "vue-json-excel3": "^1.0.18",
+    "vue-router": "^4.0.13",
+    "vue-the-mask": "^0.11.1",
+    "vue3-particles": "^2.12.0",
+    "vuetify": "^3.3.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
+    "@vitejs/plugin-vue": "^4.1.0",
+    "vite": "^4.3.9",
+    "vite-plugin-mkcert": "^1.16.0"
+  }
+}

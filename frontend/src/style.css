@@ -1,0 +1,236 @@
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 95vh;
+}
+
+.align-start {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.align-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.align-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.add-button:hover {
+    font-weight: bold;
+    transform: scale(1.1);
+    background-color: white !important;
+    color: rgb(64, 184, 59) !important;
+  }
+
+.custom-toolbar-dark {
+    /*background-image: url('media/images/backgrounds/transparentbg.png');*/
+    background: linear-gradient(to bottom right, #212424, #42545f) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+.custom-toolbar-light {
+    /*background-image: url('media/images/backgrounds/transparentbg.png');*/
+    background: linear-gradient(to bottom right, #21ce94, #2b5da8) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+.list-item-users,
+.list-item-waiting,
+.list-item-closed,
+.list-item-done {
+    background-color: rgb(36, 40, 44);
+    padding: 10px;
+    margin: 10px;
+    box-shadow: rgb(0, 0, 0) 0px 2px 4px, rgb(0, 0, 0) 0px 7px 13px -3px, rgba(0, 0, 0, 0.39) 0px -3px 0px inset;
+    transition: 0.3s;
+}
+
+.list-item-waiting:hover {
+    transform: scale(0.99);
+    box-shadow: rgb(20, 20, 20) 0px 2px 4px, rgb(58, 58, 58) 0px 7px 13px -3px, rgba(255, 123, 0, 0.671) 6px 0px 0px inset;
+}
+
+.list-item-done:hover {
+    transform: scale(0.99);
+    box-shadow: rgb(20, 20, 20) 0px 2px 4px, rgb(58, 58, 58) 0px 7px 13px -3px, rgba(73, 255, 128, 0.651) 6px 0px 0px inset;
+}
+
+.list-item-closed:hover {
+    transform: scale(0.99);
+    box-shadow: rgb(20, 20, 20) 0px 2px 4px, rgb(58, 58, 58) 0px 7px 13px -3px, rgba(255, 65, 65, 0.801) 6px 0px 0px inset;
+}
+
+.list-item-users:hover {
+    transform: scale(0.99);
+    box-shadow: rgb(20, 20, 20) 0px 2px 4px, rgb(58, 58, 58) 0px 7px 13px -3px, rgba(86, 167, 192, 0.918) 6px 0px 0px inset;
+}
+
+.dialog-icon {
+    position: absolute !important;
+    right: 20px;
+    background-image: url(media/icons/sicoobicon.png);
+    background-size: cover;
+    width: 32px !important;
+}
+
+.loading-gif {
+    position: absolute !important;
+    right: 20px;
+    top: 20px;
+}
+
+.font-quicksand {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.list-item-dark {
+    background-color: rgb(33, 34, 36);
+    padding: 10px;
+    margin: 10px;
+    box-shadow: rgb(0, 0, 0) 0px 2px 4px, rgb(0, 0, 0) 0px 7px 13px -3px, rgba(0, 0, 0, 0.39) 0px -3px 0px inset;
+    transition: 0.3s;
+}
+
+.list-item-dark:hover {
+    transform: scale(0.99);
+    box-shadow: rgb(20, 20, 20) 0px 2px 4px, rgb(58, 58, 58) 0px 7px 13px -3px, #008f8f 6px 0px 0px inset;
+}
+
+.list-item {
+    background-color: rgb(204, 228, 231) !important;
+    padding: 10px !important;
+    margin: 10px !important;
+    box-shadow: rgba(0, 0, 0, 0.753) 0px 2px 4px, rgba(0, 0, 0, 0.658) 0px 7px 13px -3px, rgba(0, 0, 0, 0.233) 0px -3px 0px inset !important;
+    transition: 0.3s !important;
+}
+
+.list-item:hover {
+    transform: scale(0.99) !important;
+    box-shadow: rgb(20, 20, 20) 0px 2px 4px, rgb(58, 58, 58) 0px 7px 13px -3px, #008f8f 6px 0px 0px inset !important;
+}
+
+
+.bold {
+    font-weight: bold !important;
+}
+
+.dark-bg {
+    background: rgb(46, 46, 46, 0.9) !important;
+}
+
+.white-bg {
+    background: rgba(223, 223, 223, 0.9) !important;
+}
+.green {
+    color: green !important;
+}
+
+.gray {
+    color: rgb(58, 58, 58) !important;
+}
+
+.white {
+    color: white !important;
+}
+
+.box-shadow {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+}
+
+.tooltip-default-dark {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+    color: rgb(58, 58, 58) !important;
+    background: rgba(223, 223, 223, 0.9) !important;
+    font-weight: bold !important;
+}
+
+.tooltip-default-light {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(20, 20, 20, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+    color: rgb(255, 255, 255) !important;
+    background: rgba(65, 65, 65, 0.9) !important;
+    font-weight: bold !important;
+}
+
+.tooltip-green {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+    color: rgb(255, 255, 255) !important;
+    background: rgb(76, 175, 80) !important;
+    font-weight: bold !important;
+}
+
+.tooltip-blue {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+    color: rgb(255, 255, 255) !important;
+    background: rgb(33, 150, 243) !important;
+    font-weight: bold !important;
+}
+
+.tooltip-yellow {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+    color: rgb(51, 51, 51) !important;
+    background: rgb(255,235,59) !important;
+    font-weight: bold !important;
+}
+
+.tooltip-orange {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+    color: rgb(34, 34, 34) !important;
+    background: rgb(255,152,0) !important;
+    font-weight: bold !important;
+}
+
+.tooltip-red {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+    color: rgb(255, 255, 255) !important;
+    background: rgb(244,67,54) !important;
+    font-weight: bold !important;
+}
+
+.text-shadow-black-1 {
+    text-shadow: 1px 1px black !important;
+}
+
+.text-shadow-black-2 {
+    text-shadow: 2px 1px black !important;
+}
+
+.text-shadow-black-2-2 {
+    text-shadow: 2px 2px black !important;
+}
+
+.text-shadow-white-1 {
+    text-shadow: 1px 1px white !important;
+}
+
+.text-shadow-white-2 {
+    text-shadow: 2px 1px white !important;
+}
+
+.black {
+    color: black !important;
+}
+
+.white {
+    color: white !important;
+}
+
+.dark-gray {
+    color: rgb(53, 53, 53) !important;
+}
