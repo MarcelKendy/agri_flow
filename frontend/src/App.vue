@@ -7,7 +7,7 @@
         <v-img gradient="to bottom right, rgba(143,22,167,.3), rgba(40,90,85,.0)"></v-img>
       </template>
       <v-app-bar-nav-icon class="white" @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-img class="ma-2" style="max-width: 32px" src="media/icons/sicoobicon.png" />
+      <v-img class="ma-2" style="max-width: 32px" src="media/icons/logo.png" />
       <strong style="font-size: 20px" class="font-quicksand mx-2 mt-1 white">{{ 'Bem vindo(a), ' + auth.user.first_name
       }}</strong>
       <v-tooltip location="bottom" content-class="tooltip-orange">

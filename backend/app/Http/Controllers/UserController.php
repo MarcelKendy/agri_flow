@@ -101,7 +101,6 @@ class UserController extends Controller
         if ($auth_user->level < 2) {
             return response()->json(['error' => 'Acesso negado'], 403);
         }
-        $request['email'] .= '@sicoobcredisg.com.br';
         if (User::where('cpf', $request['cpf'])->exists() || User::where('email', $request['email'])->exists()) {
             return response()->json(['message' => 'Já existe um usuário cadastrado com esses dados.'], 400);
         }
@@ -135,11 +134,6 @@ class UserController extends Controller
         $auth_user = auth()->user();
         if ($auth_user->level < 2 && $auth_user->id != $request->id) {
             return response()->json(['error' => 'Acesso negado'], 403);
-        }
-        if (isset($request->email) && !empty($request->email)) {
-            $request['email'] .= '@sicoobcredisg.com.br';
-        } else {
-            unset($request['email']);
         }
         if (isset($request->password) && !empty($request->password) && strlen($request->password) > 0) {
             $last_five_passwords = UserPasswordsLog::where('user_id', $request->id)->orderBy('created_at', 'desc')->limit(5)->pluck('password');
@@ -224,11 +218,6 @@ class UserController extends Controller
         $auth_user = auth()->user();
         if ($auth_user->level < 2 && $auth_user->id != $request->id) {
             return response()->json(['error' => 'Acesso negado'], 403);
-        }
-        if (isset($request->email) && !empty($request->email)) {
-            $request['email'] .= '@sicoobcredisg.com.br';
-        } else {
-            unset($request['email']);
         }
         if (isset($request->password) && !empty($request->password) && strlen($request->password) > 0) {
             $last_five_passwords = UserPasswordsLog::where('user_id', $request->id)->orderBy('created_at', 'desc')->limit(5)->pluck('password');

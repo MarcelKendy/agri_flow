@@ -41,7 +41,7 @@ class AuthController extends Controller
 
     public function sendOtp(Request $request)
     {
-        $user = User::select('id', 'name', 'email', 'password', 'status')->where('email', $request->email . '@sicoobcredisg.com.br')->first();
+        $user = User::select('id', 'name', 'email', 'password', 'status')->where('email', $request->email)->first();
         if (!$user || !password_verify($this->decryptPassword($request->password), $user->password)) {
             if (isset($user) && !empty($user) && isset($user->id) && !empty($user->id)) {
                 $user_id = $user->id;
@@ -133,7 +133,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $user = User::where('email', $request->email . '@sicoobcredisg.com.br')->with('group')->first();
+        $user = User::where('email', $request->email)->with('group')->first();
         if (!$user || !password_verify($request->password, $user->password)) {
             return response()->json([ 'message' => 'Credenciais inválidas.' ], 404);
         }        
@@ -160,7 +160,6 @@ class AuthController extends Controller
 
     public function signin(Request $request)
     {
-        $request['email'] .= '@sicoobcredisg.com.br';
         if (User::where('cpf', $request['cpf'])->exists() || User::where('email', $request['email'])->exists()) {
             return response()->json([ 'message' => 'Já existe um usuário cadastrado com esses dados.' ], 400);
         }    
@@ -179,7 +178,6 @@ class AuthController extends Controller
 
     public function sendPasswordResetMail(Request $request)
     {
-        $request['email'] = $request->email . '@sicoobcredisg.com.br';
         $user = User::select('id', 'status', 'email', 'name')->where('email', $request['email'])->first();
         if ($user && $user->status != 0) {
             UserPasswordReset::where('user_id', $user->id)->where('status', 0)->update(["status" => 1]);

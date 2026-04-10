@@ -82,7 +82,7 @@ if (auth.hasData()) {
   })()
 } 
 
-app.config.globalProperties.backend_storage = 'http://localhost/template_project/backend/public/storage/'
+app.config.globalProperties.backend_storage = 'http://localhost/agro_track_project/backend/public/storage/'
 app.config.globalProperties.getRules = getRules
 for (const mask in masks) {
   app.config.globalProperties[mask] = masks[mask]

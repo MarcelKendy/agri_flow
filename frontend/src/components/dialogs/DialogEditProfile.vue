@@ -19,7 +19,7 @@
               </v-row>
             </v-col>
             <v-col cols="1">
-              <v-img style="width: 32px; position:absolute; top: 20px" src="media/icons/sicoobicon.png" />
+              <v-img style="width: 32px; position:absolute; top: 20px" src="media/icons/logo.png" />
             </v-col>
           </v-row>
         </v-card-title>
@@ -61,8 +61,7 @@
               </v-col>
               <v-col cols="12" lg="8">
                 <v-text-field :color="color" v-model="profile_form.email" :readonly="loading_profile" density="compact"
-                  :rules="getRules({ required: { message: 'Digite seu email corporativo' }, email: { sicoob: true, message: 'Email incorreto (nome.sobrenome@sicoobcredisg.com.br)', maxlen: { val: 60 } } })"
-                  class="" clearable label="E-mail" placeholder="nome.sobrenome" suffix="@sicoobcredisg.com.br"
+                  :rules="getRules({ required: true, email: true, maxlen: { val: 60 } })" clearable label="E-mail"
                   @keyup.enter="!loading_profile && editUser()"></v-text-field>
               </v-col>
               <v-col cols="12" lg="6">

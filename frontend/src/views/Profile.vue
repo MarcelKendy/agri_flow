@@ -55,7 +55,7 @@
                                         <v-scale-transition>
                                             <v-btn v-if="isHovering && my_profile && !edit_note" size="2.2vw" icon="mdi-pencil-plus" color="blue" style="position: absolute; font-size: 1vw; z-index: 1;"></v-btn>
                                         </v-scale-transition>                                        
-                                        <span v-if="!edit_note" class="user-note-text" :style="isHovering && my_profile ? 'opacity: 0.2' : ''">{{ user_data.note ? user_data.note : 'Trabalhando no Sicoob Credisg...' }}</span>
+                                        <span v-if="!edit_note" class="user-note-text" :style="isHovering && my_profile ? 'opacity: 0.2' : ''">{{ user_data.note ? user_data.note : 'Defina um status...' }}</span>
                                         <v-textarea v-else ref="editNoteTextarea" color="blue" :loading="loading_note" :disabled="loading_note" 
                                             @keydown.enter="saveNote()" @blur="saveNote()" style="width: 100%; transition: 0.3s;" v-model="user_data.note" 
                                             placeholder="Qual o status de hoje?" clearable counter maxlength="200" auto-grow rows="1">

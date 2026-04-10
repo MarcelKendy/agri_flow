@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
 
 const router = createRouter({
-    history: createWebHistory('/TemplateApp/'),
+    history: createWebHistory('/'),
     routes: [
         { path: '/', name: 'dashboard', component: () => import('@/views/Dashboard.vue'), meta: { view: 'Dashboard', img: 'dashboard.png', auth: true } },
         { path: '/login/:reset_password_uid?/:reset_password_token?', name: 'login', component: () => import('@/views/Login.vue'), meta: { view: 'Login' } },

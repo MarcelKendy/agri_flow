@@ -63,7 +63,7 @@
                             nb_sides: 5,
                         },
                         image: {
-                            src: 'media/icons/sicoobicon.png',
+                            src: 'media/icons/logo.png',
                             width: 64,
                             height: 60
                         }

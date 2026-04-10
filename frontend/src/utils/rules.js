@@ -114,7 +114,7 @@ export function getRules(rules) {
       return value => (value && /[^a-zA-Z0-9]/.test(value)) ||
         (v.message ? v.message : 'Caractere especial obrigatório')
     } else if (key === 'email') {
-      const regex = v.sicoob ? /^[a-z]+\.[a-z]+$/ : /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      const regex = v.scb ? /^[a-z]+\.[a-z]+$/ : /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       return value => regex.test(value) ||
         (v.message ? v.message : 'Email inválido')
     } else if (key === 'integer_range') {

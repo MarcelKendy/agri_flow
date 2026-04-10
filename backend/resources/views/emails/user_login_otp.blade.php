@@ -64,7 +64,7 @@
 
         <p class="info"><u>O código expira em 30 minutos após a solicitação.</u></p>
 
-        <p><strong>I.T Sicoob Credisg</strong> - <span style="font-style: italic; font-size: 12px;">(Não responda a esse e-mail)</span></p>
+        <p><strong>AgriFlow</strong> - <span style="font-style: italic; font-size: 12px;">(Não responda a esse e-mail)</span></p>
         
     </div>
 

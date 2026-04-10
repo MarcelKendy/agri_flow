@@ -19,7 +19,7 @@
               </v-row>
             </v-col>
             <v-col cols="1">
-              <v-img style="width: 32px; position:absolute; top: 20px" src="media/icons/sicoobicon.png" />
+              <v-img style="width: 32px; position:absolute; top: 20px" src="media/icons/logo.png" />
             </v-col>
           </v-row>
         </v-card-title>

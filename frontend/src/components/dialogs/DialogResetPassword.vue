@@ -18,7 +18,7 @@
               </v-row>
             </v-col>
             <v-col cols="2">
-              <v-img style="width: 32px; position:absolute; top: 20px" src="media/icons/sicoobicon.png" />
+              <v-img style="width: 32px; position:absolute; top: 20px" src="media/icons/logo.png" />
             </v-col>
           </v-row>
         </v-card-title>
@@ -44,10 +44,8 @@
               <v-col cols="12">
                 <v-text-field :color="color" v-model="reset_password.email"
                   :disabled="loading || sending_error"
-                  :rules="getRules({ required: { message: 'Digite seu email corporativo' }, email: { sicoob: true, message: 'Email incorreto (nome.sobrenome@sicoobcredisg.com.br)' }, maxlen: { val: 60 } })"
-                  clearable label="E-mail" placeholder="nome.sobrenome"
-                  suffix="@sicoobcredisg.com.br"
-                  hint="Não precisa digitar o domínio! Apenas nome.sobrenome" 
+                  :rules="getRules({ required: true, email: true, maxlen: { val: 60 } })"
+                  clearable label="E-mail"
                   @keyup.enter="sendPasswordResetMail()"
                   ></v-text-field>
               </v-col>

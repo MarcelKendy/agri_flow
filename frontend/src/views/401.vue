@@ -19,9 +19,8 @@
             <v-divider class="pt-5"></v-divider>
             <v-row class="pb-5">
                 <v-col cols="12">
-                    <span style="font-weight:900; color: rgb(221, 245, 248); font-size: 14px;">Projeto iniciado em set/2023
-                        - IT
-                        Team - Sicoob Credisg - São Gotardo</span>
+                    <span style="font-weight:900; color: rgb(221, 245, 248); font-size: 14px;">Projeto iniciado em 04/2026
+                        - AgriFlow - São Gotardo</span>
                 </v-col>
             </v-row>
 

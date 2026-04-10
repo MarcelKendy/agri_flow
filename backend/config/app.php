@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'TemplateApp'),
+    'name' => env('APP_NAME', 'AgriFlow'),
     'jwt_key' => env('JWT_KEY', 'c7914b83849ec8007f43d9978b06b5cc'),
     /*
     |--------------------------------------------------------------------------

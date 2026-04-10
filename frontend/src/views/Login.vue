@@ -20,7 +20,7 @@
                                             fontSize: end_animation ? '26px' : '34px',
                                             paddingRight: end_animation ? '25px' : '0px'
                                         }">
-                                            Camp
+                                            AgriFlow
                                         </strong>
                                         <div class="logo-container" style="position: absolute;" :style="{
                                             transition: '0.4s',
@@ -95,9 +95,9 @@
                                         <v-row>
                                             <v-col cols="12">
                                                 <v-text-field color="teal" v-model="login_form.email" :readonly="loading || alert"
-                                                :rules="getRules({ required: { message: 'Digite seu email corporativo' }, email: { sicoob: true, message: 'Email incorreto (nome.sobrenome@sicoobcredisg.com.br)', maxlen: {val: 60} } })"
-                                                class="mb-1" clearable label="E-mail" placeholder="nome.sobrenome"
-                                                suffix="@sicoobcredisg.com.br" @keyup.enter="!loading && sendOtp()"></v-text-field>
+                                                :rules="getRules({ required: true, email: true, maxlen: { val: 60 } })"
+                                                class="mb-1" clearable label="E-mail"
+                                                @keyup.enter="!loading && sendOtp()"></v-text-field>
                                             </v-col>
                                             <v-col cols="12">
                                                 <v-text-field color="teal" v-model="login_form.password"
@@ -152,11 +152,8 @@
                                             </v-col>
                                             <v-col cols="8">
                                                 <v-text-field color="teal" v-model="signin_form.email"
-                                                    :readonly="loading || alert"
-                                                    :rules="getRules({ required: { message: 'Digite seu email corporativo' }, email: { sicoob: true, message: 'Email incorreto (nome.sobrenome@sicoobcredisg.com.br)', maxlen: { val: 60 } } })"
-                                                    clearable label="E-mail" placeholder="nome.sobrenome"
-                                                    suffix="@sicoobcredisg.com.br"
-                                                    hint="Não precisa digitar o domínio! Apenas nome.sobrenome"></v-text-field>
+                                                    :readonly="loading || alert" clearable label="E-mail"
+                                                    :rules="getRules({ required: true, email: true, maxlen: { val: 60 } })"></v-text-field>
                                             </v-col>
                                             <v-col cols="4">
                                                 <v-text-field color="teal" v-model="signin_form.cpf"
