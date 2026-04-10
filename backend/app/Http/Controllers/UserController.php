@@ -15,8 +15,8 @@ class UserController extends Controller
 
     function decryptPassword($encrypted_password)
     {
-        $key = 'My$uperSecretKey3267567890AyCjEF';
-        $iv = 'MyInitVector3267';
+        $key = 'My$uperSecretKey3434567890AyCjEF';
+        $iv = 'MyInitVector3434';
         return openssl_decrypt(base64_decode($encrypted_password), 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
     }
 
@@ -108,8 +108,6 @@ class UserController extends Controller
         $user->name = $request['name'];
         $user->cpf = $request['cpf'];
         $user->email = $request['email'];
-        $user->sp = $request['sp'];
-        $user->group_id = $request['group_id'];
         $user->status = 1;
         $user->password = password_hash($this->decryptPassword($request['password']), PASSWORD_DEFAULT);        
         $user->save();
@@ -194,7 +192,6 @@ class UserController extends Controller
                 'new_value'   => json_encode($user_new ?? '', JSON_UNESCAPED_UNICODE)
             ]);
         }
-        $user->load('group');
         return response()->json(
             [
                 'id' => $user->id,
@@ -202,9 +199,6 @@ class UserController extends Controller
                 'full_name' => $user->name,
                 'cpf' => $user->cpf,
                 'email' => $user->email,
-                'sp' => intval($user->sp),
-                'group_id' => intval($user->group_id),
-                'group' => $user->group->name,
                 'configs' => json_decode($user->configs),
                 'photo' => $user->photo,
                 'note' => $user->note,
@@ -274,9 +268,6 @@ class UserController extends Controller
                 'full_name' => $user->name,
                 'cpf' => $user->cpf,
                 'email' => $user->email,
-                'sp' => intval($user->sp),
-                'group_id' => intval($user->group_id),
-                'group' => $user->group->name,
                 'configs' => json_decode($user->configs),
                 'photo' => $user->photo,
                 'note' => $user->note,

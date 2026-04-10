@@ -16,8 +16,6 @@ class User extends Authenticatable
         'name', 
         'cpf', 
         'email', 
-        'sp',
-        'group_id',
         'photo',
         'password',
         'configs',
@@ -31,11 +29,6 @@ class User extends Authenticatable
         'email' => 'string',
         'password' => 'string',
     ];
-
-    public function group()
-    {
-        return $this->belongsTo(Group::class);
-    }
 
     public function getFirstNameAttribute()
     {

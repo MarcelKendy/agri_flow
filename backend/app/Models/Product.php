@@ -2,27 +2,33 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'name', 
-        'type',
-        'status'
+        'name',
+        'category',
+        'active_ingredient',
+        'unit',
+        'action_mode',
+        'compatibility_restrictions',
+        'nitrogen',
+        'phosphorus',
+        'potassium',
+        'calcium',
+        'magnesium',
+        'sulfur',
+        'boron',
+        'copper',
+        'manganese',
+        'zinc',
+        'iron',
+        'molybdenum',
+        'silicon'
     ];
 
-    protected $casts = [
-        'name' => 'string'
-    ];
-
-    public function campaignProducts()
-    {
-        return $this->hasManyThrough(CampaignProduct::class, Campaign::class);
+    public function fieldRecords() {
+        return $this->hasMany(FieldRecord::class);
     }
-    
-
 }

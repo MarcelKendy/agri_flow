@@ -158,8 +158,8 @@ function setEmail(full_name) {
 }
 
 function encryptPassword(password) {
-  const key = CryptoJS.enc.Utf8.parse('My$uperSecretKey3267567890AyCjEF')
-  const iv = CryptoJS.enc.Utf8.parse('MyInitVector3267')
+  const key = CryptoJS.enc.Utf8.parse('My$uperSecretKey3434567890AyCjEF')
+  const iv = CryptoJS.enc.Utf8.parse('MyInitVector3434')
   const encrypted = CryptoJS.AES.encrypt(password, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 })
   return encrypted.toString()
 }

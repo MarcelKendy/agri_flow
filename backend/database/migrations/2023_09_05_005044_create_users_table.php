@@ -13,9 +13,6 @@ class CreateUsersTable extends Migration
             $table->string('name', 100);
             $table->string('cpf', 11);
             $table->string('email', 100);
-            $table->tinyInteger('sp');
-            $table->unsignedBigInteger('group_id');
-            $table->foreign('group_id')->references('id')->on('groups');
             $table->string('photo', 100)->nullable();
             $table->string('password', 500);
             $table->string('configs', 500)->default('{"theme": 1}');

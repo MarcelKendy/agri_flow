@@ -34,8 +34,8 @@ class AuthController extends Controller
     }    
 
     function decryptPassword($encrypted_password) {
-        $key = 'My$uperSecretKey3267567890AyCjEF'; 
-        $iv = 'MyInitVector3267'; 
+        $key = 'My$uperSecretKey3434567890AyCjEF'; 
+        $iv = 'MyInitVector3434'; 
         return openssl_decrypt(base64_decode($encrypted_password), 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
     }
 
@@ -121,9 +121,6 @@ class AuthController extends Controller
             'full_name' => $user->name,
             'cpf' => $user->cpf,
             'email' => $user->email,
-            'sp' => intval($user->sp),
-            'group_id' => intval($user->group_id),
-            'group' => $user->group->name,
             'configs' => json_decode($user->configs),
             'photo' => $user->photo,
             'note' => $user->note,
@@ -133,8 +130,8 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $user = User::where('email', $request->email)->with('group')->first();
-        if (!$user || !password_verify($request->password, $user->password)) {
+        $user = User::where('email', $request->email)->first();
+        if (!$user || !password_verify($this->decryptPassword($request->password), $user->password)) {
             return response()->json([ 'message' => 'Credenciais inválidas.' ], 404);
         }        
         if ($user->status != 1) {
@@ -148,9 +145,6 @@ class AuthController extends Controller
             'full_name' => $user->name,
             'cpf' => $user->cpf,
             'email' => $user->email,
-            'sp' => intval($user->sp),
-            'group_id' => intval($user->group_id),
-            'group' => $user->group->name,
             'configs' => json_decode($user->configs),
             'photo' => $user->photo,
             'note' => $user->note,
@@ -167,8 +161,6 @@ class AuthController extends Controller
         $user->name = $request['name'];
         $user->cpf = $request['cpf'];
         $user->email = $request['email'];
-        $user->sp = $request['sp'];
-        $user->group_id = $request['group_id'];
         $user->status = 0;
         $user->password = password_hash($this->decryptPassword($request['password']), PASSWORD_DEFAULT);
         $user->save();
@@ -259,9 +251,6 @@ class AuthController extends Controller
             'full_name' => $user->name,
             'cpf' => $user->cpf,
             'email' => $user->email,
-            'sp' => intval($user->sp),
-            'group_id' => intval($user->group_id),
-            'group' => $user->group->name,
             'configs' => json_decode($user->configs),
             'photo' => $user->photo,
             'note' => $user->note,
