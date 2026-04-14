@@ -63,28 +63,7 @@
                 <v-text-field :color="color" v-model="profile_form.email" :readonly="loading_profile" density="compact"
                   :rules="getRules({ required: true, email: true, maxlen: { val: 60 } })" clearable label="E-mail"
                   @keyup.enter="!loading_profile && editUser()"></v-text-field>
-              </v-col>
-              <v-col cols="12" lg="6">
-                <v-select :color="color" v-model="profile_form.group_id" label="Grupo"
-                  :rules="getRules({ required: true })" :disabled="loading_groups" :loading="loading_groups"
-                  :items="groups" item-title="name" item-value="id">
-                  <template v-slot:item="{ props, item }">
-                    <v-list-item color="orange" v-bind="props" :title="item.raw.name"></v-list-item>
-                  </template>
-                </v-select>
-              </v-col>
-              <v-col cols="12" lg="6">
-                <v-select :color="color" v-model="profile_form.sp" label="PA" :rules="getRules({ required: true })"
-                  :items="[{ title: 'Matriz', value: 0, icon: 'home-city' }, { title: 'PA-01', value: 1, icon: 'home-floor-1' }, { title: 'PA-02', value: 2, icon: 'home-floor-2' }, { title: 'UAD', value: 88, icon: 'account-tie' }, { title: 'UPS', value: 89, icon: 'human-male-board-poll' }, { title: 'PA-97', value: 97, icon: 'laptop-account' }]">
-                  <template v-slot:item="{ props, item }">
-                    <v-list-item color="orange" v-bind="props" :title="item.raw.title"
-                      :prepend-icon="'mdi-' + item.raw.icon"></v-list-item>
-                  </template>
-                  <template v-slot:selection="{ props, item }">
-                    <v-icon class="ml-1 mr-3 pb-1" v-bind="props" color="orange">{{ 'mdi-' + item.raw.icon }}</v-icon> {{ item.raw.title }}
-                  </template>
-                </v-select>
-              </v-col>
+              </v-col>              
               <v-col cols="12">
                 <v-file-input :color="color" accept="image/png, image/jpeg, image/jpg, image/bmp"
                   prepend-icon="mdi-camera" density="compact" label="Atualizar foto de perfil" show-size
@@ -198,10 +177,8 @@ let profile_form = reactive({})
 const form = ref(null)
 const auth = useAuthStore()
 const visible = ref(false)
-const groups = reactive([])
 const password_card = ref(props.change_password_card)
 const loading_profile = ref(false)
-const loading_groups = ref(false)
 const snackbar_text = ref('')
 const snackbar = ref(false)
 
@@ -210,12 +187,10 @@ const model_computed = computed(() => props.model)
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 
 //Created
-getGroups()
 
 //Watchers
 watch(model_computed, (v) => {
   if (v) {
-    getGroups()
     profile_form = reactive({})
     password_card.value = props.change_password_card
     Object.assign(profile_form, props.data)
@@ -223,21 +198,6 @@ watch(model_computed, (v) => {
 })
 
 //Methods
-function getGroups(attempt = 1) {
-  loading_groups.value = true
-  api.get('get_groups', { params: { manage: true } }).then((response) => {
-    Object.assign(groups, response.data)
-    loading_groups.value = false
-  }).catch((error) => {
-    console.log(error)
-    if (attempt <= 5) {
-      setTimeout(() => getGroups(attempt + 1), 1000)
-    } else {
-      loading_groups.value = false
-    }        
-  })
-}
-
 async function editUser() {
   const { valid } = await form.value.validate()
   if (!valid) return false
@@ -248,8 +208,6 @@ async function editUser() {
   form_data.append('cpf', profile_form.cpf)
   form_data.append('name', profile_form.name)
   form_data.append('email', profile_form.email)
-  form_data.append('group_id', profile_form.group_id)
-  form_data.append('sp', profile_form.sp)
   form_data.append('attachment', profile_form.photo ? profile_form.photo : null)
   form_data.append('password', profile_form.password)
   form_data.append('password_confirmation', profile_form.password_confirmation)

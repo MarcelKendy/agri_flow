@@ -23,9 +23,9 @@ class UserController extends Controller
     public function getUsers(Request $request)
     {
         if ($request->input('manage')) {
-            $users = User::with('group')->orderByDesc('level')->orderByDesc('status')->get();
+            $users = User::orderByDesc('level')->orderByDesc('status')->get();
         } else {
-            $users = User::with('group')->where('status', 1)->orderBy('name')->get();
+            $users = User::where('status', 1)->orderBy('name')->get();
         }        
         $users->each->makeHidden(['password']);
         return response()->json($users);
@@ -47,7 +47,7 @@ class UserController extends Controller
             }
             $user = User::select($select)->find($id);
         } else {
-            $user = User::with('group')->find($id);
+            $user = User::find($id);
         }
         if (!$user) {
             return response()->json([]);
@@ -112,7 +112,7 @@ class UserController extends Controller
         $user->password = password_hash($this->decryptPassword($request['password']), PASSWORD_DEFAULT);        
         $user->save();
         UserPasswordsLog::create(['user_id' => $user->id, 'password' => $user->password]);        
-        $user->refresh()->load(['group']);
+        $user->refresh();
         UserCriticalLog::create([
             'user_id'     => $auth_user->id,
             'user_ip'     => $request->ip(),

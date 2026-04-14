@@ -63,15 +63,6 @@
                   placeholder="Informe seu CPF"></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-select color="teal" v-model="item.group_id" label="Grupo" :rules="getRules({ required: true })"
-                  :readonly="loading || alert" :items="groups" item-title="name" item-value="id"></v-select>
-              </v-col>
-              <v-col cols="6">
-                <v-select color="teal" v-model="item.sp" label="PA" :rules="getRules({ required: true })"
-                  :readonly="loading || alert"
-                  :items="[{ title: 'Matriz', value: 0 }, { title: 'PA-01', value: 1 }, { title: 'PA-02', value: 2 }, { title: 'UAD', value: 88 }, { title: 'UPS', value: 89 }, { title: 'PA-97', value: 97 }]"></v-select>
-              </v-col>
-              <v-col cols="6">
                 <v-text-field color="teal" v-model="item.password" :readonly="loading || alert"
                   :rules="getRules({ required: true, minlen: { val: 5 }, maxlen: { val: 30 }, hasLowercase: true, hasUppercase: true, hasNumber: true, hasSpecialchar: true })"
                   clearable label="Senha" placeholder="Digite sua senha" counter
@@ -130,10 +121,9 @@ const emit = defineEmits(['close', 'new_register'])
 const loading = ref(false)
 const props = defineProps({
   color: { type: String, default: 'green' },
-  model: { type: Boolean, required: true },
-  groups: { type: Array, required: true }
+  model: { type: Boolean, required: true }
 })
-let item = reactive({ name: '', cpf: '', email: '', group_id: '', sp: '', password: '', password_confirmation: '' })
+let item = reactive({ name: '', cpf: '', email: '', password: '', password_confirmation: '' })
 const form = ref(null)
 const visible = ref(false)
 const alert_message = ref('')
@@ -146,7 +136,7 @@ const model_computed = computed(() => props.model)
 //Watchers
 watch(model_computed, (v) => {
   if (v) {
-    item = reactive({ name: '', cpf: '', email: '', group_id: '', sp: '', password: '', password_confirmation: '' })
+    item = reactive({ name: '', cpf: '', email: '', password: '', password_confirmation: '' })
   }
 })
 

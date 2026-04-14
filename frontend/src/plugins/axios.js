@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth.js'
 
-const baseURL = 'http://localhost/agro_track_project/backend/public/api/'
+const baseURL = 'http://localhost/agri_flow_project/backend/public/api/'
 const api = axios.create({
   baseURL: baseURL,
   headers: {

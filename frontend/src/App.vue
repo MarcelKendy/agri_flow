@@ -12,7 +12,9 @@
       }}</strong>
       <v-tooltip location="bottom" content-class="tooltip-orange">
         <template v-slot:activator="{ props }">
-          <v-btn v-if="password_expire_time['days'] <= 5" v-bind="props" @click="openDialogEditProfile(true)" class="password-expire-button ml-5" size="small" elevation="20" prepend-icon="mdi-alert" append-icon="mdi-lock-reset">
+          <v-btn v-if="password_expire_time['days'] <= 5" v-bind="props" @click="openDialogEditProfile(true)"
+            class="password-expire-button ml-5" size="small" elevation="20" prepend-icon="mdi-alert"
+            append-icon="mdi-lock-reset">
             <strong>{{ password_expire_time['text'] }}</strong>
           </v-btn>
         </template>
@@ -42,39 +44,42 @@
             <v-img cover :class="dark_theme ? 'background-image-dark' : 'background-image'"
               :style="isHovering ? (dark_theme ? 'opacity: 0.2' : 'opacity: 0.7') : ''"
               src="media/images/backgrounds/circuitsbg2.png" />
-              <v-list v-bind="props">
-                          <v-tooltip :content-class="dark_theme ? 'tooltip-default-dark' : 'tooltip-default-light'">
-								<template v-slot:activator="{ props }">
-									<v-fade-transition>
-										<v-btn v-if="isHovering" v-bind="props" @click.stop="openDialogEditProfile()"
-											style="position: absolute; right: 5px; top: 5px;" variant="elevated"
-											color="orange" icon="mdi-account-edit" size="x-small"></v-btn>
-									</v-fade-transition>
-								</template>
-								<span>Editar Perfil</span>
-							</v-tooltip>
-              <v-tooltip :content-class="dark_theme ? 'tooltip-default-dark' : 'tooltip-default-light'" text="Meu Perfil">
+            <v-list v-bind="props">
+              <v-tooltip :content-class="dark_theme ? 'tooltip-default-dark' : 'tooltip-default-light'">
+                <template v-slot:activator="{ props }">
+                  <v-fade-transition>
+                    <v-btn v-if="isHovering" v-bind="props" @click.stop="openDialogEditProfile()"
+                      style="position: absolute; right: 5px; top: 5px;" variant="elevated" color="orange"
+                      icon="mdi-account-edit" size="x-small"></v-btn>
+                  </v-fade-transition>
+                </template>
+                <span>Editar Perfil</span>
+              </v-tooltip>
+              <v-tooltip :content-class="dark_theme ? 'tooltip-default-dark' : 'tooltip-default-light'"
+                text="Meu Perfil">
                 <template v-slot:activator="{ props }">
                   <router-link :to="{ name: 'profile' }">
                     <v-col align="center" v-bind="props" class="py-1">
-                      <v-avatar :size="isHovering ? '92' : '84'" style="transition: 0.4s ease-in-out;" :style="isHovering ? 'border: solid 2px white' : ''">
-                        <v-img v-if="auth.user.photo" :src="backend_storage + auth.user.photo" cover :style="isHovering ? 'opacity: 0.6;' : ''"
-                          lazy-src="media/images/man.png">
+                      <v-avatar :size="isHovering ? '92' : '84'" style="transition: 0.4s ease-in-out;"
+                        :style="isHovering ? 'border: solid 2px white' : ''">
+                        <v-img v-if="auth.user.photo" :src="backend_storage + auth.user.photo" cover
+                          :style="isHovering ? 'opacity: 0.6;' : ''" lazy-src="media/images/man.png">
                           <template v-slot:placeholder>
                             <div class="d-flex align-center justify-center fill-height">
-                              <v-progress-circular :width="(84 * 4) / 84" :size="84"
-                                color="grey-lighten-4" indeterminate></v-progress-circular>
+                              <v-progress-circular :width="(84 * 4) / 84" :size="84" color="grey-lighten-4"
+                                indeterminate></v-progress-circular>
                             </div>
                           </template>
                         </v-img>
                         <v-img v-else src="media/images/man.png" style="transition: 0.4s ease-in-out"
                           :style="'object-fit: cover; width: ' + (isHovering ? '92px' : '84px;')" />
                         <v-scale-transition>
-                          <v-icon v-if="isHovering" style="position: absolute;" class="text-shadow-black-2" color="white">mdi-account-eye</v-icon>
+                          <v-icon v-if="isHovering" style="position: absolute;" class="text-shadow-black-2"
+                            color="white">mdi-account-eye</v-icon>
                         </v-scale-transition>
                       </v-avatar>
                     </v-col>
-                  </router-link>                  
+                  </router-link>
                 </template>
               </v-tooltip>
               <v-list-item>
@@ -86,7 +91,7 @@
                   <v-list-item-subtitle v-show="!isHovering"
                     :class="dark_theme ? 'text-shadow-black-2' : 'white text-shadow-black-2'"
                     :style="dark_theme ? '' : 'opacity: 0.8'" align="center">
-                    Grupo: {{ auth.user.group }}
+                    {{ auth.user.email }}
                   </v-list-item-subtitle>
                 </v-slide-y-reverse-transition>
               </v-list-item>
@@ -110,7 +115,7 @@
             </v-list-item>
           </template>
         </v-hover>
-        <div v-if="auth.user.level >= 1">
+        <div v-if="auth.user.level >= 1 && adm_routes.length">
           <v-divider></v-divider>
           <v-list-subheader>Gestão do Sistema</v-list-subheader>
           <v-hover v-for="(route, index) in adm_routes" :key="index">
@@ -127,7 +132,7 @@
             </template>
           </v-hover>
         </div>
-        <div v-if="auth.user.level >= 2">
+        <div v-if="auth.user.level >= 2 && supervisor_routes.length">
           <v-divider></v-divider>
           <v-list-subheader>Supervisão</v-list-subheader>
           <v-hover v-for="(route, index) in supervisor_routes" :key="index">
@@ -161,7 +166,12 @@
       </template>
     </v-navigation-drawer>
     <v-layout v-if="$route.name != 'login' && auth.is_auth && auth.hasData()">
-      <v-main :class="dark_theme ? 'background-dark' : 'background-light'">
+      <v-main v-if="$route.name == 'plantings'" :class="dark_theme ? 'background-dark' : 'background-light'">
+        <v-container class="main-container">
+          <router-view />
+        </v-container>
+      </v-main>
+      <v-main v-else :class="dark_theme ? 'background-dark' : 'background-light'">
         <v-container class="main-container">
           <div class="page-title-section">
             <span class="page-title">
@@ -193,8 +203,17 @@
       </v-container>
     </v-main>
     <DialogEditProfile
-      @close="profile_dialog = false; profile_form = reactive({ id: auth.user.id, name: auth.user.full_name, cpf: auth.user.cpf, group_id: auth.user.group_id, sp: auth.user.sp, email: auth.user.email.split('@')[0], password: '', password_confirmation: '' })"
+      @close="profile_dialog = false; profile_form = reactive({ id: auth.user.id, name: auth.user.full_name, cpf: auth.user.cpf, email: auth.user.email, password: '', password_confirmation: '' })"
       :model="profile_dialog" :data="profile_form" :change_password_card="change_password_card_prop" color="orange" />
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="snackbar.timeout"
+      :location="snackbar.location" :variant="snackbar.variant" :timer="snackbar.timer"
+      :timer-color="snackbar.timerColor" :prepend-icon="snackbar.prependIcon">
+      <v-icon v-if="snackbar.prependIcon">{{ snackbar.prependIcon }}</v-icon>
+      {{ snackbar.text }}
+      <template #actions>
+        <v-btn @click="snackbar.close()" size="small" icon="mdi-close"></v-btn>
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -203,6 +222,7 @@
 import { RouterView, RouterLink, useRoute } from 'vue-router'
 import api from '@/plugins/axios.js';
 import { useAuthStore } from '@/stores/auth.js'
+import { useSnackbarStore } from '@/stores/snackbar'
 import { ref, reactive, watch, computed, onMounted } from 'vue'
 import DialogEditProfile from '@/components/dialogs/DialogEditProfile.vue'
 import { useTheme } from 'vuetify'
@@ -216,19 +236,20 @@ const loading_theme = ref(false)
 const route = useRoute()
 const path = computed(() => route.meta.view)
 const auth = useAuthStore()
+const snackbar = useSnackbarStore()
 const drawer = ref(false)
 const profile_dialog = ref(false)
 let profile_form = ''
-const appbar_density = ref('150')
+const appbar_density = ref('55')
 const basic_routes = reactive([
   { to: '/', title: 'Dashboard', value: '/', img: 'dashboard.png' },
+  { to: '/plantings', title: 'Plantios', value: 'plantings', img: 'users.png' }
 ])
 const adm_routes = reactive([
-  { to: '/products', title: 'Produtos', value: 'products', img: 'products.png' },
-  { to: '/groups', title: 'Grupos', value: 'groups', img: 'team.png' }
+  { to: '/users', title: 'Usuários', value: 'users', img: 'users.png' }
 ])
 const supervisor_routes = reactive([
-  { to: '/users', title: 'Usuários', value: 'users', img: 'users.png' }
+
 ])
 const breadcrumbs_items = reactive([])
 const password_expire_time = reactive([])
@@ -261,7 +282,7 @@ watch(dark_theme_model, (v) => {
 })
 
 watch(path, () => {
-  appbar_density.value != '55' && path.value != 'Login' ? setTimeout(() => { appbar_density.value = '55' }, 2000) : null
+  //appbar_density.value != '55' && path.value != 'Login' ? setTimeout(() => { appbar_density.value = '55' }, 2000) : null
   Object.assign(breadcrumbs_items, [
     {
       title: 'Dashboard',
@@ -308,15 +329,15 @@ function checkPasswordResetExpire(attempt = 1) {
     }
   }).catch((error) => {
     console.log(error)
-    if (error.response?.status != 404 && attempt <= 5) {      
-      setTimeout(() => checkPasswordResetExpire(attempt + 1), 1000)  
+    if (error.response?.status != 404 && attempt <= 5) {
+      setTimeout(() => checkPasswordResetExpire(attempt + 1), 1000)
     }
   })
 }
 
 function openDialogEditProfile(change_password_card = false) {
   change_password_card_prop.value = change_password_card
-  profile_form = auth.user ? reactive({ id: auth.user.id, name: auth.user.full_name, cpf: auth.user.cpf, group_id: auth.user.group_id, sp: auth.user.sp, email: auth.user.email.split('@')[0], password: '', password_confirmation: '' }) : ''
+  profile_form = auth.user ? reactive({ id: auth.user.id, name: auth.user.full_name, cpf: auth.user.cpf, email: auth.user.email, password: '', password_confirmation: '' }) : ''
   profile_dialog.value = true
 }
 
@@ -343,18 +364,18 @@ function setTheme() {
 .custom-switch-dark .v-switch__thumb {
   width: 40px !important;
   height: 40px !important;
-  font-size: 25px !important; 
+  font-size: 25px !important;
   background-color: rgba(255, 255, 255, 0) !important;
   box-shadow: none !important;
 }
 
 .custom-switch-light .v-switch__track {
-  opacity: 1 !important; 
+  opacity: 1 !important;
   background-color: rgb(253, 157, 67) !important;
 }
 
 .custom-switch-dark .v-switch__track {
-  opacity: 1 !important; 
+  opacity: 1 !important;
   background-color: rgba(0, 38, 121, 0.548) !important;
 }
 
@@ -438,12 +459,14 @@ function setTheme() {
 }
 
 @keyframes pulseBackground {
-  0% {    
+  0% {
     background-position: left center;
   }
+
   50% {
     background-position: right center;
   }
+
   100% {
     background-position: left center;
   }

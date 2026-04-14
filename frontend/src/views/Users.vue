@@ -15,7 +15,7 @@
                         </v-text-field>
                     </v-col>
                     <v-col cols="9" class="align-end">
-                        <v-btn :disabled="loading_users || loading_groups" class="add-button"
+                        <v-btn :disabled="loading_users" class="add-button"
                             @click="add_user_dialog = true" color="white" size="small" elevation="10" dark
                             style="background-color: rgb(64, 184, 59)">
                             ADICIONAR<v-icon>mdi-plus</v-icon>
@@ -66,22 +66,12 @@
                         <v-col cols="4" class="d-flex align-center">
                             <span>{{ item.name }}</span>
                         </v-col>
+                        <v-col cols="3" class="d-flex align-center">
+                            <span>{{ item.email }}</span>
+                        </v-col>
                         <v-col cols="2" class="d-flex align-center">
                             <span>{{ item.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') }}</span>
-                        </v-col>
-                        <v-col cols="2" class="d-flex align-center">
-                            <v-select variant="underlined" v-model="item.group_id" label="Grupo" color="primary"
-                                :disabled="loading_groups || edit_loader[item.id + '_group']"
-                                @update:modelValue="editUser(item.id + '_group', item, 'group_id')"
-                                :loading="loading_groups || edit_loader[item.id + '_group']" :items="groups"
-                                item-title="name" item-value="id"></v-select>
-                        </v-col>
-                        <v-col cols="1" class="d-flex align-center">
-                            <v-select variant="underlined" v-model="item.sp" label="PA" color="primary"
-                                @update:modelValue="editUser(item.id + '_sp', item, 'sp')"
-                                :disabled="edit_loader[item.id + '_sp']" :loading="edit_loader[item.id + '_sp']"
-                                :items="[{ title: '00', value: 0 }, { title: '01', value: 1 }, { title: '02', value: 2 }, { title: 'UAD', value: 88 }, { title: 'UPS', value: 89 }, { title: '97', value: 97 }]"></v-select>
-                        </v-col>
+                        </v-col>                                                
                         <v-col cols="1" class="d-flex align-center">
                             <v-select color="primary" label="Nível" variant="underlined" v-model="item.level"
                                 @update:modelValue="editUser(item.id + '_level', item, 'level')"
@@ -126,7 +116,7 @@
                 </v-row>
             </div>
         </v-card>
-        <DialogAddUser @new_register="pushNewUser" @close="add_user_dialog = false" :model="add_user_dialog" :groups="groups"
+        <DialogAddUser @new_register="pushNewUser" @close="add_user_dialog = false" :model="add_user_dialog"
             color="rgb(90, 180, 80)" />
     </div>
 </template>
@@ -146,15 +136,12 @@ const add_user_dialog = ref(false)
 const auth = useAuthStore()
 const search_field = ref('')
 const edit_loader = reactive({})
-const loading_groups = ref(false)
-const groups = reactive([])
 const current_page = ref(1)
 const items_per_page = ref(10);
 
 
 // Created
 getUsers()
-getGroups()
 
 //Computeds
 const filtered_items = computed(() => {
@@ -209,21 +196,6 @@ function getUsers(attempt = 1) {
         } else {
             loading_users.value = false
         }        
-    })
-}
-
-function getGroups(attempt = 1) {
-    loading_groups.value = true
-    api.get('get_groups', { params: { manage: true } }).then(response => {
-        Object.assign(groups, response.data)
-        loading_groups.value = false
-    }).catch(error => {
-        console.log(error)
-        if (attempt <= 5) {
-            setTimeout(() => getGroups(attempt + 1), 1000)
-        } else {
-            loading_groups.value = false
-        }   
     })
 }
 

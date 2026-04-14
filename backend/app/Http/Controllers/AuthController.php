@@ -109,7 +109,7 @@ class AuthController extends Controller
         $user_login_otp->status = 2;
         $user_login_otp->ip_access = $request->ip();
         $user_login_otp->save();
-        $user = User::with('group')->find($request->id);
+        $user = User::find($request->id);
         if (!$user || $user->status != 1) {
             return response()->json([ 'message' => 'Usuário não encontrado ou desativado.' ], 404);
         }

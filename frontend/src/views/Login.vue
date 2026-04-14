@@ -148,7 +148,7 @@
                                                     :readonly="loading || alert"
                                                     :rules="getRules({ required: true, maxlen: { val: 100 }, name: true })" @keyup="nameMask(signin_form)"
                                                     clearable label="Nome Completo" placeholder="Nome Sobrenome"
-                                                    @change="setEmail(signin_form.name)"></v-text-field>
+                                                    ></v-text-field>
                                             </v-col>
                                             <v-col cols="8">
                                                 <v-text-field color="teal" v-model="signin_form.email"
@@ -160,18 +160,7 @@
                                                     v-mask="'###.###.###-##'" :readonly="loading || alert"
                                                     :rules="getRules({ required: true, cpf: true })" clearable label="CPF"
                                                     placeholder="Informe seu CPF"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="6">
-                                                <v-select color="teal" v-model="signin_form.group_id" label="Grupo"
-                                                    :rules="getRules({ required: true })" :readonly="loading || alert"
-                                                    :disabled="loading_groups" :loading="loading_groups" :items="groups"
-                                                    item-title="name" item-value="id"></v-select>
-                                            </v-col>
-                                            <v-col cols="6">
-                                                <v-select color="teal" v-model="signin_form.sp" label="PA"
-                                                    :rules="getRules({ required: true })" :readonly="loading || alert"
-                                                    :items="[{ title: 'Matriz', value: 0 }, { title: 'PA-01', value: 1 }, { title: 'PA-02', value: 2 }, { title: 'UAD', value: 88 }, { title: 'UPS', value: 89 }, { title: 'PA-97', value: 97 }]"></v-select>
-                                            </v-col>
+                                            </v-col>                                            
                                             <v-col cols="6">
                                                 <v-text-field color="teal" v-model="signin_form.password"
                                                     :readonly="loading || alert"
@@ -248,12 +237,10 @@ const form1 = ref(null)
 const form2 = ref(null)
 const auth = useAuthStore()
 const login_form = reactive({ email: '', password: '' })
-let signin_form = reactive({ name: '', cpf: '', email: '', group_id: '', sp: '', password: '', password_confirmation: '' })
+let signin_form = reactive({ name: '', cpf: '', email: '', password: '', password_confirmation: '' })
 let reset_password_form = reactive({ uid: null, token: null, password: '', password_confirmation: '' })
 const tabs = ref(1)
 const loading = ref(false)
-const loading_groups = ref(false)
-const groups = reactive([])
 const visible = ref(false)
 const alert_message = ref('')
 const alert = ref(false)
@@ -305,7 +292,6 @@ watch(otp_form_otp, (v) => {
 
 //Created
 setTimeout(() => { start.value = true }, 300)
-getGroups()
 
 //Methods
 function resendOtp() {
@@ -453,27 +439,6 @@ function checkOtpNLogin() {
         })
 }
 
-function getGroups(attempt = 1) {
-    loading_groups.value = true
-    api.get('get_groups').then((response) => {
-        Object.assign(groups, response.data)
-        loading_groups.value = false
-    }).catch((error) => {
-        console.log(error)
-        if (attempt <= 5) {
-            setTimeout(() => getGroups(attempt + 1), 1000)
-        } else {
-            loading_groups.value = false
-        }   
-    })
-}
-
-function setEmail(full_name) {
-    if (!/^[A-Z][\p{L}\s´~]* [A-Z][\p{L}\s´~]*$/u.test(full_name)) return
-    let full_name_array = full_name.trim().toLowerCase().split(' ')
-    signin_form.email = full_name_array[0] + '.' + full_name_array[full_name_array.length - 1]
-}
-
 async function signin() {
     const { valid } = await form2.value.validate()
     if (!valid) return false
@@ -492,7 +457,7 @@ async function signin() {
             setTimeout(() => { 
                 tabs.value = 1
                 alert_fail.value = true 
-                signin_form = reactive({ name: '', cpf: '', email: '', group_id: '', sp: '', password: '', password_confirmation: '' })
+                signin_form = reactive({ name: '', cpf: '', email: '', password: '', password_confirmation: '' })
                 signin_form_copy = { ...signin_form }
                 form2.value.reset()
             }, 5300)                                                           

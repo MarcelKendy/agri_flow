@@ -78,23 +78,7 @@
                                         <v-list-item-title>
                                             <span v-if="!loading_user" class="about-card-list-info">{{ user_data.email }}</span>
                                         </v-list-item-title>
-                                    </v-list-item>
-                                    <v-list-item class="about-card-list-item" :class="dark_theme ? 'text-shadow-black-1' : ''"> 
-                                        <template v-slot:prepend>
-                                            <v-icon icon="mdi-bank"></v-icon>
-                                        </template>                            
-                                        <v-list-item-title>
-                                            <span v-if="!loading_user" class="about-card-list-info">{{ 'Agência ' + (sp_titles[user_data.sp] ?? 'Erro') }}</span>
-                                        </v-list-item-title>
-                                    </v-list-item>
-                                    <v-list-item class="about-card-list-item" :class="dark_theme ? 'text-shadow-black-1' : ''"> 
-                                        <template v-slot:prepend>
-                                            <v-icon icon="mdi-account-group"></v-icon>
-                                        </template>                            
-                                        <v-list-item-title>
-                                            <span v-if="!loading_user" class="about-card-list-info">{{ 'Grupo ' + (typeof user_data.group == 'object' ? user_data.group.name : user_data.group) }}</span>
-                                        </v-list-item-title>
-                                    </v-list-item>
+                                    </v-list-item>                                                                        
                                     <v-list-item class="about-card-list-item" :class="dark_theme ? 'text-shadow-black-1' : ''">
                                         <template v-slot:prepend>
                                             <v-icon :icon="user_data.level > 0 ? 'mdi-shield-lock-open' : 'mdi-shield-lock'"></v-icon>
@@ -156,14 +140,6 @@ const accesses_translations = {
     0: 'Básico',
     1: 'Gestor',    
     2: 'Administrador'
-}
-const sp_titles = {
-  0: 'Matriz',
-  1: 'PA-01',
-  2: 'PA-02',
-  88: 'UAD',
-  89: 'UPS',
-  97: 'PA-97'
 }
 
 //Computeds
@@ -265,13 +241,13 @@ function getActiveSession(attempt = 1) {
 }
 
 function openDialogEditProfile() {
-    profile_form = reactive({ id: auth.user.id, name: auth.user.full_name, cpf: auth.user.cpf, sp: auth.user.sp, group_id: auth.user.group_id, email: auth.user.email.split('@')[0], password: '', password_confirmation: '' })  
+    profile_form = reactive({ id: auth.user.id, name: auth.user.full_name, cpf: auth.user.cpf, email: auth.user.email, password: '', password_confirmation: '' })  
     profile_dialog.value = true
 }
 
 function closeDialogEditProfile() {
     profile_dialog.value = false 
-    profile_form = reactive({ id: auth.user.id, name: auth.user.full_name, cpf: auth.user.cpf, sp: auth.user.sp, group_id: auth.user.group_id, email: auth.user.email.split('@')[0], password: '', password_confirmation: '' })
+    profile_form = reactive({ id: auth.user.id, name: auth.user.full_name, cpf: auth.user.cpf, email: auth.user.email, password: '', password_confirmation: '' })
     Object.assign(user_data, auth.user)
 }
 
