@@ -7,6 +7,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;   
 use App\Http\Controllers\CropController;                        
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FieldRecordController;
+use App\Http\Controllers\ImplementController;
+use App\Http\Controllers\PivotController;
+use App\Http\Controllers\PlantingController;
+use App\Http\Controllers\TractorController;
 use App\Http\Controllers\UserProfileController;
 
 // UNPROTECTED ROUTES
@@ -41,6 +46,22 @@ use App\Http\Controllers\UserProfileController;
             //Route::put('/reset_password/{user}', [UserController::class, 'resetPassword']);
         // USER ROUTES
 
+        // FIELD RECORD ROUTES
+            //Route::get('/get_field_record/{field_record}', [FieldRecordController::class, 'getFieldRecord']);
+            Route::get('/get_field_records', [FieldRecordController::class, 'getFieldRecords']);
+            Route::post('/add_field_record', [FieldRecordController::class, 'addFieldRecord']);
+            Route::put('/edit_field_record/{field_record}', [FieldRecordController::class, 'editFieldRecord']);
+            Route::delete('/delete_field_record/{field_record}', [FieldRecordController::class, 'deleteFieldRecord']);
+        // FIELD RECORD ROUTES
+
+        // PLANTING ROUTES
+            //Route::get('/get_planting/{planting}', [PlantingController::class, 'getPlanting']);
+            Route::get('/get_plantings', [PlantingController::class, 'getPlantings']);
+            Route::post('/add_planting', [PlantingController::class, 'addPlanting']);
+            Route::put('/edit_planting/{planting}', [PlantingController::class, 'editPlanting']);
+            Route::delete('/delete_planting/{planting}', [PlantingController::class, 'deletePlanting']);
+        // PLANTING ROUTES
+
         // CROP ROUTES
             //Route::get('/get_product/{product}', [ProductController::class, 'getProduct']);
             Route::get('/get_crops', [CropController::class, 'getCrops']);
@@ -48,6 +69,30 @@ use App\Http\Controllers\UserProfileController;
             Route::put('/edit_crop/{crop}', [CropController::class, 'editCrop']);
             Route::delete('/delete_crop/{crop}', [CropController::class, 'deleteCrop']);
         // CROP ROUTES
+
+        // PIVOT ROUTES
+            //Route::get('/get_pivot/{pivot}', [PivotController::class, 'getPivot']);
+            Route::get('/get_pivots', [PivotController::class, 'getPivots']);
+            Route::post('/add_pivot', [PivotController::class, 'addPivot']);
+            Route::put('/edit_pivot/{pivot}', [PivotController::class, 'editPivot']);
+            Route::delete('/delete_pivot/{pivot}', [PivotController::class, 'deletePivot']);
+        // PIVOT ROUTES
+
+        // TRACTOR ROUTES
+            //Route::get('/get_tractor/{tractor}', [TractorController::class, 'getTractor']);
+            Route::get('/get_tractors', [TractorController::class, 'getTractors']);
+            Route::post('/add_tractor', [TractorController::class, 'addTractor']);
+            Route::put('/edit_tractor/{tractor}', [TractorController::class, 'editTractor']);
+            Route::delete('/delete_tractor/{tractor}', [TractorController::class, 'deleteTractor']);
+        // TRACTOR ROUTES
+
+        // IMPLEMENT ROUTES
+            //Route::get('/get_implement/{implement}', [ImplementController::class, 'getImplement']);
+            Route::get('/get_implements', [ImplementController::class, 'getImplements']);
+            Route::post('/add_implement', [ImplementController::class, 'addImplement']);
+            Route::put('/edit_implement/{implement}', [ImplementController::class, 'editImplement']);
+            Route::delete('/delete_implement/{implement}', [ImplementController::class, 'deleteImplement']);
+        // IMPLEMENT ROUTES
 
         // PRODUCT ROUTES
             //Route::get('/get_product/{product}', [ProductController::class, 'getProduct']);
@@ -58,10 +103,7 @@ use App\Http\Controllers\UserProfileController;
         // PRODUCT ROUTES
 
         // DASHBOARD ROUTES
-            Route::get('/get_campaigns_dashboard', [DashboardController::class, 'getCampaignsDashboard']);
-            Route::get('/get_progress_bar_chart', [DashboardController::class, 'getProgressBarChart']);
-            Route::get('/get_groups_ranking', [DashboardController::class, 'getGroupsRanking']);
-            Route::get('/get_dashboard_saved', [DashboardController::class, 'getDashboardSaved']);
+
         // DASHBOARD ROUTES
 
         // USER PROFILE ROUTES

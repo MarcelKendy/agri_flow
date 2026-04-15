@@ -37,17 +37,14 @@
           <span v-if="loading">Enviando e-mail</span>
           <span v-else>Um link será enviado para o seu e-mail</span>
         </v-card-subtitle>
-        <v-divider class="mt-2"></v-divider>        
+        <v-divider class="mt-2"></v-divider>
         <v-card-text>
           <v-form ref="form">
             <v-row>
               <v-col cols="12">
-                <v-text-field :color="color" v-model="reset_password.email"
-                  :disabled="loading || sending_error"
-                  :rules="getRules({ required: true, email: true, maxlen: { val: 60 } })"
-                  clearable label="E-mail"
-                  @keyup.enter="sendPasswordResetMail()"
-                  ></v-text-field>
+                <v-text-field :color="color" v-model="reset_password.email" :disabled="loading || sending_error"
+                  :rules="getRules({ required: true, email: true, maxlen: { val: 60 } })" clearable label="E-mail"
+                  @keyup.enter="sendPasswordResetMail()"></v-text-field>
               </v-col>
             </v-row>
           </v-form>
@@ -55,21 +52,25 @@
         <v-divider></v-divider>
         <v-card-actions class="pa-3">
           <v-slide-x-reverse-transition>
-            <v-alert height="35" v-show="sending_error" style="position: absolute;" color="red" border="start" elevation="3" dark class="mx-2">
+            <v-alert height="35" v-show="sending_error" style="position: absolute;" color="red" border="start"
+              elevation="3" dark class="mx-2">
               <v-icon size="small" class="mr-2 ml-0 pl-0">mdi-alert-circle</v-icon>
               {{ error_text }}
             </v-alert>
           </v-slide-x-reverse-transition>
           <v-hover>
             <template v-slot:default="{ isHovering, props }">
-              <v-btn v-if="!sending_error" :disabled="loading" v-bind="props" color="red" :variant="isHovering ? 'tonal' : 'outlined'" @click="closeDialog()">
+              <v-btn v-if="!sending_error" :disabled="loading" v-bind="props" color="red"
+                :variant="isHovering ? 'tonal' : 'outlined'" @click="closeDialog()">
                 Cancelar
               </v-btn>
             </template>
           </v-hover>
           <v-hover>
             <template v-slot:default="{ isHovering, props }">
-              <v-btn v-if="!sending_error" :disabled="loading" :loading="loading" v-bind="props" append-icon="mdi-email-arrow-right" :color="color" :variant="isHovering ? 'tonal' : 'elevated'" @click="sendPasswordResetMail()">
+              <v-btn v-if="!sending_error" :disabled="loading" :loading="loading" v-bind="props"
+                append-icon="mdi-email-arrow-right" :color="color" :variant="isHovering ? 'tonal' : 'elevated'"
+                @click="sendPasswordResetMail()">
                 Enviar
               </v-btn>
             </template>
@@ -92,7 +93,7 @@ const props = defineProps({
   color: { type: String, default: '#2196F3' },
   model: { type: Boolean, required: true },
 })
-let reset_password = reactive({ email: ''})
+let reset_password = reactive({ email: '' })
 const form = ref(null)
 const sending_error = ref(false)
 const error_text = ref('')
@@ -110,7 +111,7 @@ async function sendPasswordResetMail(attempts = 1) {
   if (attempts == 1) {
     const { valid } = await form.value.validate()
     if (!valid) return false
-  }  
+  }
   loading.value = true
   api.post('send_password_reset_mail', reset_password).then(() => {
     emit('done')

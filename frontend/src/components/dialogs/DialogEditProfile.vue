@@ -48,22 +48,24 @@
             <v-row>
               <v-col cols="12">
                 <v-text-field :color="color" v-model="profile_form.name" :readonly="loading_profile" density="compact"
-                  @keyup="nameMask(profile_form)" :rules="getRules({ required: true, maxlen: { val: 100 }, name: true })"
-                  class="" clearable label="Nome Completo" @keyup.enter="!loading_profile && editUser()"
+                  @keyup="nameMask(profile_form)"
+                  :rules="getRules({ required: true, maxlen: { val: 100 }, name: true })" class="" clearable
+                  label="Nome Completo" @keyup.enter="!loading_profile && editUser()"
                   placeholder="Nome Sobrenome"></v-text-field>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="12" lg="4">
                 <v-text-field :color="color" v-model="profile_form.cpf" v-mask="'###.###.###-##'"
-                  :readonly="loading_profile" density="compact" :rules="getRules({ required: true, cpf: true })" class=""
-                  clearable label="CPF" placeholder="Informe seu CPF" @keyup.enter="!loading_profile && editUser()"></v-text-field>
+                  :readonly="loading_profile" density="compact" :rules="getRules({ required: true, cpf: true })"
+                  class="" clearable label="CPF" placeholder="Informe seu CPF"
+                  @keyup.enter="!loading_profile && editUser()"></v-text-field>
               </v-col>
               <v-col cols="12" lg="8">
                 <v-text-field :color="color" v-model="profile_form.email" :readonly="loading_profile" density="compact"
                   :rules="getRules({ required: true, email: true, maxlen: { val: 60 } })" clearable label="E-mail"
                   @keyup.enter="!loading_profile && editUser()"></v-text-field>
-              </v-col>              
+              </v-col>
               <v-col cols="12">
                 <v-file-input :color="color" accept="image/png, image/jpeg, image/jpg, image/bmp"
                   prepend-icon="mdi-camera" density="compact" label="Atualizar foto de perfil" show-size
@@ -78,7 +80,7 @@
                   color="orange-darken-1"
                   @click="password_card = !password_card; profile_form.password = profile_form.password_confirmation = ''">{{
                     password_card
-                    ? 'Cancelar' : 'Minha senha' }}</v-btn>
+                      ? 'Cancelar' : 'Minha senha' }}</v-btn>
               </v-col>
             </v-row>
             <v-slide-y-transition>
@@ -97,7 +99,8 @@
                       </v-tooltip>
                     </v-card-title>
                     <v-card-subtitle>
-                      A nova senha entrará em vigor no seu próximo Login. <strong>(Deve ser diferente das 5 últimas)</strong>
+                      A nova senha entrará em vigor no seu próximo Login. <strong>(Deve ser diferente das 5
+                        últimas)</strong>
                     </v-card-subtitle>
                     <v-card-text>
                       <v-row>
@@ -106,8 +109,9 @@
                             :readonly="loading_profile"
                             :rules="getRules({ required: true, minlen: { val: 5 }, maxlen: { val: 30 }, hasLowercase: true, hasUppercase: true, hasNumber: true, hasSpecialchar: true })"
                             clearable label="Senha" placeholder="Digite sua senha"
-                            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"
-                            prepend-inner-icon="mdi-lock-outline" @click:append-inner="visible = !visible"
+                            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                            :type="visible ? 'text' : 'password'" prepend-inner-icon="mdi-lock-outline"
+                            @click:append-inner="visible = !visible"
                             @keyup.enter="!loading_profile && editUser()"></v-text-field>
                         </v-col>
                         <v-col cols="12">
@@ -115,8 +119,9 @@
                             density="compact" :readonly="loading_profile"
                             :rules="getRules({ required: true, equals: { val: profile_form.password, message: 'As senhas não se correspondem' } })"
                             clearable label="Confirme sua senha" placeholder="Repita sua senha"
-                            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"
-                            prepend-inner-icon="mdi-lock-outline" @click:append-inner="visible = !visible"
+                            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                            :type="visible ? 'text' : 'password'" prepend-inner-icon="mdi-lock-outline"
+                            @click:append-inner="visible = !visible"
                             @keyup.enter="!loading_profile && editUser()"></v-text-field>
                         </v-col>
                       </v-row>
@@ -150,7 +155,7 @@
         <v-icon color="pink" class="mr-2">mdi-alert</v-icon>
         <span class="text-shadow-black-1">{{ snackbar_text }}</span>
         <template v-slot:actions>
-            <v-btn color="pink" variant="text" icon="mdi-close" @click="snackbar = false"></v-btn>
+          <v-btn color="pink" variant="text" icon="mdi-close" @click="snackbar = false"></v-btn>
         </template>
       </v-snackbar>
     </v-dialog>
@@ -162,7 +167,7 @@
 import { ref, watch, reactive, computed } from 'vue'
 import api from '@/plugins/axios.js'
 import { useAuthStore } from '@/stores/auth.js'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 
 // Variables
 const emit = defineEmits(['close'])
@@ -172,6 +177,7 @@ const props = defineProps({
   data: { required: true },
   change_password_card: { type: Boolean, required: false, default: false }
 })
+const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 let profile_form = reactive({})
 const form = ref(null)
@@ -218,12 +224,12 @@ async function editUser() {
   }).then(response => {
     if (response.data) {
       auth.setUser(response.data)
-    }   
+    }
     closeProfile()
   }).catch(error => {
-    if (error.response?.status === 400 && error.response?.data?.message) { 
-      loading_profile.value = false 
-      snackbar_text.value = error.response.data.message                 
+    if (error.response?.status === 400 && error.response?.data?.message) {
+      loading_profile.value = false
+      snackbar_text.value = error.response.data.message
       snackbar.value = true
     } else {
       console.log(error)

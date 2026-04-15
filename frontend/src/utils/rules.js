@@ -70,7 +70,7 @@ export function getRules(rules) {
         ? value => (value === 0 ? true : !!value) || (v.message ? v.message : 'Esse campo é obrigatório')
         : null
     } else if (key === 'cpf') {
-      return value => isValidCPF(value) || (v.message ? v.message : 'CPF inválido (000.000.000-00)')    
+      return value => isValidCPF(value) || (v.message ? v.message : 'CPF inválido (000.000.000-00)')
     } else if (key === 'cpf_cnpj') {
       return value => (isValidCPF(value) || isValidCNPJ(value)) || (v.message ? v.message : 'CPF/CNPJ inválido (000.000.000-00) ou (00.000.000/0000-00)')
     } else if (key === 'minlen' && v.val > 0) {
@@ -107,7 +107,7 @@ export function getRules(rules) {
         }
       }
     } else if (key === 'float') {
-      const regex = new RegExp(`^[1-9]\\d*,\\d{${v.val > 0 ? v.val : 2}}$`)
+      const regex = new RegExp(`^[0-9]\\d*,\\d{${v.val > 0 ? v.val : 2}}$`)
       return value => (value && regex.test(value)) ||
         (v.message ? v.message : (`Apenas números (${v.val > 0 ? v.val : 2} casas decimais)`))
     } else if (key === 'hasSpecialchar') {
@@ -120,6 +120,16 @@ export function getRules(rules) {
     } else if (key === 'integer_range') {
       return value => (value && /^[0-9]+$/.test(value) && value >= v.val[0] && value <= v.val[1]) ||
         (!v.silent ? (v.message ? v.message : 'Valor inválido') : '')
+    } else if (key === 'float_range') {
+      return value => {
+        if (value === null || value === undefined || value === '') return true
+        const num = parseFloat(value)
+        return (
+          !isNaN(num) &&
+          num >= v.val[0] &&
+          num <= v.val[1]
+        ) || (!v.silent ? (v.message || 'Valor inválido') : '')
+      }
     } else if (key === 'date_period') {
       return value => ((!v.val[0] || !v.val[1]) || (v.val[0] <= v.val[1])) ||
         (v.message ? v.message : 'O fim deve ser posterior ao começo')
@@ -129,7 +139,7 @@ export function getRules(rules) {
     } else if (key === 'date') {
       return value => (!value || /^\d{4}-\d{2}-\d{2}$/.test(value)) ||
         (v.message ? v.message : 'Formato de data inválido')
-    } else if (key === 'file_format') {      
+    } else if (key === 'file_format') {
       return value => (!value || !value['type'] || value.type.includes(v.val) ||
         (v.message ? v.message : 'Arquivo de formato inválido'))
     } else if (key === 'name') {

@@ -16,11 +16,7 @@ class ProductController extends Controller
 
     public function getProducts(Request $request)
     {
-        if ($request->input('manage')) {
-            $products = Product::orderBy('name')->get();
-        } else {
-            $products = Product::where('status', 1)->orderBy('name')->get();
-        }        
+        $products = Product::get();      
         return response()->json($products);
     }
 

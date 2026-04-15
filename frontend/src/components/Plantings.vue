@@ -22,7 +22,7 @@
 import api from '@/plugins/axios.js';
 import { useAuthStore } from '@/stores/auth.js'
 import { ref, computed, reactive } from 'vue'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 
 // Variables
 const props = defineProps({
@@ -30,6 +30,7 @@ const props = defineProps({
     icon: { type: String, required: true },
     color: { type: String, default: 'green' },
 })
+const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 const auth = useAuthStore()
@@ -39,7 +40,6 @@ const auth = useAuthStore()
 // Created
 
 // Methods
-console.log(4)
 
 </script>
 

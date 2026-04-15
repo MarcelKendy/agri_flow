@@ -234,3 +234,17 @@
 .dark-gray {
     color: rgb(53, 53, 53) !important;
 }
+
+.card-header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgb(var(--v-theme-surface));
+}
+
+.card-actions-sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: rgb(var(--v-theme-surface));
+}

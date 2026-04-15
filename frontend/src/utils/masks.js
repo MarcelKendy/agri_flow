@@ -46,4 +46,24 @@ function nameMaskRaw(value) {
     .join(' ')
 }
 
-export { moneyMask, moneyMaskRaw, nameMask, nameMaskRaw }
+
+function percentageMask(object, key) {
+  let value = object[key]
+  if (value === null || value === undefined) {
+    object[key] = ''
+    return
+  }
+  value = value.toString().replace(/[^\d]/g, '')
+  if (!value) {
+    object[key] = ''
+    return
+  }
+  let number = parseFloat(value) / 100
+  if (number > 100) number = 100
+  if (number < 0) number = 0
+  object[key] = number.toFixed(2)
+  return object[key]
+}
+
+
+export { moneyMask, moneyMaskRaw, nameMask, nameMaskRaw, percentageMask }

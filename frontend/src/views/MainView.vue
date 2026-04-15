@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="page-title-section"></div>
-        <v-sheet elevation="10">
-            <v-tabs v-model="tab" class="tabs" color="green" grow>
+        <v-sheet elevation="1" style="background-color: rgba(0,0,0,0) !important;">
+            <v-tabs v-model="tab" class="tabs" color="green" grow :show-arrows="smAndDown">
                 <v-tab v-for="item in items" :key="item.id" :value="item.id" :prepend-icon="item.icon"
                     style="border-radius: 10px; color: white">
                     {{ item.title }}
@@ -10,7 +10,7 @@
             </v-tabs>
             <v-tabs-window v-model="tab">
                 <v-tabs-window-item v-for="item in items" :key="item.id" :value="item.id">
-                    <v-card flat>
+                    <v-card style="background-color: rgba(0,0,0,0) !important;">
                         <v-card-text>
                             <keep-alive>
                                 <component :is="item.componentInstance" :title="item.title" :icon="item.icon" />
@@ -28,9 +28,10 @@
 import api from '@/plugins/axios.js'
 import { useAuthStore } from '@/stores/auth.js'
 import { ref, computed, defineAsyncComponent } from 'vue'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 
 // Variables
+const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value === 'customDark')
 const auth = useAuthStore()
@@ -60,22 +61,22 @@ const items = [
         title: 'Culturas',
         component: 'Crops',
         componentInstance: defineAsyncComponent(() => import('@/components/Crops.vue'))
-    },
+    },    
     {
         id: 4,
-        icon: 'mdi-water-pump',
-        text: 'Pivots',
-        title: 'Pivôs',
-        component: 'Pivots',
-        componentInstance: defineAsyncComponent(() => import('@/components/Pivots.vue'))
-    },
-    {
-        id: 5,
         icon: 'mdi-flask-outline',
         text: 'Products',
         title: 'Produtos',
         component: 'Products',
         componentInstance: defineAsyncComponent(() => import('@/components/Products.vue'))
+    },
+    {
+        id: 5,
+        icon: 'mdi-water-pump',
+        text: 'Pivots',
+        title: 'Pivôs',
+        component: 'Pivots',
+        componentInstance: defineAsyncComponent(() => import('@/components/Pivots.vue'))
     },
     {
         id: 6,
@@ -106,6 +107,7 @@ const items = [
 }
 
 .tabs {
-    background-color: rgb(50, 50, 50);
+    background-color: rgba(62, 83, 74, 0.502);
+    border-radius: 6px;
 }
 </style>

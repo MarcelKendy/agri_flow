@@ -32,7 +32,8 @@
 </template>
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
+const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 </script>

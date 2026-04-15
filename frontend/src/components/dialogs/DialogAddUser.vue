@@ -54,8 +54,8 @@
               </v-col>
               <v-col cols="8">
                 <v-text-field color="teal" v-model="item.email" :readonly="loading || alert"
-                  :rules="getRules({ required: true, email: true, maxlen: { val: 60 } })"
-                  clearable label="E-mail" ></v-text-field>
+                  :rules="getRules({ required: true, email: true, maxlen: { val: 60 } })" clearable
+                  label="E-mail"></v-text-field>
               </v-col>
               <v-col cols="4">
                 <v-text-field color="teal" v-model="item.cpf" v-mask="'###.###.###-##'" :readonly="loading || alert"
@@ -87,7 +87,7 @@
           <v-slide-x-reverse-transition>
             <v-alert height="35" v-show="alert" :color="alert_fail ? 'red' : 'green'" border="start" elevation="3" dark
               class="mx-2"><v-icon size="small" class="mr-2 ml-0 pl-0">{{ alert_fail ? 'mdi-alert-circle' :
-                'mdi-emoticon-wink'}}</v-icon>{{ alert_message
+                'mdi-emoticon-wink' }}</v-icon>{{ alert_message
                 }}</v-alert>
           </v-slide-x-reverse-transition>
           <v-hover>
@@ -166,14 +166,14 @@ async function addUser() {
     .then(response => {
       emit('new_register', response.data)
       closeDialog()
-      setTimeout(() => {loading.value = false}, 300)      
+      setTimeout(() => { loading.value = false }, 300)
     })
     .catch(err => {
       console.log(err)
       loading.value = false
       alert_message.value = err?.response?.data?.message || 'Ocorreu um erro, tente novamente'
       alert.value = true
-      setTimeout(() => { alert.value = false }, 4000)            
+      setTimeout(() => { alert.value = false }, 4000)
     })
 }
 

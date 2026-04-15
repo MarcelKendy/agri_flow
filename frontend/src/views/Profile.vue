@@ -113,7 +113,7 @@
 <script setup>
 //Imports
 import { ref, reactive, computed, watch, onMounted } from 'vue'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 import api from '@/plugins/axios.js'
 import { useAuthStore } from '@/stores/auth.js'
 import DialogEditProfile from '@/components/dialogs/DialogEditProfile.vue'
@@ -125,6 +125,7 @@ Chart.register(...registerables)
 const chartCanvas = ref(null)
 let chartInstance = null
 const route = useRoute()
+const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 const auth = useAuthStore()

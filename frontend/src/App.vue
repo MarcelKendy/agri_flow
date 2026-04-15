@@ -1,10 +1,10 @@
 <template>
   <v-app>
     <v-app-bar style="transition: 1.5s !important" v-if="$route.name != 'login' && auth.is_auth && auth.hasData()"
-      color="rgba(13,172,197,.5)" dark :elevation="14" scroll-behavior="fade-image elevate" scroll-threshold="200"
-      :height="appbar_density" image="media/images/main-banner.png">
+      dark :elevation="14" scroll-behavior="fade-image elevate" scroll-threshold="200"
+      :height="appbar_density">
       <template v-slot:image>
-        <v-img gradient="to bottom right, rgba(143,22,167,.3), rgba(40,90,85,.0)"></v-img>
+        <v-img gradient="to bottom right, rgba(50, 100, 50, 0.4), rgba(20, 30, 30, 0.6)"></v-img>
       </template>
       <v-app-bar-nav-icon class="white" @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-img class="ma-2" style="max-width: 32px" src="media/icons/logo.png" />
@@ -225,9 +225,10 @@ import { useAuthStore } from '@/stores/auth.js'
 import { useSnackbarStore } from '@/stores/snackbar'
 import { ref, reactive, watch, computed, onMounted } from 'vue'
 import DialogEditProfile from '@/components/dialogs/DialogEditProfile.vue'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 
 //Variables
+const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 const dark_theme_model = ref(dark_theme.value)
@@ -376,7 +377,7 @@ function setTheme() {
 
 .custom-switch-dark .v-switch__track {
   opacity: 1 !important;
-  background-color: rgba(0, 38, 121, 0.548) !important;
+  background-color: rgba(47, 113, 255, 0.548) !important;
 }
 
 .custom-switch-light i {
@@ -386,18 +387,17 @@ function setTheme() {
 
 .custom-switch-dark i {
   opacity: 1 !important;
-  color: rgb(71, 0, 165) !important;
+  color: rgb(212, 179, 254) !important;
 }
 </style>
 <style scoped>
 .main-container {
-  min-width: 1400px;
   padding: 0px;
   padding-bottom: 100px;
 }
 
 .background-dark {
-  background: linear-gradient(45deg, rgb(23, 32, 36) 0%, rgb(28, 30, 44) 100%);
+  background: linear-gradient(45deg, rgb(35, 35, 35) 0%, rgb(22, 29, 32) 100%);
 }
 
 .background-light {

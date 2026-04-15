@@ -15,7 +15,7 @@
                     <v-icon v-else :color="color">{{ icon }}</v-icon>
                   </v-col>
                   <v-col :cols="smAndDown ? 10 : 11">
-                    <span :style="{ color }">{{ loading ? 'Editando Cultura' : 'Editar Cultura' }}</span>
+                    <span :style="{ color }">{{ loading ? 'Editando Implemento' : 'Editar Implemento' }}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -26,39 +26,16 @@
           </v-card-title>
           <v-card-subtitle class="mb-3">
             <span v-if="loading">Aguarde...</span>
-            <span v-else>Edição de cultura</span>
+            <span v-else>Edição de implemento</span>
           </v-card-subtitle>
           <v-divider />
         </div>
         <v-card-text>
-          <v-form ref="form" @submit.prevent="editCrop">
+          <v-form ref="form" @submit.prevent="editItem">
             <v-row>
               <v-col cols="12">
-                <v-text-field @keyup.enter="editCrop()" :disabled="loading" v-model="item.name" label="Nome" clearable
+                <v-text-field @keyup.enter="editItem" :disabled="loading" v-model="item.name" label="Nome" clearable
                   :color="color" :rules="getRules({ required: true, minlen: { val: 3 } })" />
-              </v-col>
-              <v-col cols="12">
-                <v-text-field :disabled="loading" v-model="variety_input" label="Variedades" clearable :color="color"
-                  hint="Digite uma variedade e pressione Enter" persistent-hint @keydown.enter.prevent="addVariety" />
-              </v-col>
-              <v-col cols="12">
-                <div :style="{
-                  border: varieties_error
-                    ? '1px solid rgba(200, 100, 100)'
-                    : '1px solid rgba(255,255,255,0.6)',
-                  backgroundColor: !dark_theme ? 'rgba(50, 50, 50, 0.1)' : ''
-                }" class="chip-box">
-                  <span v-if="!varieties_array.length"
-                    :style="{ color: varieties_error ? 'rgba(210, 90, 100)' : 'inherit' }">
-                    Insira uma variedade (obrigatório)
-                  </span>
-                  <v-chip-group v-else column :disabled="loading">
-                    <v-chip v-for="variety in varieties_array" :key="variety" closable
-                      @click:close="removeVariety(variety)">
-                      {{ variety }}
-                    </v-chip>
-                  </v-chip-group>
-                </div>
               </v-col>
             </v-row>
           </v-form>
@@ -70,7 +47,7 @@
             <v-btn :disabled="loading" color="red" variant="outlined" @click="closeDialog">
               Cancelar
             </v-btn>
-            <v-btn :loading="loading" :disabled="loading" :color="color" @click="editCrop">
+            <v-btn :loading="loading" :disabled="loading" :color="color" @click="editItem">
               Confirmar
             </v-btn>
           </v-card-actions>
@@ -103,13 +80,9 @@ const props = defineProps({
 })
 const item = reactive({
   id: '',
-  name: '',
-  varieties: ''
+  name: ''
 })
 const form = ref(null)
-const variety_input = ref('')
-const varieties_array = ref([])
-const varieties_error = ref(false)
 
 // Created
 
@@ -124,50 +97,17 @@ watch(model_computed, (v) => {
     for (const key in item) {
       if (props.data.hasOwnProperty(key)) {
         item[key] = props.data[key]
-        if (key == 'varieties') {
-          varieties_array.value = item[key].split(';')
-        }
       }
     }
   }
 })
 
 // Methods
-function addVariety() {
-  const value = variety_input.value.trim()
-  if (!value) return
-  if (varieties_array.value.includes(value)) return
-
-  const next = [...varieties_array.value, value].join(';')
-  if (next.length > 240) {
-    snackbar.open({ preset: 'alert', text: 'Tamanho máximo atingido, abrevie o nome das variedades.' })
-    return
-  }
-
-  varieties_array.value.push(value)
-  variety_input.value = ''
-  syncModel()
-  varieties_error.value = false
-}
-
-function removeVariety(value) {
-  varieties_array.value = varieties_array.value.filter(v => v !== value)
-  syncModel()
-}
-
-function syncModel() {
-  item.varieties = varieties_array.value.join(';')
-}
-
-async function editCrop() {
+async function editItem() {
   const { valid } = await form.value.validate()
-  if (!varieties_array.value.length) {
-    varieties_error.value = true
-    return
-  }
   if (!valid) return
   loading.value = true
-  api.put('edit_crop/' + item.id, item).then((response) => {
+  api.put('edit_implement/' + item.id, item).then((response) => {
     emit('edited_register', response.data)
     closeDialog()
   }).catch((error) => {
@@ -180,10 +120,6 @@ async function editCrop() {
 function resetForm() {
   item.id = ''
   item.name = ''
-  item.varieties = ''
-  variety_input.value = ''
-  varieties_array.value = []
-  varieties_error.value = false
   loading.value = false
 }
 
@@ -193,13 +129,3 @@ function closeDialog() {
 }
 
 </script>
-<style scoped>
-.chip-box {
-  min-height: 50px;
-  border-radius: 10px;
-  background-color: rgba(50, 50, 50, 0.5);
-  padding: 12px;
-  display: flex;
-  align-items: center;
-}
-</style>

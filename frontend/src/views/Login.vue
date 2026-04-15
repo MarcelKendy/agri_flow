@@ -223,13 +223,14 @@
 import api from '@/plugins/axios.js'
 import { ref, reactive, onMounted, onBeforeUnmount, watch, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth.js'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 import Particles from '@/components/Particles.vue'
 import DialogResetPassword from '@/components/Dialogs/DialogResetPassword.vue'
 import { useRoute } from 'vue-router'
 import CryptoJS from 'crypto-js'
 
 const route = useRoute()
+const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 use_theme.global.name.value = 'customDark'
 const form0 = ref(null)

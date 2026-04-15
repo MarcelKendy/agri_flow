@@ -10,11 +10,11 @@
             <v-col cols="11" class="mt-1">
               <v-row>
                 <v-col cols="1" style="margin-right: -5px">
-                  <v-img v-if="$route.meta.img" width="32" :src="'media/icons/' + $route.meta.img"></v-img>
-                  <v-icon v-else  class="mr-0" :color="color">{{ $route.meta.icon }}</v-icon>
+                  <v-img v-if="img" width="32" :src="'media/icons/' + img" />
+                  <v-icon v-else :color="color">{{ icon }}</v-icon>
                 </v-col>
                 <v-col cols="11" class="pl-0">
-                  <span :style="'color:' + color">Deletar Cultura</span>
+                  <span :style="'color:' + color">Deletar Registro</span>
                 </v-col>
               </v-row>
             </v-col>
@@ -28,7 +28,7 @@
           <v-img max-width="50" class="loading-gif" src="media/images/loading.gif" />
         </v-card-title>
         <v-card-subtitle>
-          <span v-if="loading">Excluindo cultura...</span>  
+          <span v-if="loading">Excluindo registro...</span>
           <span v-else>Tem certeza que deseja excluir permanentemente esse registro?</span>
         </v-card-subtitle>
         <v-divider class="mt-2"></v-divider>
@@ -40,9 +40,7 @@
                   <span v-show="loading">Espera só um pouquinho, carregando...</span>
                 </v-scroll-x-transition>
                 <div v-if="!loading">
-                  <span class="font-italic">Cultura: </span> {{ data.name }} 
-                  <br>
-                  <span class="font-italic">Critério:</span> {{ data.type == 0 ? 'Valor e Quantidade' : (data.type == 1 ? 'Valor' : 'Quantidade') }}
+                  <span class="font-italic">Nome: </span> {{ data.name }}
                   <br>
                   <span class="font-italic">Data de Cadastro:</span> {{ formatDate(data.created_at) }}
                 </div>
@@ -62,8 +60,7 @@
           </v-hover>
           <v-hover>
             <template v-slot:default="{ isHovering, props }">
-              <v-btn v-bind="props" :color="color"
-                :variant="isHovering ? 'tonal' : 'elevated'" @click="deleteCrop()">
+              <v-btn v-bind="props" :color="color" :variant="isHovering ? 'tonal' : 'elevated'" @click="deleteItem()">
                 <span>Confirmar</span>
               </v-btn>
             </template>
@@ -82,19 +79,21 @@ const emit = defineEmits(['close', 'deleted'])
 const loading = ref(false)
 const props = defineProps({
   data: { type: Object, required: true },
+  data_name: { type: String, required: true },
   color: { type: String },
   icon: { type: String, required: true },
   img: { type: String },
   model: { type: Boolean, required: true },
 })
 
-async function deleteCrop() {
+async function deleteItem() {
   loading.value = true
-  api.delete('delete_crop/' + props.data.id).then((response) => {
+  api.delete('delete_' + props.data_name + '/' + props.data.id).then((response) => {
     emit('deleted', props.data.id)
     closeDialog()
   }).catch(error => {
     console.log(error)
+    snackbar.open({ preset: 'error' })
     closeDialog()
   })
 }

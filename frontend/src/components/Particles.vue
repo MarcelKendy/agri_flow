@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div id="particles">
+    <div>
+        <div id="particles">
             <vue-particles id="tsparticles" :particlesInit="particlesInit" :options="{
                 fpsLimit: 120,
                 interactivity: {
@@ -113,7 +113,7 @@
                 detectRetina: true
             }" />
         </div>
-  </div>
+    </div>
 </template>
 
 <script setup>
@@ -124,6 +124,4 @@ const particlesInit = async engine => {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -1,17 +1,84 @@
 <template>
     <div class="module-container">
         <v-card flat>
-            <v-card-title class="text-h5 font-weight-bold mb-4">
+            <v-card-title class="text-h5 font-weight-bold mb-4" :class="dark_theme ? 'text-shadow-black-2' : ''">
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
-                {{ title }}
+                <span class="mr-10">{{ title }}</span>
+                <v-btn @click="add_dialog = true" color="green" append-icon="mdi-plus" class="font-weight-bold"
+                    style="border-radius: 7px; border: solid 1px rgba(255, 255, 255, 0.4)">
+                    NOVO
+                </v-btn>
             </v-card-title>
-
-            <v-divider class="mb-4"></v-divider>
-
+            <v-divider :thickness="7" class="border-opacity-25 mb-4" color="green"></v-divider>
             <v-card-text>
-                <div class="content-section">
-                    <p>This is the {{ title }} module. Add your content here.</p>
-                </div>
+                <v-data-table class="mb-2 clickable-table" :sort-by="[
+                    // { key: 'id', order: 'asc' },
+                    // { key: 'name', order: 'asc' }
+                ]" :headers="headers" :items="items" :search="search" multi-sort fixed-header :items-per-page-options="[
+                    { value: 10, title: '10' },
+                    { value: 25, title: '25' },
+                    { value: 50, title: '50' },
+                    { value: 100, title: '100' },
+                    { value: -1, title: 'Tudo' }
+                ]" items-per-page="25" items-per-page-text="Itens por página:"
+                    :no-data-text="loading ? 'Carregando...' : 'Nenhum registro encontrado'">
+                    <template #item="{ item }">
+                        <tr :class="dark_theme ? 'table-row' : 'table-row-light'" @click="openEditDialog(item)">
+                            <td>
+                                <span :class="dark_theme ? 'text-shadow-black-1' : ''">
+                                    {{ item.name }}
+                                </span>
+                            </td>
+                            <td v-if="!smAndDown && item.category">
+                                <span :class="dark_theme ? 'text-shadow-black-1' : ''">
+                                    {{ item.category }}
+                                </span>
+                            </td>
+                            <td>
+                                <span :class="dark_theme ? 'text-shadow-black-1' : ''">
+                                    <v-chip :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L'
+                                    }}</v-chip>
+
+                                </span>
+                            </td>
+                            <td>
+                                <v-menu open-on-hover location="start">
+                                    <template #activator="{ props }">
+                                        <v-btn v-bind="props" variant="text" size="small" icon="mdi-dots-vertical"
+                                            @click.stop />
+                                    </template>
+                                    <div class="my-1 ml-1">
+                                        <v-hover v-if="false">
+                                            <template v-slot:default="{ isHovering, props }">
+                                                <v-btn class="hover-buttons" color="red" :disabled="auth.user.level < 1"
+                                                    :variant="isHovering ? 'outlined' : 'elevated'" v-bind="props" icon
+                                                    size="x-small" @click="openDeleteDialog(item)">
+                                                    <v-icon :color="isHovering ? 'red' : 'white'">mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-hover>
+                                        <v-hover>
+                                            <template v-slot:default="{ isHovering, props }">
+                                                <v-btn class="mx-1 hover-buttons" color="orange"
+                                                    :disabled="auth.user.level < 1"
+                                                    :variant="isHovering ? 'outlined' : 'elevated'" v-bind="props" icon
+                                                    size="x-small" @click="openEditDialog(item)">
+                                                    <v-icon :color="isHovering ? 'orange' : 'white'">mdi-pencil</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-hover>
+                                    </div>
+                                </v-menu>
+                            </td>
+                        </tr>
+                    </template>
+                </v-data-table>
+                <DialogAddProduct @new_register="pushNewItem" @close="add_dialog = false" :icon="icon"
+                    :model="add_dialog" color="rgb(90, 180, 80)" />
+                <DialogEditProduct @edited_register="editItem" @close="edit_dialog = false" :icon="icon"
+                    :data="edit_dialog_data" :model="edit_dialog" color="orange" />
+                <DialogDelete @deleted="popItem" @close="delete_dialog = false" :icon="icon" :data="delete_dialog_data"
+                    data_name="product" :model="delete_dialog" color="rgb(230, 60, 60)" />
             </v-card-text>
         </v-card>
     </div>
@@ -22,7 +89,10 @@
 import api from '@/plugins/axios.js';
 import { useAuthStore } from '@/stores/auth.js'
 import { ref, computed, reactive } from 'vue'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
+import DialogAddProduct from '@/components/dialogs/DialogAddProduct.vue'
+import DialogEditProduct from '@/components/dialogs/DialogEditProduct.vue'
+import DialogDelete from '@/components/dialogs/DialogDelete.vue'
 
 // Variables
 const props = defineProps({
@@ -30,16 +100,76 @@ const props = defineProps({
     icon: { type: String, required: true },
     color: { type: String, default: 'green' },
 })
+const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 const auth = useAuthStore()
+const items = ref([])
+const loading = ref(false)
+const search = ref('')
+const add_dialog = ref(false)
+const edit_dialog = ref(false)
+const delete_dialog = ref(false)
+const edit_dialog_data = reactive({})
+const delete_dialog_data = reactive({})
 
 // Computeds
+const headers = computed(() => {
+    if (smAndDown.value) {
+        return [
+            { title: 'Nome', key: 'name', width: '65%' },
+            { title: 'Unidade', key: 'unit', width: '15%' },
+            { title: 'Ações', key: 'actions', sortable: false, width: '20%' }
+        ]
+    }
+    return [
+        { title: 'Nome', key: 'name', width: '50%' },
+        { title: 'Categoria', key: 'category', width: '30%' },
+        { title: 'Unidade', key: 'unit', width: '10%' },
+        { title: 'Ações', key: 'actions', sortable: false, width: '10%' }
+    ]
+})
 
 // Created
+getItems()
 
 // Methods
-console.log(4)
+function getItems(attempt = 1) {
+    loading.value = true
+    api.get('get_products').then((response) => {
+        items.value = response.data
+        loading.value = false
+    }).catch((error) => {
+        console.log(error)
+        if (attempt <= 5) {
+            setTimeout(() => getItems(attempt + 1), 1000)
+        } else {
+            loading.value = false
+        }
+    })
+}
+
+function editItem(edited_item) {
+    items.value.splice(items.value.findIndex(item => item.id == edited_item.id), 1, edited_item)
+}
+
+function popItem(id) {
+    items.value = items.value.filter((item) => item.id != id)
+}
+
+function openEditDialog(item) {
+    Object.assign(edit_dialog_data, item)
+    edit_dialog.value = true
+}
+
+function openDeleteDialog(item) {
+    Object.assign(delete_dialog_data, item)
+    delete_dialog.value = true
+}
+
+function pushNewItem(item) {
+    items.value.unshift(item)
+}
 
 </script>
 
@@ -52,5 +182,23 @@ console.log(4)
     padding: 10px;
     border-radius: 6px;
     background: rgba(0, 0, 0, 0.05);
+}
+
+.clickable-table .table-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clickable-table .table-row:hover {
+    background-color: rgba(255, 255, 255, 0.075);
+}
+
+.clickable-table .table-row-light {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clickable-table .table-row-light:hover {
+    background-color: rgba(53, 53, 53, 0.06);
 }
 </style>
