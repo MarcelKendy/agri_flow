@@ -11,7 +11,7 @@
             </v-card-title>
             <v-divider :thickness="7" class="border-opacity-25 mb-4" color="green"></v-divider>
             <v-card-text>
-                <v-data-table class="mb-2 clickable-table" :sort-by="[
+                <v-data-table class="mb-2 clickable-table" :class="{ 'mobile-list-table': smAndDown }" :sort-by="[
                     // { key: 'id', order: 'asc' },
                     // { key: 'name', order: 'asc' }
                 ]" :headers="headers" :items="items" :search="search" multi-sort fixed-header :items-per-page-options="[
@@ -34,12 +34,10 @@
                                     {{ item.category }}
                                 </span>
                             </td>
-                            <td>
-                                <span :class="dark_theme ? 'text-shadow-black-1' : ''">
+                            <td class="item-meta">
+                                
                                     <v-chip :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L'
                                     }}</v-chip>
-
-                                </span>
                             </td>
                             <td v-if="!smAndDown">
                                 <v-menu open-on-hover location="start">
@@ -179,21 +177,5 @@ function pushNewItem(item) {
     background: rgba(0, 0, 0, 0.05);
 }
 
-.clickable-table .table-row {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
 
-.clickable-table .table-row:hover {
-    background-color: rgba(255, 255, 255, 0.075);
-}
-
-.clickable-table .table-row-light {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.clickable-table .table-row-light:hover {
-    background-color: rgba(53, 53, 53, 0.06);
-}
 </style>

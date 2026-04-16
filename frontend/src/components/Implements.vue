@@ -164,21 +164,5 @@ function pushNewItem(item) {
     background: rgba(0, 0, 0, 0.05);
 }
 
-.clickable-table .table-row {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
 
-.clickable-table .table-row:hover {
-    background-color: rgba(255, 255, 255, 0.075);
-}
-
-.clickable-table .table-row-light {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.clickable-table .table-row-light:hover {
-    background-color: rgba(53, 53, 53, 0.06);
-}
 </style>
