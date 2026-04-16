@@ -2,16 +2,27 @@
     <div>
         <div class="page-title-section"></div>
         <v-sheet elevation="1" style="background-color: rgba(0,0,0,0) !important;">
-            <v-tabs v-model="tab" class="tabs" color="green" grow :show-arrows="smAndDown">
+            <v-tabs v-model="tab" class="tabs" color="green" grow :show-arrows="true" :mobile="smAndDown"
+                :center-active="smAndDown">
+                <template #prev>
+                    <v-btn icon variant="text">
+                        <v-icon>mdi-chevron-left</v-icon>
+                    </v-btn>
+                </template>
+                <template #next>
+                    <v-btn icon variant="text">
+                       
+                    </v-btn>
+                </template>
                 <v-tab v-for="item in items" :key="item.id" :value="item.id" :prepend-icon="item.icon"
-                    style="border-radius: 10px; color: white">
+                    style="border-radius: 10px; color: white" :style="smAndDown ? 'font-size: 12px' : ''">
                     {{ item.title }}
                 </v-tab>
             </v-tabs>
             <v-tabs-window v-model="tab">
                 <v-tabs-window-item v-for="item in items" :key="item.id" :value="item.id">
                     <v-card style="background-color: rgba(0,0,0,0) !important;">
-                        <v-card-text>
+                        <v-card-text :style="smAndDown ? 'padding: 0px; padding-top: 30px' : ''">
                             <keep-alive>
                                 <component :is="item.componentInstance" :title="item.title" :icon="item.icon" />
                             </keep-alive>
@@ -61,7 +72,7 @@ const items = [
         title: 'Culturas',
         component: 'Crops',
         componentInstance: defineAsyncComponent(() => import('@/components/Crops.vue'))
-    },    
+    },
     {
         id: 4,
         icon: 'mdi-flask-outline',
@@ -100,7 +111,6 @@ const items = [
 
 <style>
 .page-title-section {
-    padding-top: 25px;
     margin: 5px;
     margin-top: 80px;
     position: relative;

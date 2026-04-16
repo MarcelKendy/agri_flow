@@ -1,5 +1,5 @@
 <template>
-    <div class="module-container">
+    <div>
         <v-card flat>
             <v-card-title class="text-h5 font-weight-bold mb-4">
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
@@ -44,10 +44,6 @@ const auth = useAuthStore()
 </script>
 
 <style scoped>
-.module-container {
-    padding: 20px;
-}
-
 .content-section {
     padding: 10px;
     border-radius: 6px;

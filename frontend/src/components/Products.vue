@@ -1,10 +1,10 @@
 <template>
-    <div class="module-container">
+    <div>
         <v-card flat>
             <v-card-title class="text-h5 font-weight-bold mb-4" :class="dark_theme ? 'text-shadow-black-2' : ''">
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
                 <span class="mr-10">{{ title }}</span>
-                <v-btn @click="add_dialog = true" color="green" append-icon="mdi-plus" class="font-weight-bold"
+                <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'small' : 'default'" append-icon="mdi-plus" class="font-weight-bold"
                     style="border-radius: 7px; border: solid 1px rgba(255, 255, 255, 0.4)">
                     NOVO
                 </v-btn>
@@ -41,7 +41,7 @@
 
                                 </span>
                             </td>
-                            <td>
+                            <td v-if="!smAndDown">
                                 <v-menu open-on-hover location="start">
                                     <template #activator="{ props }">
                                         <v-btn v-bind="props" variant="text" size="small" icon="mdi-dots-vertical"
@@ -117,9 +117,8 @@ const delete_dialog_data = reactive({})
 const headers = computed(() => {
     if (smAndDown.value) {
         return [
-            { title: 'Nome', key: 'name', width: '65%' },
-            { title: 'Unidade', key: 'unit', width: '15%' },
-            { title: 'Ações', key: 'actions', sortable: false, width: '20%' }
+            { title: 'Nome', key: 'name', width: '80%' },
+            { title: 'Unidade', key: 'unit', width: '20%' },
         ]
     }
     return [
@@ -174,10 +173,6 @@ function pushNewItem(item) {
 </script>
 
 <style scoped>
-.module-container {
-    padding: 20px;
-}
-
 .content-section {
     padding: 10px;
     border-radius: 6px;

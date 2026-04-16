@@ -7,8 +7,8 @@
         <v-img gradient="to bottom right, rgba(50, 100, 50, 0.4), rgba(20, 30, 30, 0.6)"></v-img>
       </template>
       <v-app-bar-nav-icon class="white" @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-img class="ma-2" style="max-width: 32px" src="media/icons/logo.png" />
-      <strong style="font-size: 20px" class="font-quicksand mx-2 mt-1 white">{{ 'Bem vindo(a), ' + auth.user.first_name
+      <v-img class="ma-1" style="max-width: 32px" src="media/icons/logo.png" />
+      <strong style="font-size: 20px" class="mx-2 mt-1 white">{{ 'Agri Flow'
       }}</strong>
       <v-tooltip location="bottom" content-class="tooltip-orange">
         <template v-slot:activator="{ props }">

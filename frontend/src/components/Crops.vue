@@ -1,10 +1,10 @@
 <template>
-    <div class="module-container">
+    <div>
         <v-card flat>
             <v-card-title class="text-h5 font-weight-bold mb-4" :class="dark_theme ? 'text-shadow-black-2' : ''">
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
                 <span class="mr-10">{{ title }}</span>
-                <v-btn @click="add_dialog = true" color="green" append-icon="mdi-plus" class="font-weight-bold"
+                <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'small' : 'default'" append-icon="mdi-plus" class="font-weight-bold"
                     style="border-radius: 7px; border: solid 1px rgba(255, 255, 255, 0.4)">
                     NOVO
                 </v-btn>
@@ -168,10 +168,6 @@ function pushNewItem(item) {
 </script>
 
 <style scoped>
-.module-container {
-    padding: 20px;
-}
-
 .content-section {
     padding: 10px;
     border-radius: 6px;
