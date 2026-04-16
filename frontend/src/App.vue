@@ -4,7 +4,7 @@
       dark :elevation="14" scroll-behavior="fade-image elevate" scroll-threshold="200"
       :height="appbar_density">
       <template v-slot:image>
-        <v-img gradient="to bottom right, rgba(50, 100, 50, 0.4), rgba(20, 30, 30, 0.6)"></v-img>
+        <v-img :gradient="dark_theme ? 'to bottom right, rgba(50, 100, 50, 0.4), rgba(40, 60, 80, 0.9)' : 'to bottom right, rgba(50, 100, 50, 0.9), rgba(20, 30, 30, 0.9)'"></v-img>
       </template>
       <v-app-bar-nav-icon class="white" @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-img class="ma-1" style="max-width: 32px" src="media/icons/logo.png" />

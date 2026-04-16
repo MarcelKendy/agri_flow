@@ -4,14 +4,32 @@
             <v-card-title class="text-h5 font-weight-bold mb-4" :class="dark_theme ? 'text-shadow-black-2' : ''">
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
                 <span class="mr-10">{{ title }}</span>
-                <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'small' : 'default'" append-icon="mdi-plus" class="font-weight-bold"
+                <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'small' : 'default'"
+                    append-icon="mdi-plus" class="font-weight-bold"
                     style="border-radius: 7px; border: solid 1px rgba(255, 255, 255, 0.4)">
                     NOVO
                 </v-btn>
             </v-card-title>
             <v-divider :thickness="7" class="border-opacity-25 mb-4" color="green"></v-divider>
             <v-card-text>
-                <v-data-table class="mb-2 clickable-table" :class="{ 'mobile-list-table': smAndDown }" :sort-by="[
+                <v-list v-if="smAndDown">
+                    <v-list-item v-for="item in items" :class="dark_theme ? 'list-item-dark' : 'list-item'">
+                        <v-list-item-title :class="dark_theme ? 'text-shadow-black-2' : ''">
+                            <v-row class="align-center">
+                                <v-col cols="9">
+                                    <strong>{{ item.name }}</strong>
+                                </v-col>
+                                <v-col cols="3">
+                                    <v-chip :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L' }}</v-chip>
+                                </v-col>
+                            </v-row>
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                            {{ item.category }}
+                        </v-list-item-subtitle>
+                    </v-list-item>
+                </v-list>
+                <v-data-table v-else class="mb-2 clickable-table" :sort-by="[
                     // { key: 'id', order: 'asc' },
                     // { key: 'name', order: 'asc' }
                 ]" :headers="headers" :items="items" :search="search" multi-sort fixed-header :items-per-page-options="[
@@ -34,9 +52,8 @@
                                     {{ item.category }}
                                 </span>
                             </td>
-                            <td class="item-meta">
-                                
-                                    <v-chip :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L'
+                            <td>
+                                <v-chip :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L'
                                     }}</v-chip>
                             </td>
                             <td v-if="!smAndDown">
@@ -176,6 +193,4 @@ function pushNewItem(item) {
     border-radius: 6px;
     background: rgba(0, 0, 0, 0.05);
 }
-
-
 </style>
