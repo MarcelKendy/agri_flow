@@ -44,7 +44,7 @@
                                             @click.stop />
                                     </template>
                                     <div class="my-1 ml-1">
-                                        <v-hover v-if="true">
+                                        <v-hover v-if="false">
                                             <template v-slot:default="{ isHovering, props }">
                                                 <v-btn class="hover-buttons" color="red" :disabled="auth.user.level < 1"
                                                     :variant="isHovering ? 'outlined' : 'elevated'" v-bind="props" icon
