@@ -401,7 +401,7 @@ function setTheme() {
 }
 
 .background-light {
-  background: linear-gradient(280deg, rgb(255, 244, 213) 0%, rgb(206, 225, 236) 100%);
+  background: linear-gradient(280deg, rgb(238, 253, 225) 0%, rgb(206, 225, 236) 100%);
 }
 
 .page-title-section {

@@ -117,10 +117,9 @@
 
 .list-item {
     background-color: rgba(219, 219, 219, 0.603);
-    padding: 20px;
-    margin: 10px;
-    margin-bottom: 25px;
-    box-shadow: rgba(0, 0, 0, 0.075) 0px 2px 4px, rgba(0, 0, 0, 0.658) 0px 7px 13px -3px, rgb(180, 180, 180) 0px -3px 0px inset;
+    padding: 20px;    
+    margin-bottom: 20px;
+    box-shadow: rgba(0, 0, 0, 0.075) 0px 2px 2px, rgba(0, 0, 0, 0.658) 0px 5px 4px -3px, rgb(180, 180, 180) 0px -3px 0px inset;
     border: 3px solid rgba(255, 255, 255, 0.568);
     border-radius: 10px;
     transition: 0.3s;

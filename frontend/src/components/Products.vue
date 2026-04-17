@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-card flat>
-            <v-card-title class="text-h5 font-weight-bold mb-4" :class="dark_theme ? 'text-shadow-black-2' : ''">
+        <v-card flat style="background-color: rgba(0, 0, 0, 0)">
+            <v-card-title class="text-h5 font-weight-bold" :class="dark_theme ? 'text-shadow-black-2' : ''" :style="smAndDown ? (dark_theme ? 'background-color: rgba(90, 90, 90, 0.2)' : 'background-color: rgba(150, 150, 150, 0.2)') : ''">
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
                 <span class="mr-10">{{ title }}</span>
                 <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'small' : 'default'"
@@ -17,8 +17,8 @@
                             density="compact" clearable color="green" />
                     </v-col>
                 </v-row>
-                <v-list v-if="smAndDown">
-                    <v-alert v-if="!items.length || !paginated_items.length" icon="mdi-information" border="bottom" class="mb-2">
+                <v-list v-if="smAndDown" style="background-color: rgba(0, 0, 0, 0);">
+                    <v-alert v-if="!items.length || !paginated_items.length" icon="mdi-information" border="bottom" class="mb-2" :color="dark_theme ? 'rgba(50, 50, 50, 0.6)' : 'rgba(250, 250, 250, 0.8)'">
                         {{ !items.length ? 'Lista vazia, inclua um item clicando no botão "Novo" acima' : ('Não há dados para o filtro "' + search_field + '"') }}
                     </v-alert>
                     <v-list-item v-for="item in paginated_items" :key="item.id"
@@ -45,7 +45,7 @@
                                 rounded="circle"></v-pagination>
                         </v-col>
                         <v-col cols="8">
-                            <v-select label="Itens por página:" color="green" :items="[2, 5, 10, 15, 50, 'Todos']"
+                            <v-select label="Itens por página:" color="green" :items="[5, 10, 15, 50, 'Todos']"
                                 variant="solo-filled" v-model="items_per_page"></v-select>
                         </v-col>
                     </v-row>
