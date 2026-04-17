@@ -11,16 +11,27 @@
             </v-card-title>
             <v-divider :thickness="7" class="border-opacity-25 mb-4" color="green"></v-divider>
             <v-card-text>
+                <v-row v-if="smAndDown" class="align-center">
+                    <v-col cols="12">
+                        <v-text-field v-model="search_field" label="Buscar" prepend-inner-icon="mdi-magnify"
+                            density="compact" clearable color="green" />
+                    </v-col>
+                </v-row>
                 <v-list v-if="smAndDown">
-                    <v-list-item v-for="item in items" :class="dark_theme ? 'list-item-dark' : 'list-item'">
+                    <v-alert v-if="!items.length || !paginated_items.length" icon="mdi-information" border="bottom" class="mb-2">
+                        {{ !items.length ? 'Lista vazia, inclua um item clicando no botão "Novo" acima' : ('Não há dados para o filtro "' + search_field + '"') }}
+                    </v-alert>
+                    <v-list-item v-for="item in paginated_items" :key="item.id"
+                        :class="dark_theme ? 'list-item-dark' : 'list-item'" @click="openEditDialog(item)">
                         <v-list-item-title :class="dark_theme ? 'text-shadow-black-2' : ''">
                             <v-row class="align-center">
                                 <v-col cols="9">
                                     <strong>{{ item.name }}</strong>
                                 </v-col>
-                                <v-col cols="3" class="">
-                                    <v-chip size="small" :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L'
-                                    }}</v-chip>
+                                <v-col cols="3">
+                                    <v-chip size="small" :color="item.unit == 0 ? 'teal' : 'blue'">
+                                        {{ item.unit == 0 ? 'KG' : 'L' }}
+                                    </v-chip>
                                 </v-col>
                             </v-row>
                         </v-list-item-title>
@@ -28,18 +39,19 @@
                             {{ item.category }}
                         </v-list-item-subtitle>
                     </v-list-item>
+                    <v-row class="align-center pt-3" v-if="smAndDown && !loading && paginated_items.length > 0">
+                        <v-col cols="12">
+                            <v-pagination v-model="current_page" :length="total_pages" :total-visible="5"
+                                rounded="circle"></v-pagination>
+                        </v-col>
+                        <v-col cols="8">
+                            <v-select label="Itens por página:" color="green" :items="[2, 5, 10, 15, 50, 'Todos']"
+                                variant="solo-filled" v-model="items_per_page"></v-select>
+                        </v-col>
+                    </v-row>
                 </v-list>
-                <v-data-table v-else class="mb-2 clickable-table" :sort-by="[
-                    // { key: 'id', order: 'asc' },
-                    // { key: 'name', order: 'asc' }
-                ]" :headers="headers" :items="items" :search="search" multi-sort fixed-header :items-per-page-options="[
-                    { value: 10, title: '10' },
-                    { value: 25, title: '25' },
-                    { value: 50, title: '50' },
-                    { value: 100, title: '100' },
-                    { value: -1, title: 'Tudo' }
-                ]" items-per-page="25" items-per-page-text="Itens por página:"
-                    :no-data-text="loading ? 'Carregando...' : 'Nenhum registro encontrado'">
+                <v-data-table v-else class="mb-2 clickable-table" :headers="headers" :items="paginated_items"
+                    fixed-header :no-data-text="loading ? 'Carregando...' : 'Nenhum registro encontrado'">
                     <template #item="{ item }">
                         <tr :class="dark_theme ? 'table-row' : 'table-row-light'" @click="openEditDialog(item)">
                             <td>
@@ -47,40 +59,27 @@
                                     {{ item.name }}
                                 </span>
                             </td>
-                            <td v-if="!smAndDown && item.category">
+                            <td>
                                 <span :class="dark_theme ? 'text-shadow-black-1' : ''">
                                     {{ item.category }}
                                 </span>
                             </td>
                             <td>
-                                <v-chip :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L' }}</v-chip>
+                                <v-chip :color="item.unit == 0 ? 'teal' : 'blue'">
+                                    {{ item.unit == 0 ? 'KG' : 'L' }}
+                                </v-chip>
                             </td>
-                            <td v-if="!smAndDown">
+                            <td>
                                 <v-menu open-on-hover location="start">
                                     <template #activator="{ props }">
                                         <v-btn v-bind="props" variant="text" size="small" icon="mdi-dots-vertical"
                                             @click.stop />
                                     </template>
                                     <div class="my-1 ml-1">
-                                        <v-hover v-if="false">
-                                            <template v-slot:default="{ isHovering, props }">
-                                                <v-btn class="hover-buttons" color="red" :disabled="auth.user.level < 1"
-                                                    :variant="isHovering ? 'outlined' : 'elevated'" v-bind="props" icon
-                                                    size="x-small" @click="openDeleteDialog(item)">
-                                                    <v-icon :color="isHovering ? 'red' : 'white'">mdi-delete</v-icon>
-                                                </v-btn>
-                                            </template>
-                                        </v-hover>
-                                        <v-hover>
-                                            <template v-slot:default="{ isHovering, props }">
-                                                <v-btn class="mx-1 hover-buttons" color="orange"
-                                                    :disabled="auth.user.level < 1"
-                                                    :variant="isHovering ? 'outlined' : 'elevated'" v-bind="props" icon
-                                                    size="x-small" @click="openEditDialog(item)">
-                                                    <v-icon :color="isHovering ? 'orange' : 'white'">mdi-pencil</v-icon>
-                                                </v-btn>
-                                            </template>
-                                        </v-hover>
+                                        <v-btn class="mx-1 hover-buttons" color="orange" variant="elevated" icon
+                                            size="x-small" @click="openEditDialog(item)">
+                                            <v-icon>mdi-pencil</v-icon>
+                                        </v-btn>
                                     </div>
                                 </v-menu>
                             </td>
@@ -100,9 +99,9 @@
 
 <script setup>
 // Imports
-import api from '@/plugins/axios.js';
+import api from '@/plugins/axios.js'
 import { useAuthStore } from '@/stores/auth.js'
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import { useTheme, useDisplay } from 'vuetify'
 import DialogAddProduct from '@/components/dialogs/DialogAddProduct.vue'
 import DialogEditProduct from '@/components/dialogs/DialogEditProduct.vue'
@@ -120,54 +119,119 @@ const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 const auth = useAuthStore()
 const items = ref([])
 const loading = ref(false)
-const search = ref('')
+const search_field = ref('')
+const current_page = ref(1)
+const items_per_page = ref(10)
 const add_dialog = ref(false)
 const edit_dialog = ref(false)
 const delete_dialog = ref(false)
 const edit_dialog_data = reactive({})
 const delete_dialog_data = reactive({})
-
-// Computeds
-const headers = computed(() => {
-    if (smAndDown.value) {
-        return [
-            { title: 'Nome', key: 'name', width: '80%' },
-            { title: 'Unidade', key: 'unit', width: '20%' },
-        ]
+const headers = [
+    { title: 'Nome', key: 'name', width: '50%' },
+    { title: 'Categoria', key: 'category', width: '30%' },
+    { title: 'Unidade', key: 'unit', width: '10%' },
+    { title: 'Ações', key: 'actions', sortable: false, width: '10%' }
+]
+const searchable_fields = [
+    {
+        key: 'name'
+    },
+    {
+        key: 'category'
+    },
+    {
+        key: 'unit',
+        map: {
+            '0': 'kg quilo quilograma',
+            '1': 'l litro'
+        }
     }
-    return [
-        { title: 'Nome', key: 'name', width: '50%' },
-        { title: 'Categoria', key: 'category', width: '30%' },
-        { title: 'Unidade', key: 'unit', width: '10%' },
-        { title: 'Ações', key: 'actions', sortable: false, width: '10%' }
-    ]
-})
+]
 
 // Created
 getItems()
 
+// Computeds
+const filtered_items = computed(() => {
+    current_page.value = 1
+    if (!search_field.value || search_field.value.length === 0) {
+        return items.value
+    }
+    const search = search_field.value.toLowerCase().trim()
+    return items.value.filter(item => {
+        return searchable_fields.some(field => {
+            if (!(field.key in item)) {
+                return false
+            }
+            const raw_value = item[field.key]
+            if (raw_value === null || raw_value === undefined) {
+                return false
+            }
+            if (field.map) {
+                const mapped_value = field.map[raw_value]
+                if (!mapped_value) return false
+                return mapped_value
+                    .toLowerCase()
+                    .split(' ')
+                    .some(word => word.startsWith(search))
+            }
+            return String(raw_value)
+                .toLowerCase()
+                .includes(search)
+        })
+    })
+})
+
+const paginated_items = computed(() => {
+    if (items_per_page.value === 'Todos') {
+        return filtered_items.value
+    }
+    const start = (current_page.value - 1) * items_per_page.value
+    const end = start + items_per_page.value
+    return filtered_items.value.slice(start, end)
+})
+
+const total_pages = computed(() => {
+    if (items_per_page.value === 'Todos') {
+        return 1
+    }
+    return Math.ceil(filtered_items.value.length / items_per_page.value)
+})
+
+// Watchers
+watch(items_per_page, () => {
+    current_page.value = 1
+})
+
 // Methods
 function getItems(attempt = 1) {
     loading.value = true
-    api.get('get_products').then((response) => {
-        items.value = response.data
-        loading.value = false
-    }).catch((error) => {
-        console.log(error)
-        if (attempt <= 5) {
-            setTimeout(() => getItems(attempt + 1), 1000)
-        } else {
+    api.get('get_products')
+        .then(response => {
+            items.value = response.data
             loading.value = false
-        }
-    })
+        })
+        .catch(error => {
+            console.log(error)
+            if (attempt <= 5) {
+                setTimeout(() => getItems(attempt + 1), 1000)
+            } else {
+                loading.value = false
+            }
+        })
 }
 
 function editItem(edited_item) {
-    items.value.splice(items.value.findIndex(item => item.id == edited_item.id), 1, edited_item)
+    items.value.splice(
+        items.value.findIndex(item => item.id == edited_item.id),
+        1,
+        edited_item
+    )
 }
 
 function popItem(id) {
-    items.value = items.value.filter((item) => item.id != id)
+    items.value = items.value.filter(item => item.id != id)
 }
 
 function openEditDialog(item) {
@@ -183,13 +247,4 @@ function openDeleteDialog(item) {
 function pushNewItem(item) {
     items.value.unshift(item)
 }
-
 </script>
-
-<style scoped>
-.content-section {
-    padding: 10px;
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.05);
-}
-</style>
