@@ -5,8 +5,7 @@
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
                 <span class="mr-10">{{ title }}</span>
                 <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'small' : 'default'"
-                    append-icon="mdi-plus" class="font-weight-bold"
-                    style="border-radius: 7px; border: solid 1px rgba(255, 255, 255, 0.4)">
+                    append-icon="mdi-plus" class="font-weight-bold new-button">
                     NOVO
                 </v-btn>
             </v-card-title>
@@ -19,8 +18,9 @@
                                 <v-col cols="9">
                                     <strong>{{ item.name }}</strong>
                                 </v-col>
-                                <v-col cols="3">
-                                    <v-chip :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L' }}</v-chip>
+                                <v-col cols="3" class="">
+                                    <v-chip size="small" :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L'
+                                    }}</v-chip>
                                 </v-col>
                             </v-row>
                         </v-list-item-title>
@@ -53,8 +53,7 @@
                                 </span>
                             </td>
                             <td>
-                                <v-chip :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L'
-                                    }}</v-chip>
+                                <v-chip :color="item.unit == 0 ? 'teal' : 'blue'">{{ item.unit == 0 ? 'KG' : 'L' }}</v-chip>
                             </td>
                             <td v-if="!smAndDown">
                                 <v-menu open-on-hover location="start">

@@ -1,18 +1,18 @@
 <template>
     <div>
         <div class="page-title-section"></div>
-        <v-sheet elevation="1" style="background-color: rgba(0,0,0,0) !important;">
-            <v-tabs v-model="tab" class="tabs" color="green" grow :show-arrows="smAndDown" :mobile="smAndDown"
+        <v-sheet elevation="1" :class="smAndDown ? 'mx-5' : ''">
+            <v-tabs v-model="tab" :class="dark_theme ? 'tabs-dark' : 'tabs-light'" color="green" grow :show-arrows="smAndDown" :mobile="smAndDown"
                 :center-active="smAndDown">                
                 <v-tab v-for="item in items" :key="item.id" :value="item.id" :prepend-icon="item.icon"
-                    style="border-radius: 10px; color: white" :style="smAndDown ? 'font-size: 12px' : ''">
+                    style="border-radius: 10px;" :style="smAndDown ? 'font-size: 12px' : ''">
                     {{ item.title }}
                 </v-tab>
             </v-tabs>
             <v-tabs-window v-model="tab">
                 <v-tabs-window-item v-for="item in items" :key="item.id" :value="item.id">
                     <v-card style="background-color: rgba(0,0,0,0) !important;">
-                        <v-card-text :style="smAndDown ? 'padding: 0px; padding-top: 30px' : ''">
+                        <v-card-text :style="smAndDown ? ' padding: 0px; padding-top: 10px;' : ''">
                             <keep-alive>
                                 <component :is="item.componentInstance" :title="item.title" :icon="item.icon" />
                             </keep-alive>
@@ -106,8 +106,13 @@ const items = [
     position: relative;
 }
 
-.tabs {
-    background-color: rgba(62, 83, 74, 0.502);
+.tabs-dark {
+    background-color: rgba(52, 66, 56, 0.507);
+    border-radius: 6px;
+}
+
+.tabs-light {
+    background-color: rgba(243, 255, 216, 0.979);
     border-radius: 6px;
 }
 

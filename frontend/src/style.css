@@ -31,7 +31,7 @@
     transform: scale(1.1);
     background-color: white !important;
     color: rgb(64, 184, 59) !important;
-  }
+}
 
 .custom-toolbar-dark {
     /*background-image: url('media/images/backgrounds/transparentbg.png');*/
@@ -101,31 +101,36 @@
 }
 
 .list-item-dark {
-    background-color: rgb(33, 34, 36);
-    padding: 10px;
+    background-color: rgba(29, 29, 29, 0.603);
+    padding: 20px;
     margin: 10px;
-    box-shadow: rgb(0, 0, 0) 0px 2px 4px, rgb(0, 0, 0) 0px 7px 13px -3px, rgba(0, 0, 0, 0.39) 0px -3px 0px inset;
+    margin-bottom: 25px;
+    box-shadow: rgba(0, 0, 0, 0.075) 0px 2px 4px, rgba(0, 0, 0, 0.658) 0px 7px 13px -3px, rgba(0, 0, 0, 0.212) 0px -3px 0px inset;
+    border: 3px solid rgba(63, 63, 63, 0.623);
+    border-radius: 10px;
     transition: 0.3s;
 }
 
 .list-item-dark:hover {
     transform: scale(0.99);
-    box-shadow: rgb(20, 20, 20) 0px 2px 4px, rgb(58, 58, 58) 0px 7px 13px -3px, #008f8f 6px 0px 0px inset;
+    box-shadow: rgb(20, 20, 20) 0px 2px 4px, rgb(58, 58, 58) 0px 7px 13px -3px, #44c944a9 4px 0px 0px inset;
 }
 
 .list-item {
-    background-color: rgb(204, 228, 231) !important;
-    padding: 10px !important;
-    margin: 10px !important;
-    box-shadow: rgba(0, 0, 0, 0.753) 0px 2px 4px, rgba(0, 0, 0, 0.658) 0px 7px 13px -3px, rgba(0, 0, 0, 0.233) 0px -3px 0px inset !important;
-    transition: 0.3s !important;
+    background-color: rgba(219, 219, 219, 0.603);
+    padding: 20px;
+    margin: 10px;
+    margin-bottom: 25px;
+    box-shadow: rgba(0, 0, 0, 0.075) 0px 2px 4px, rgba(0, 0, 0, 0.658) 0px 7px 13px -3px, rgb(180, 180, 180) 0px -3px 0px inset;
+    border: 3px solid rgba(255, 255, 255, 0.568);
+    border-radius: 10px;
+    transition: 0.3s;
 }
 
 .list-item:hover {
-    transform: scale(0.99) !important;
-    box-shadow: rgb(20, 20, 20) 0px 2px 4px, rgb(58, 58, 58) 0px 7px 13px -3px, #008f8f 6px 0px 0px inset !important;
+    transform: scale(0.99);
+    box-shadow: rgb(99, 99, 99) 0px 2px 4px, rgb(58, 58, 58) 0px 7px 13px -3px, #44c944a9 4px 0px 0px inset;
 }
-
 
 .bold {
     font-weight: bold !important;
@@ -138,6 +143,7 @@
 .white-bg {
     background: rgba(223, 223, 223, 0.9) !important;
 }
+
 .green {
     color: green !important;
 }
@@ -185,21 +191,21 @@
 .tooltip-yellow {
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
     color: rgb(51, 51, 51) !important;
-    background: rgb(255,235,59) !important;
+    background: rgb(255, 235, 59) !important;
     font-weight: bold !important;
 }
 
 .tooltip-orange {
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
     color: rgb(34, 34, 34) !important;
-    background: rgb(255,152,0) !important;
+    background: rgb(255, 152, 0) !important;
     font-weight: bold !important;
 }
 
 .tooltip-red {
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
     color: rgb(255, 255, 255) !important;
-    background: rgb(244,67,54) !important;
+    background: rgb(244, 67, 54) !important;
     font-weight: bold !important;
 }
 
@@ -236,17 +242,17 @@
 }
 
 .card-header-sticky {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: rgb(var(--v-theme-surface));
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: rgb(var(--v-theme-surface));
 }
 
 .card-actions-sticky {
-  position: sticky;
-  bottom: 0;
-  z-index: 2;
-  background: rgb(var(--v-theme-surface));
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    background: rgb(var(--v-theme-surface));
 }
 
 .clickable-table .table-row {
@@ -265,4 +271,10 @@
 
 .clickable-table .table-row-light:hover {
     background-color: rgba(53, 53, 53, 0.06);
+}
+
+.new-button {
+    border-radius: 7px;
+    border: solid 1px rgba(255, 255, 255, 0.4);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -2px 0px inset;
 }
