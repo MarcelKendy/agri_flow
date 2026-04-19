@@ -8,25 +8,25 @@
         <div class="card-header-sticky">
           <v-card-title class="mt-1">
             <v-row>
-              <v-col cols="11">
+              <v-col cols="10">
                 <v-row>
                   <v-col :cols="smAndDown ? 2 : 1">
                     <v-img v-if="img" width="32" :src="'media/icons/' + img" />
                     <v-icon v-else :color="color">{{ icon }}</v-icon>
                   </v-col>
                   <v-col :cols="smAndDown ? 10 : 11">
-                    <span :style="{ color }">{{ loading ? 'Adicionando Implemento' : 'Adicionar Implemento' }}</span>
+                    <span :style="{ color }">{{ (loading ? 'Adicionando ' : 'Adicionar ') + translation.pt_upper }}</span>
                   </v-col>
                 </v-row>
               </v-col>
-              <v-col cols="1">
-                <v-img width="32" src="media/icons/logo.png" />
+              <v-col cols="2" class="align-center">
+                <v-img height="48" src="media/icons/logo.png" />
               </v-col>
             </v-row>
           </v-card-title>
           <v-card-subtitle class="mb-3">
             <span v-if="loading">Aguarde...</span>
-            <span v-else>Defina um novo implemento</span>
+            <span v-else>Preencha os campos atentamente</span>
           </v-card-subtitle>
           <v-divider />
         </div>
@@ -64,6 +64,7 @@ import { useTheme, useDisplay } from 'vuetify'
 import { useSnackbarStore } from '@/stores/snackbar'
 
 // Variables
+const translation = { pt_upper: 'Implemento', pt_lower: 'implemento', table: 'implements', model: 'Implement', api: 'implement' }
 const snackbar = useSnackbarStore()
 const emit = defineEmits(['close', 'new_register'])
 const props = defineProps({
@@ -91,7 +92,7 @@ async function addItem() {
   const { valid } = await form.value.validate()
   if (!valid) return
   loading.value = true
-  api.post('add_implement', item).then(res => {
+  api.post('add_' + translation.api, item).then(res => {
     emit('new_register', res.data)
     closeDialog()
   }).catch((error) => {

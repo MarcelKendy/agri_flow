@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class FieldRecord extends Model
 {
     protected $fillable = [
-        'identifier',
         'service',
         'date',
         'planting_id',
@@ -15,11 +14,12 @@ class FieldRecord extends Model
         'implement_id',
         'product_id',
         'dosage',
-        'notes'
+        'notes',
+        'status'
     ];
 
     public function planting() {
-        return $this->belongsTo(Planting::class);
+        return $this->belongsTo(Planting::class)->with(['crop', 'pivot']);
     }
 
     public function tractor() {

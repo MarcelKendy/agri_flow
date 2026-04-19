@@ -8,33 +8,33 @@
         <div class="card-header-sticky">
           <v-card-title class="mt-1">
             <v-row>
-              <v-col cols="11">
+              <v-col cols="10">
                 <v-row>
                   <v-col :cols="smAndDown ? 2 : 1">
                     <v-img v-if="img" width="32" :src="'media/icons/' + img" />
                     <v-icon v-else :color="color">{{ icon }}</v-icon>
                   </v-col>
                   <v-col :cols="smAndDown ? 10 : 11">
-                    <span :style="{ color }">{{ loading ? 'Adicionando Cultura' : 'Adicionar Cultura' }}</span>
+                    <span :style="{ color }">{{ (loading ? 'Adicionando ' : 'Adicionar ') + translation.pt_upper }}</span>
                   </v-col>
                 </v-row>
               </v-col>
-              <v-col cols="1">
-                <v-img width="32" src="media/icons/logo.png" />
+              <v-col cols="2" class="align-center">
+                <v-img height="48" src="media/icons/logo.png" />
               </v-col>
             </v-row>
           </v-card-title>
           <v-card-subtitle class="mb-3">
             <span v-if="loading">Aguarde...</span>
-            <span v-else>Defina uma nova cultura</span>
+            <span v-else>Preencha os campos atentamente</span>
           </v-card-subtitle>
           <v-divider />
         </div>
         <v-card-text>
-          <v-form ref="form" @submit.prevent="addCrop">
+          <v-form ref="form" @submit.prevent="addItem">
             <v-row>
               <v-col cols="12">
-                <v-text-field @keyup.enter="addCrop()" :disabled="loading" v-model="item.name" label="Nome" clearable
+                <v-text-field @keyup.enter="addItem()" :disabled="loading" v-model="item.name" label="Nome" clearable
                   :color="color" :rules="getRules({ required: true, minlen: { val: 3 } })" />
               </v-col>
               <v-col cols="12">
@@ -70,7 +70,7 @@
             <v-btn :disabled="loading" color="red" variant="outlined" @click="closeDialog">
               Cancelar
             </v-btn>
-            <v-btn :loading="loading" :disabled="loading" :color="color" @click="addCrop">
+            <v-btn :loading="loading" :disabled="loading" :color="color" @click="addItem">
               Confirmar
             </v-btn>
           </v-card-actions>
@@ -87,6 +87,7 @@ import { useTheme, useDisplay } from 'vuetify'
 import { useSnackbarStore } from '@/stores/snackbar'
 
 // Variables
+const translation = { pt_upper: 'Cultura', pt_lower: 'cultura', table: 'crops', model: 'Crop', api: 'crop' }
 const snackbar = useSnackbarStore()
 const emit = defineEmits(['close', 'new_register'])
 const props = defineProps({
@@ -140,7 +141,7 @@ function syncModel() {
   item.varieties = varieties_array.value.join(';')
 }
 
-async function addCrop() {
+async function addItem() {
   const { valid } = await form.value.validate()
   if (!varieties_array.value.length) {
     varieties_error.value = true
@@ -148,7 +149,7 @@ async function addCrop() {
   }
   if (!valid) return
   loading.value = true
-  api.post('add_crop', item).then(res => {
+  api.post('add_' + translation.api, item).then(res => {
     emit('new_register', res.data)
     closeDialog()
   }).catch((error) => {

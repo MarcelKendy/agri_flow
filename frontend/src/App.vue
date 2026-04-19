@@ -4,10 +4,10 @@
       dark :elevation="14" scroll-behavior="fade-image elevate" scroll-threshold="200"
       :height="appbar_density">
       <template v-slot:image>
-        <v-img :gradient="dark_theme ? 'to bottom right, rgba(50, 100, 50, 0.4), rgba(40, 60, 80, 0.9)' : 'to bottom right, rgba(50, 100, 50, 0.9), rgba(20, 30, 30, 0.9)'"></v-img>
+        <v-img :gradient="dark_theme ? 'to bottom right, rgba(8, 100, 100, 0.2), rgba(80, 160, 50, 0.4)' : 'to bottom right, rgba(50, 100, 50, 0.9), rgba(20, 30, 30, 0.9)'"></v-img>
       </template>
       <v-app-bar-nav-icon class="white" @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-img class="ma-1" style="max-width: 32px" src="media/icons/logo.png" />
+      <v-img class="ma-1" style="max-width: 64px" src="media/icons/logo.png" />
       <strong style="font-size: 20px" class="mx-2 mt-1 white">{{ 'Agri Flow'
       }}</strong>
       <v-tooltip location="bottom" content-class="tooltip-orange">
@@ -262,7 +262,7 @@ const auth_computed = computed(() => auth?.user?.configs)
 //Watchers
 watch(auth_computed, (v) => {
   if (v == undefined || !v.hasOwnProperty('theme')) return
-  use_theme.global.name.value = v.theme == 0 ? 'customLight' : 'customDark'
+  use_theme.change(v.theme == 0 ? 'customLight' : 'customDark')
   dark_theme_model.value = v.theme != 0
   checkPasswordResetExpire()
 })
@@ -272,7 +272,7 @@ watch(dark_theme_model, (v) => {
   if (!auth.user.id) return
   update_user_theme.value = false
   loading_theme.value = true
-  use_theme.global.name.value = (v ? 'customDark' : 'customLight')
+  use_theme.change(v ? 'customLight' : 'customDark')
   api.put('edit_user/' + auth.user.id, { configs: { theme: (v ? 1 : 0) } }).then((response) => {
     auth.setUser(response.data)
     loading_theme.value = false
@@ -349,7 +349,7 @@ function logout() {
 function setTheme() {
   if (auth_computed.value == undefined || !auth_computed.value.hasOwnProperty('theme')) return
   dark_theme_model.value = auth_computed.value.theme != 0
-  use_theme.global.name.value = auth_computed.value.theme == 0 ? 'customLight' : 'customDark'
+  use_theme.change(auth_computed.value.theme == 0 ? 'customLight' : 'customDark')
 }
 
 </script>

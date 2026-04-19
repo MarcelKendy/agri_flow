@@ -12,9 +12,9 @@
             </v-card-title>
             <v-divider :thickness="7" class="border-opacity-25 mb-4" color="green"></v-divider>
             <v-card-text>
-                <v-row v-if="smAndDown" class="align-center">
+                <v-row v-if="smAndDown && items.length" class="align-center">
                     <v-col cols="12">
-                        <v-text-field v-model="search_field" label="Buscar" prepend-inner-icon="mdi-magnify"
+                        <v-text-field v-model="search_field" :label="'Busca avançada em ' + items.length + ' registro(s)'" prepend-inner-icon="mdi-magnify"
                             density="compact" clearable color="green" />
                     </v-col>
                 </v-row>
@@ -44,9 +44,9 @@
                             <v-pagination v-model="current_page" :length="total_pages" :total-visible="5"
                                 rounded="circle"></v-pagination>
                         </v-col>
-                        <v-col cols="8">
-                            <v-select label="Itens por página:" color="green" :items="[5, 10, 15, 50, 'Todos']"
-                                variant="solo-filled" v-model="items_per_page"></v-select>
+                        <v-col cols="12" class="align-end">
+                            <v-select label="Itens por página:" color="green" density="compact" :items="[5, 10, 15, 50, 'Todos']" style="max-width: 130px;"
+                                variant="outlined" v-model="items_per_page"></v-select>
                         </v-col>
                     </v-row>
                 </v-list>

@@ -232,7 +232,7 @@ import CryptoJS from 'crypto-js'
 const route = useRoute()
 const { smAndDown } = useDisplay()
 const use_theme = useTheme()
-use_theme.global.name.value = 'customDark'
+use_theme.change('customDark')
 const form0 = ref(null)
 const form1 = ref(null)
 const form2 = ref(null)

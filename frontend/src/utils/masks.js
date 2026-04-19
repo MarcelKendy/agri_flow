@@ -65,5 +65,28 @@ function percentageMask(object, key) {
   return object[key]
 }
 
+function dateMask(object, key = 'date') {
+  let value = object[key]
+  if (value === null || value === undefined) {
+    object[key] = ''
+    return
+  }
+  value = value.toString().replace(/[^\d]/g, '')
+  if (!value) {
+    object[key] = ''
+    return
+  }
+  if (value.length > 2) {
+    value = value.slice(0, 2) + '/' + value.slice(2)
+  }
+  if (value.length > 5) {
+    value = value.slice(0, 5) + '/' + value.slice(5)
+  }
+  if (value.length > 10) {
+    value = value.slice(0, 10)
+  }
+  object[key] = value
+  return object[key]
+}
 
-export { moneyMask, moneyMaskRaw, nameMask, nameMaskRaw, percentageMask }
+export { moneyMask, moneyMaskRaw, nameMask, nameMaskRaw, percentageMask, dateMask }

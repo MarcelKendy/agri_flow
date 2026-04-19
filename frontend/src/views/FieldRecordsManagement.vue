@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="page-title-section"></div>
-        <v-sheet :elevation="smAndDown ? 0 : 1" :class="smAndDown ? 'mx-5' : ''" style="background-color: rgba(0, 0, 0, 0);">
+        <v-sheet :elevation="smAndDown ? 0 : 1" :class="smAndDown ? 'mx-2' : ''" style="background-color: rgba(0, 0, 0, 0);">
             <v-tabs v-model="tab" :class="dark_theme ? 'tabs-dark' : 'tabs-light'" color="green" grow :show-arrows="smAndDown" :mobile="smAndDown"
                 :center-active="smAndDown">                
                 <v-tab v-for="item in items" :key="item.id" :value="item.id" :prepend-icon="item.icon"

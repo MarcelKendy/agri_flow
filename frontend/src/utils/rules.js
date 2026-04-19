@@ -139,6 +139,27 @@ export function getRules(rules) {
     } else if (key === 'date') {
       return value => (!value || /^\d{4}-\d{2}-\d{2}$/.test(value)) ||
         (v.message ? v.message : 'Formato de data inválido')
+    } else if (key === 'date_br') {
+      return value => {
+        if (!value) return true
+
+        if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+          return v.message ? v.message : 'Formato de data inválido'
+        }
+
+        const [day, month, year] = value.split('/').map(Number)
+        const currentYear = new Date().getFullYear()
+
+        const valid =
+          day >= 1 &&
+          day <= 31 &&
+          month >= 1 &&
+          month <= 12 &&
+          year >= currentYear &&
+          year <= currentYear + 20
+
+        return valid || (v.message ? v.message : 'Data inválida')
+      }
     } else if (key === 'file_format') {
       return value => (!value || !value['type'] || value.type.includes(v.val) ||
         (v.message ? v.message : 'Arquivo de formato inválido'))

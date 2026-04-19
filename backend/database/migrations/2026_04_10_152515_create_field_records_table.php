@@ -8,7 +8,6 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('field_records', function (Blueprint $table) {
             $table->id();
-            $table->string('identifier');
             $table->string('service'); // Spray, Fertilization, Harvest, etc.
             $table->date('date');
             $table->foreignId('planting_id')->constrained()->cascadeOnDelete();
@@ -17,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->float('dosage');
             $table->text('notes')->nullable();
+            $table->tinyInteger('status')->default(0);
 
             $table->timestamps();
         });

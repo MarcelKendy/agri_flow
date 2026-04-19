@@ -40,9 +40,19 @@
                   <span v-show="loading">Espera só um pouquinho, carregando...</span>
                 </v-scroll-x-transition>
                 <div v-if="!loading">
-                  <span class="font-italic">Nome: </span> {{ data.name }}
-                  <br>
-                  <span class="font-italic">Data de Cadastro:</span> {{ formatDate(data.created_at) }}
+                  <template v-if="info && info.length">
+                    <div v-for="row in info" :key="row.key">
+                      <span class="font-italic">{{ row.title }}: </span> {{ row.key.split('.').reduce((value, key) => value?.[key], data) }}
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div>
+                      <span class="font-italic">{{ name_title }}: </span> {{ data[name_key] }}
+                    </div>
+                  </template>
+                  <div v-if="created_at">
+                    <span class="font-italic">Data de Cadastro:</span> {{ formatDate(data.created_at) }}
+                  </div>
                 </div>
               </v-alert>
             </v-col>
@@ -80,6 +90,10 @@ const loading = ref(false)
 const props = defineProps({
   data: { type: Object, required: true },
   data_name: { type: String, required: true },
+  name_key: { type: String, default: 'name' },
+  name_title: { type: String, default: 'Nome' },
+  created_at: { type: Boolean, default: true },
+  info: { type: Array, default: () => [] },
   color: { type: String },
   icon: { type: String, required: true },
   img: { type: String },
@@ -113,6 +127,4 @@ function formatDate(input_date) {
 
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
-
-
 </script>
