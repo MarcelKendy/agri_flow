@@ -64,23 +64,74 @@
                   :color="color" />
               </v-col>
 
-              <v-col cols="12" md="6">
-                <v-select v-model="item.product_id" label="Produto" :items="products" item-title="name" item-value="id" no-data-text="Nenhum dado cadastrado..."
-                  clearable :loading="loading_products" :disabled="loading || loading_products" :color="color"
-                  :rules="getRules({ required: true })" />
-              </v-col>
+              <v-col cols="12" style="border: solid 1px grey; border-radius: 10px; padding: 20px;" :style="dark_theme ? 'background-color: rgba(0, 0, 0, 0.1);' : 'background-color: rgba(160, 160, 160, 0.1); border-color: rgba(150, 150, 150)'">
+                <div class="mb-3">
+                  <strong style="font-size: 18px">- Produtos</strong>
+                  <v-icon class="ml-2">mdi-flask-outline</v-icon>
+                </div>                
+                <div
+                  v-for="(product_item, index) in item.products"
+                  :key="index"
+                  class="mb-4"
+                >
+                  <v-row class="align-center">
+                    <v-col cols="12" md="6">
+                      <v-select
+                        v-model="product_item.product_id"
+                        label="Produto"
+                        :items="products"
+                        item-title="name"
+                        item-value="id"
+                        clearable
+                        :loading="loading_products"
+                        :disabled="loading || loading_products"
+                        :color="color"
+                        no-data-text="Nenhum dado cadastrado..."
+                        :rules="getRules({ required: true })"                        
+                        :item-props="item => ({
+                          disabled: isProductDisabled(item.id, index)
+                        })"
+                      />
+                    </v-col>
 
-              <v-col cols="12" md="6">
-                <v-text-field v-model="item.dosage" label="Dosagem ha" placeholder="0.00" type="number" step="0.01"
-                  min="0.01" clearable :disabled="loading || !item.product_id" :color="color"
-                  :rules="item.product_id ? getRules({ required: true }) : []">
-                  <template #append-inner>
-                    <v-chip v-if="item.product_id" :color="selectedProductUnit == 0 ? 'teal' : 'blue'"
-                      :prepend-icon="selectedProductUnit == 0 ? 'mdi-weight-kilogram' : 'mdi-bottle-tonic'">
-                      <span class="bold mr-1">{{ selectedProductUnitLabel }}</span>
-                    </v-chip>
-                  </template>
-                </v-text-field>
+                    <v-col cols="12" md="5" :style="smAndDown ? 'margin-bottom: -15px !important' : ''">
+                      <v-text-field
+                        v-model="product_item.dosage"
+                        label="Dosagem ha"
+                        :placeholder="getProductLastDosage(product_item.product_id)"
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        clearable
+                        :disabled="loading || !product_item.product_id"
+                        :color="color"
+                        :rules="product_item.product_id ? getRules({ required: true }) : []"
+                      />
+                    </v-col>
+
+                    <v-col cols="12" md="1" class="d-flex" :class="smAndDown ? 'align-start mb-2' : 'align-center pb-4'">
+                      <v-btn
+                        :disabled="item.products.length <= 1"
+                        icon="mdi-delete"
+                        color="red"
+                        size="x-small"
+                        :variant="smAndDown ? 'elevated' : 'outlined'"
+                        @click="removeProduct(index)"
+                      ></v-btn>
+                    </v-col>
+                  </v-row>
+                  <v-divider class="mt-1"></v-divider>
+                </div>
+
+                <v-btn
+                  variant="outlined"
+                  :color="color"
+                  prepend-icon="mdi-plus"
+                  size="small"
+                  @click="addProduct"
+                >
+                  Adicionar produto
+                </v-btn>
               </v-col>
 
               <v-col cols="12">
@@ -107,11 +158,13 @@
 </template>
 
 <script setup>
+// Imports
 import { ref, reactive, watch, computed } from 'vue'
 import api from '@/plugins/axios.js'
 import { useTheme, useDisplay } from 'vuetify'
 import { useSnackbarStore } from '@/stores/snackbar'
 
+// Variables
 const translation = { pt_upper: 'Ficha de Campo', pt_lower: 'ficha de campo', table: 'field_records', model: 'FieldRecord', api: 'field_record' }
 
 const snackbar = useSnackbarStore()
@@ -126,8 +179,8 @@ const props = defineProps({
 })
 
 const { smAndDown } = useDisplay()
-const useThemeRef = useTheme()
-const darkTheme = computed(() => useThemeRef.global.name.value == 'customDark')
+const use_theme = useTheme()
+const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 
 const loading = ref(false)
 const form = ref(null)
@@ -157,25 +210,12 @@ const item = reactive({
   planting_id: '',
   tractor_id: '',
   implement_id: '',
-  product_id: '',
-  dosage: '',
+  products: [ { product_id: '', dosage: '' } ],
   notes: '',
   status: ''
 })
 
-const selectedProduct = computed(() => {
-  return products.value.find(product => product.id == item.product_id)
-})
-
-const selectedProductUnit = computed(() => {
-  return selectedProduct.value?.unit
-})
-
-const selectedProductUnitLabel = computed(() => {
-  if (!item.product_id) return ''
-  return selectedProductUnit.value == 0 ? 'KG' : 'L'
-})
-
+// Watchers
 watch(() => props.model, open => {
   if (open) {
     resetForm()
@@ -184,10 +224,14 @@ watch(() => props.model, open => {
     getImplements()
     getProducts()
     for (const key in item) {
-      if (props.data.hasOwnProperty(key)) {
+      if (props.data.hasOwnProperty(key) && key !== 'products') {
         item[key] = props.data[key]
       }
     }
+    item.products = props.data.products?.map(p => ({
+      product_id: p.product_id,
+      dosage: p.dosage
+    })) || [ { product_id: '', dosage: '' } ]
     item.date = convertISOToBR(item.date)
   }
 })
@@ -197,6 +241,27 @@ watch(() => item.product_id, value => {
     item.dosage = ''
   }
 })
+
+// Methods
+function isProductDisabled(product_id, current_index) {
+  return item.products.some((p, index) =>
+    index !== current_index && p.product_id == product_id
+  )
+}
+
+function getProductLastDosage(product_id) {
+  if (!product_id) return '0.00'
+  const product = products.value.find(p => p.id == product_id)
+  return String(product?.last_dosage ?? '0.00')
+}
+
+function addProduct() {
+  item.products.push({ product_id: '', dosage: '' })
+}
+
+function removeProduct(index) {
+  item.products.splice(index, 1)
+}
 
 async function editItem() {
   const { valid } = await form.value.validate()
@@ -321,8 +386,7 @@ function resetForm() {
   item.planting_id = ''
   item.tractor_id = ''
   item.implement_id = ''
-  item.product_id = ''
-  item.dosage = ''
+  item.products = [ { product_id: '', dosage: '' } ]
   item.notes = ''
   item.status = ''
   loading.value = false

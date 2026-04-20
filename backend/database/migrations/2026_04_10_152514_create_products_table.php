@@ -14,7 +14,8 @@ return new class extends Migration {
             $table->string('unit'); // L or KG
             $table->string('action_mode')->nullable(); // Systemic / Contact
             $table->string('compatibility_restrictions')->nullable();
-            
+            $table->float('last_dosage')->nullable();
+
             // nutrients (%)
             $table->float('nitrogen')->nullable();
             $table->float('phosphorus')->nullable();

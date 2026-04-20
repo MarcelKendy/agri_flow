@@ -13,11 +13,9 @@ return new class extends Migration {
             $table->foreignId('planting_id')->constrained()->cascadeOnDelete();
             $table->foreignId('tractor_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('implement_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->float('dosage');
             $table->text('notes')->nullable();
             $table->tinyInteger('status')->default(0);
-
+    
             $table->timestamps();
         });
     }

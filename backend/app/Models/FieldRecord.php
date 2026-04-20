@@ -12,8 +12,6 @@ class FieldRecord extends Model
         'planting_id',
         'tractor_id',
         'implement_id',
-        'product_id',
-        'dosage',
         'notes',
         'status'
     ];
@@ -30,7 +28,8 @@ class FieldRecord extends Model
         return $this->belongsTo(Implement::class);
     }
 
-    public function product() {
-        return $this->belongsTo(Product::class);
+    public function products() {
+        return $this->hasMany(FieldRecordProduct::class)->with(['product']);
     }
+
 }

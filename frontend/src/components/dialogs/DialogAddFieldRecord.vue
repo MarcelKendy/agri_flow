@@ -43,35 +43,89 @@
                   :rules="getRules({ required: true, date_br: true })" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name"
+                <v-select v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name" append-icon="mdi-sprout"
                   item-value="id" no-data-text="Nenhum dado cadastrado..." clearable :loading="loading_plantings" :disabled="loading || loading_plantings"
                   :color="color" :rules="getRules({ required: true })" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="item.tractor_id" label="Trator" :items="tractors" item-title="name" item-value="id"
+                <v-select v-model="item.tractor_id" label="Trator" :items="tractors" item-title="name" item-value="id" append-icon="mdi-tractor"
                   clearable :loading="loading_tractors" no-data-text="Nenhum dado cadastrado..." :disabled="loading || loading_tractors" :color="color" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="item.implement_id" label="Implemento" :items="implements_items" item-title="name"
+                <v-select v-model="item.implement_id" label="Implemento" :items="implements_items" item-title="name" append-icon="mdi-cog-outline"
                   item-value="id" clearable :loading="loading_implements" no-data-text="Nenhum dado cadastrado..."
                   :disabled="loading || loading_implements" :color="color" />
               </v-col>
-              <v-col cols="12" md="6">
-                <v-select v-model="item.product_id" label="Produto" :items="products" item-title="name" item-value="id"
-                  clearable :loading="loading_products" :disabled="loading || loading_products" :color="color" no-data-text="Nenhum dado cadastrado..."
-                  :rules="getRules({ required: true })" />
+              <v-col cols="12" style="border: solid 1px grey; border-radius: 10px; padding: 20px;" :style="dark_theme ? 'background-color: rgba(0, 0, 0, 0.1);' : 'background-color: rgba(160, 160, 160, 0.1); border-color: rgba(150, 150, 150)'">
+                <div class="mb-3">
+                  <strong style="font-size: 18px">- Produtos</strong>
+                  <v-icon class="ml-2">mdi-flask-outline</v-icon>
+                </div>                
+                <div
+                  v-for="(product_item, index) in item.products"
+                  :key="index"
+                  class="mb-4"
+                >
+                  <v-row class="align-center">
+                    <v-col cols="12" md="6">
+                      <v-select
+                        v-model="product_item.product_id"
+                        label="Produto"
+                        :items="products"
+                        item-title="name"
+                        item-value="id"
+                        clearable
+                        :loading="loading_products"
+                        :disabled="loading || loading_products"
+                        :color="color"
+                        no-data-text="Nenhum dado cadastrado..."
+                        :rules="getRules({ required: true })"                        
+                        :item-props="item => ({
+                          disabled: isProductDisabled(item.id, index)
+                        })"
+                      />
+                    </v-col>
+
+                    <v-col cols="12" md="5">
+                      <v-text-field
+                        v-model="product_item.dosage"
+                        label="Dosagem ha"
+                        :placeholder="getProductLastDosage(product_item.product_id)"
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        clearable
+                        :disabled="loading || !product_item.product_id"
+                        :color="color"
+                        :rules="product_item.product_id ? getRules({ required: true }) : []"
+                      />
+                    </v-col>
+
+                    <v-col cols="12" md="1" class="d-flex align-center">
+                      <v-btn
+                        :disabled="item.products.length <= 1"
+                        icon="mdi-delete"
+                        color="red"
+                        size="x-small"
+                        variant="outlined"
+                        @click="removeProduct(index)"
+                      />
+                    </v-col>
+                  </v-row>
+                  <v-divider class="mt-1"></v-divider>
+                </div>
+
+                <v-btn
+                  variant="outlined"
+                  :color="color"
+                  prepend-icon="mdi-plus"
+                  size="small"
+                  @click="addProduct"
+                >
+                  Adicionar produto
+                </v-btn>
               </v-col>
-              <v-col cols="12" md="6">
-                <v-text-field v-model="item.dosage" label="Dosagem ha" placeholder="0.00" type="number" step="0.01"
-                  min="0.01" clearable :disabled="loading || !item.product_id" :color="color"
-                  :rules="item.product_id ? getRules({ required: true }) : []">
-                  <template #append-inner>
-                   <v-chip v-if="item.product_id" :color="selected_product_unit == 0 ? 'teal' : 'blue'" :prepend-icon="selected_product_unit == 0 ? 'mdi-weight-kilogram' : 'mdi-bottle-tonic'">
-                    <span class="bold mr-1">{{ selected_product_unit_label }}</span>
-                   </v-chip> 
-                  </template>
-                </v-text-field>
-              </v-col>
+
               <v-col cols="12">
                 <v-textarea v-model="item.notes" label="Observações" rows="3" auto-grow clearable :disabled="loading" maxLength="500" counter
                   :color="color" />
@@ -131,11 +185,10 @@ const loading_products = ref(false)
 const item = reactive({
   service: '',
   date: '',
-  planting_id: null,
-  tractor_id: null,
-  implement_id: null,
-  product_id: null,
-  dosage: null,
+  planting_id: '',
+  tractor_id: '',
+  implement_id: '',
+  products: [ { product_id: '', dosage: '' } ],
   notes: ''
 })
 
@@ -148,18 +201,6 @@ const services = [
 ]
 
 // Computeds
-const selected_product = computed(() => {
-  return products.value.find(product => product.id == item.product_id)
-})
-
-const selected_product_unit = computed(() => {
-  return selected_product.value?.unit
-})
-
-const selected_product_unit_label = computed(() => {
-  if (item.product_id == null) return ''
-  return selected_product_unit.value == 0 ? 'KG' : 'L'
-})
 
 // Watchers
 watch(() => props.model, (open) => {
@@ -179,6 +220,26 @@ watch(() => item.product_id, (value, old_value) => {
 })
 
 // Methods
+function isProductDisabled(product_id, current_index) {
+  return item.products.some((p, index) =>
+    index !== current_index && p.product_id == product_id
+  )
+}
+
+function getProductLastDosage(product_id) {
+  if (!product_id) return '0.00'
+  const product = products.value.find(p => p.id == product_id)
+  return String(product?.last_dosage ?? '0.00')
+}
+
+function addProduct() {
+  item.products.push({ product_id: '', dosage: '' })
+}
+
+function removeProduct(index) {
+  item.products.splice(index, 1)
+}
+
 async function addItem() {
   const { valid } = await form.value.validate()
   if (!valid) return
@@ -288,8 +349,7 @@ function resetForm() {
   item.planting_id = ''
   item.tractor_id = ''
   item.implement_id = ''
-  item.product_id = ''
-  item.dosage = ''
+  item.products = [ { product_id: '', dosage: '' } ]
   item.notes = ''
   loading.value = false
 }

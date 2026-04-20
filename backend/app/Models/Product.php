@@ -13,6 +13,7 @@ class Product extends Model
         'unit',
         'action_mode',
         'compatibility_restrictions',
+        'last_dosage',
         'nitrogen',
         'phosphorus',
         'potassium',

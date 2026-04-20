@@ -161,25 +161,41 @@
                                     </div>
                                 </v-col>
 
-                                <v-col cols="12" md="4">
+                                <v-col cols="12" md="6">
                                     <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
                                         <div class="dashboard-label">
-                                            <v-icon size="14">mdi-flask</v-icon>Produto
+                                            <v-icon size="14">mdi-flask</v-icon>Produtos - Dose ha
                                         </div>
-                                        <div class="dashboard-value">{{ item.product?.name }}</div>
+                                        <div class="dashboard-value">
+                                            <div
+                                                v-for="product_item in item.products"
+                                                :key="product_item.id"
+                                                class="d-flex align-center mb-1"
+                                            >
+                                                <span class="mr-2 flex-grow-1">
+                                                    {{ product_item.product?.name }}
+                                                </span>
+
+                                                <v-chip
+                                                    size="small"
+                                                    :color="product_item.product?.unit == 0 ? 'teal' : 'blue'"                                                    
+                                                    :prepend-icon="product_item.product?.unit == 0
+                                                        ? 'mdi-weight-kilogram'
+                                                        : 'mdi-bottle-tonic'"
+                                                >
+                                                    <template #append>
+                                                        <v-avatar end>
+                                                            {{ product_item.product?.unit == 0 ? 'KG' : 'L' }}
+                                                        </v-avatar>
+                                                    </template>
+                                                    {{ Number(product_item.dosage).toFixed(2) }}
+                                                </v-chip>
+                                            </div>
+                                        </div>
                                     </div>
                                 </v-col>
 
-                                <v-col cols="12" md="4">
-                                    <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
-                                        <div class="dashboard-label">
-                                            <v-icon size="14">mdi-scale-balance</v-icon>Dosagem
-                                        </div>
-                                        <div class="dashboard-value">{{ formatDosage(item) }}</div>
-                                    </div>
-                                </v-col>
-
-                                <v-col cols="12" md="4">
+                                <v-col cols="12" md="6">
                                     <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
                                         <div class="dashboard-label">
                                             <v-icon size="14" :color="getDeadlineInfo(item).color">
@@ -328,11 +344,9 @@ const searchable_fields = [
     { key: 'service' },
     { key: 'date' },
     { key: 'notes' },
-    { key: 'dosage' },
     { key: 'planting.name' },
     { key: 'tractor.name' },
-    { key: 'implement.name' },
-    { key: 'product.name' }
+    { key: 'implement.name' }
 ]
 
 // Computeds
@@ -350,7 +364,13 @@ const filtered_items = computed(() => {
     if (filters.service.length) data = data.filter(item => filters.service.includes(item.service))
     if (filters.tractor.length) data = data.filter(item => filters.tractor.includes(item.tractor?.id))
     if (filters.implement.length) data = data.filter(item => filters.implement.includes(item.implement?.id))
-    if (filters.product.length) data = data.filter(item => filters.product.includes(item.product?.id))
+    if (filters.product.length) {
+        data = data.filter(item =>
+            item.products?.some(product_item =>
+                filters.product.includes(product_item.product_id)
+            )
+        )
+    }
     if (filters.status.length) data = data.filter(item => filters.status.includes(getStatus(item).label))
 
     if (!search_field.value) return data
@@ -358,12 +378,19 @@ const filtered_items = computed(() => {
     const search = search_field.value.toLowerCase().trim()
 
     return data.filter(item => {
-        return searchable_fields.some(field => {
+        const match_basic_fields = searchable_fields.some(field => {
             const raw_value = getNestedValue(item, field.key)
             if (raw_value === null || raw_value === undefined) return false
             return String(raw_value).toLowerCase().includes(search)
         })
+        if (match_basic_fields) return true
+        return item.products?.some(product_item =>
+            product_item.product?.name
+                ?.toLowerCase()
+                .includes(search)
+        )
     })
+
 })
 
 const paginated_items = computed(() => {
@@ -529,11 +556,6 @@ function formatDate(date) {
     if (!date) return '-'
     const [year, month, day] = date.split('-')
     return `${day}/${month}/${year}`
-}
-
-function formatDosage(item) {
-    const unit = item.product?.unit == 0 ? 'KG' : 'L'
-    return `${Number(item.dosage).toFixed(2)} ${unit}`
 }
 
 function getStatus(item) {
