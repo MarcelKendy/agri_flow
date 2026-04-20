@@ -4,11 +4,11 @@
             <template v-slot:loader="{ isActive }">
                 <v-progress-linear :active="isActive" color="green" height="5" indeterminate></v-progress-linear>
             </template>
-            <v-card-title class="text-h5 font-weight-bold" :class="dark_theme ? 'text-shadow-black-2' : ''" :style="smAndDown ? (dark_theme ? 'background-color: rgba(90, 90, 90, 0.2)' : 'background-color: rgba(150, 150, 150, 0.2)') : ''">
+            <v-card-title style="position: relative;" class="bold" :class="dark_theme ? 'text-shadow-black-2' : ''" :style="smAndDown ? (dark_theme ? 'background-color: rgba(90, 90, 90, 0.2)' : 'background-color: rgba(150, 150, 150, 0.2)') : ''">
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
                 <span class="mr-10">{{ title }}</span>
                 <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'small' : 'default'"
-                    append-icon="mdi-plus" class="font-weight-bold new-button">
+                    append-icon="mdi-plus" class="bold new-button">
                     NOVO
                 </v-btn>
             </v-card-title>

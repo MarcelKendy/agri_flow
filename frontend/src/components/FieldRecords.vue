@@ -4,10 +4,10 @@
             <template v-slot:loader="{ isActive }">
                 <v-progress-linear :active="isActive" color="green" height="5" indeterminate></v-progress-linear>
             </template>
-            <v-card-title class="text-h5 bold" :class="dark_theme ? 'text-shadow-black-2' : ''" :style="smAndDown ? (dark_theme ? 'background-color:rgba(90,90,90,0.2)' : 'background-color:rgba(150,150,150,0.2)') : ''"> 
+            <v-card-title style="position: relative;" class="bold" :class="dark_theme ? 'text-shadow-black-2' : ''" :style="smAndDown ? (dark_theme ? 'background-color:rgba(90,90,90,0.2)' : 'background-color:rgba(150,150,150,0.2)') : ''"> 
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
                 <span class="mr-10">{{ title }}</span>
-                <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'x-small' : 'default'"
+                <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'small' : 'default'"
                     append-icon="mdi-plus" class="bold new-button">NOVO</v-btn>
             </v-card-title>
 
@@ -16,20 +16,20 @@
             <v-card-text>
 
                 <v-row v-if="items_length">
-                    <v-col cols="12" class="d-flex flex-wrap ga-2">
+                    <v-col cols="12" class="d-flex ga-2">
                         <v-btn @click="filter_active = !filter_active" color="teal" prepend-icon="mdi-filter" :disabled="loading || !items_length"
                             :append-icon="filter_active ? 'mdi-eye-off' : 'mdi-eye'" size="small">
                             {{ filter_active ? 'Esconder filtros' : 'Exibir filtros' }}
                         </v-btn>
-
                         <v-btn v-if="has_active_filters" @click="clearFilters" color="warning" size="small"
                             prepend-icon="mdi-filter-remove">
                             Limpar filtros
                         </v-btn>
-
-                        <v-expand-transition>
-                            <div v-if="items_length && filter_active"
-                                :class="dark_theme ? 'filter-section-dark' : 'filter-section-light'" class="mt-3 w-100">
+                    </v-col>
+                    <v-expand-transition>
+                        <v-col cols="12" v-if="items_length && filter_active">                        
+                            <div 
+                                :class="dark_theme ? 'filter-section-dark' : 'filter-section-light'">
                                 <div class="bold mb-5" style="font-size: 15px;">
                                     <v-icon>mdi-filter</v-icon>
                                     Filtros
@@ -37,54 +37,54 @@
 
                                 <v-row>
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.crop" label="Cultura" :items="crops"
-                                            item-title="name" item-value="name" multiple chips closable-chips clearable
-                                            color="teal" prepend-icon="mdi-sprout" :loading="loading_crops" />
-                                    </v-col>
-
-                                    <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.planting" label="Plantio"
-                                            :items="plantings" item-title="name" item-value="name" multiple chips
-                                            closable-chips clearable color="teal" prepend-icon="mdi-leaf"
-                                            :loading="loading_plantings" />
-                                    </v-col>
-
-                                    <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.status" label="Status"
-                                            :items="['Pendente', 'Atrasado', 'Concluído']" multiple chips closable-chips
-                                            clearable color="teal" prepend-icon="mdi-check-decagram" />
-                                    </v-col>
-
-                                    <v-col cols="12" md="6" lg="4">
                                         <v-select variant="solo" v-model="filters.service" label="Serviço"
                                             :items="services" multiple chips closable-chips clearable color="teal"
                                             prepend-icon="mdi-briefcase" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
+                                        <v-select variant="solo" v-model="filters.planting" label="Plantio"
+                                            :items="plantings" item-title="name" item-value="id" multiple chips
+                                            closable-chips clearable color="teal" prepend-icon="mdi-sprout"
+                                            :loading="loading_plantings" />
+                                    </v-col>
+
+                                    <v-col cols="12" md="6" lg="4">
+                                        <v-select variant="solo" v-model="filters.crop" label="Cultura" :items="crops"
+                                            item-title="name" item-value="id" multiple chips closable-chips clearable
+                                            color="teal" prepend-icon="mdi-seed" :loading="loading_crops" />
+                                    </v-col>
+
+                                    <v-col cols="12" md="6" lg="4">
+                                        <v-select variant="solo" v-model="filters.status" label="Status"
+                                            :items="['Hoje!', 'Pendente', 'Atrasado', 'Concluído']" multiple chips closable-chips
+                                            clearable color="teal" prepend-icon="mdi-list-status" />
+                                    </v-col>
+
+                                    <v-col cols="12" md="6" lg="4">
                                         <v-select variant="solo" v-model="filters.tractor" label="Trator"
-                                            :items="tractors" item-title="name" item-value="name" multiple chips
+                                            :items="tractors" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-tractor"
                                             :loading="loading_tractors" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
                                         <v-select variant="solo" v-model="filters.implement" label="Implemento"
-                                            :items="implements_items" item-title="name" item-value="name" multiple chips
+                                            :items="implements_items" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-hammer-wrench"
                                             :loading="loading_implements" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
                                         <v-select variant="solo" v-model="filters.product" label="Produto"
-                                            :items="products" item-title="name" item-value="name" multiple chips
+                                            :items="products" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-flask"
                                             :loading="loading_products" />
                                     </v-col>
                                 </v-row>
-                            </div>
-                        </v-expand-transition>
-                    </v-col>
+                            </div>                       
+                        </v-col>
+                    </v-expand-transition>
                 </v-row>
 
                 <v-row v-if="items_length" class="align-center">
@@ -93,15 +93,14 @@
                             :label="'Busca avançada em ' + filtered_items.length + ' registro(s)'"
                             prepend-icon="mdi-magnify" density="compact" clearable color="green" />
                     </v-col>
-                </v-row>
+                </v-row>                
 
-                <v-alert v-if="!items_length || !paginated_items.length" icon="mdi-information" border="bottom"
-                    class="mb-2" :color="dark_theme ? 'rgba(50, 50, 50, 0.6)' : 'rgba(250, 250, 250, 0.8)'">
-                    {{ !items_length ? (loading ? 'Carregando, aguarde...' : 'Lista vazia, inclua um item clicando no botão "Novo" acima') : ('Não há dados para o filtro ' + (search_field.length ? ('"' + search_field + '"') : '')) }}
-                </v-alert>
-
-                <v-row v-else>
-                    <v-col cols="12" lg="6" v-for="item in paginated_items" :key="item.id"
+                <v-row>
+                    <v-alert v-if="!items_length || !paginated_items.length" icon="mdi-information" border="bottom"
+                        class="mb-2" :color="dark_theme ? 'rgba(50, 50, 50, 0.6)' : 'rgba(250, 250, 250, 0.8)'">
+                        {{ !items_length ? (loading ? 'Carregando, aguarde...' : 'Lista vazia, inclua um item clicando no botão "Novo" acima') : ('Não há dados para o filtro ' + (search_field.length ? ('"' + search_field + '"') : '')) }}
+                    </v-alert>
+                    <v-col v-else cols="12" lg="6" v-for="item in paginated_items" :key="item.id"
                         :class="dark_theme ? 'text-shadow-black-2' : ''">
                         <v-card class="pa-3 items-card" :class="dark_theme ? 'list-item-dark' : 'list-item'"
                             @click="auth.user.level < 1 ? null : openEditDialog(item)">
@@ -125,7 +124,7 @@
                                 </v-col>
 
                                 <v-col cols="4" class="align-end">
-                                    <v-chip size="small" variant="elevated" :color="getStatus(item).color"
+                                    <v-chip :size="smAndDown ? 'x-small' : 'small'" variant="elevated" :color="getStatus(item).color"
                                         style="text-shadow:none;">
                                         {{ getStatus(item).label }}
                                     </v-chip>
@@ -214,20 +213,18 @@
                             </div>
 
                             <v-row>
-                                <v-col cols="9" class="align-start">
+                                <v-col cols="8" class="align-start">
                                     <v-switch @click.stop :disabled="loading_status[item.id] || auth.user.level < 1"
                                         :loading="loading_status[item.id]" v-model="item.status"
-                                        @change="editFieldRecordStatus(item.id, item.status)" label="Concluído"
+                                        @change="editFieldRecord(item.id, { status: Number(item.status) })" label="Concluído"
                                         color="green"  
                                         style="margin-bottom: -35px !important; margin-right: 30px;"></v-switch>
                                 </v-col>
-                                <v-col cols="3" class="align-end">
+                                <v-col cols="4" class="align-end">
                                     <v-tooltip text="Deletar Ficha" content-class="tooltip-red" location="left">
                                         <template v-slot:activator="{ props }">
-                                            <v-btn v-bind="props" icon size="x-small" :disabled="auth.user.level < 2"
-                                                color="red" @click.stop="openDeleteDialog(item)">
-                                                <v-icon>mdi-delete</v-icon>
-                                            </v-btn>
+                                            <v-btn v-bind="props" size="x-small" prepend-icon="mdi-delete" :disabled="auth.user.level < 2"
+                                                color="red" @click.stop="openDeleteDialog(item)">Deletar</v-btn>
                                         </template>
                                     </v-tooltip>
                                 </v-col>
@@ -348,12 +345,12 @@ const filtered_items = computed(() => {
 
     let data = [...items.value]
 
-    if (filters.crop.length) data = data.filter(item => filters.crop.includes(item.planting?.crop?.name))
-    if (filters.planting.length) data = data.filter(item => filters.planting.includes(item.planting?.name))
+    if (filters.crop.length) data = data.filter(item => filters.crop.includes(item.planting?.crop?.id))
+    if (filters.planting.length) data = data.filter(item => filters.planting.includes(item.planting?.id))
     if (filters.service.length) data = data.filter(item => filters.service.includes(item.service))
-    if (filters.tractor.length) data = data.filter(item => filters.tractor.includes(item.tractor?.name))
-    if (filters.implement.length) data = data.filter(item => filters.implement.includes(item.implement?.name))
-    if (filters.product.length) data = data.filter(item => filters.product.includes(item.product?.name))
+    if (filters.tractor.length) data = data.filter(item => filters.tractor.includes(item.tractor?.id))
+    if (filters.implement.length) data = data.filter(item => filters.implement.includes(item.implement?.id))
+    if (filters.product.length) data = data.filter(item => filters.product.includes(item.product?.id))
     if (filters.status.length) data = data.filter(item => filters.status.includes(getStatus(item).label))
 
     if (!search_field.value) return data
@@ -416,9 +413,9 @@ function getNestedValue(obj, path) {
     return path.split('.').reduce((acc, key) => acc?.[key], obj)
 }
 
-function editFieldRecordStatus(id, status) {
+function editFieldRecord(id, values) {
     loading_status[id] = true
-    api.put('edit_field_record/' + id, { status: Number(status) }).then(response => {
+    api.put('edit_field_record/' + id, values).then(response => {
         loading_status[id] = false
     }).catch(error => {
         console.log(error)
@@ -547,6 +544,10 @@ function getStatus(item) {
 
     const itemDate = new Date(item.date + 'T00:00:00')
 
+    if (itemDate.getTime() === today.getTime()) {
+        return { label: 'Hoje!', color: 'info' }
+    }
+
     if (itemDate > today) return { label: 'Pendente', color: 'blue' }
 
     return { label: 'Atrasado', color: 'warning' }
@@ -592,12 +593,12 @@ function getDeadlineInfo(item) {
     }
 
     if (diff_days === 0) {
-        return { text: 'Hoje!', color: 'orange', icon: 'mdi-alert-circle' }
+        return { text: 'Hoje!', color: 'blue', icon: 'mdi-alert-circle' }
     }
 
     return {
         text: Math.abs(diff_days) + ' dia(s) de atraso',
-        color: 'red',
+        color: 'orange',
         icon: 'mdi-calendar-alert'
     }
 }
