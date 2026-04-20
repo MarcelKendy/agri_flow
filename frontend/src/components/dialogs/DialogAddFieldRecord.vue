@@ -73,7 +73,7 @@
                 </v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-textarea v-model="item.notes" label="Observações" rows="3" auto-grow clearable :disabled="loading"
+                <v-textarea v-model="item.notes" label="Observações" rows="3" auto-grow clearable :disabled="loading" maxLength="500" counter
                   :color="color" />
               </v-col>
             </v-row>

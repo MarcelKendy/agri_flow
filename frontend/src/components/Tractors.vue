@@ -1,6 +1,9 @@
 <template>
     <div>
-        <v-card flat style="background-color: rgba(0, 0, 0, 0)">
+        <v-card flat style="background-color: rgba(0, 0, 0, 0)" :loading="loading">
+            <template v-slot:loader="{ isActive }">
+                <v-progress-linear :active="isActive" color="green" height="5" indeterminate></v-progress-linear>
+            </template>
             <v-card-title class="text-h5 font-weight-bold" :class="dark_theme ? 'text-shadow-black-2' : ''" :style="smAndDown ? (dark_theme ? 'background-color: rgba(90, 90, 90, 0.2)' : 'background-color: rgba(150, 150, 150, 0.2)') : ''">
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
                 <span class="mr-10">{{ title }}</span>
@@ -11,18 +14,19 @@
             </v-card-title>
             <v-divider :thickness="7" class="border-opacity-25 mb-4" color="green"></v-divider>
             <v-card-text>
-                <v-row v-if="smAndDown && items.length" class="align-center">
+                <v-row v-if="items.length" class="align-center">
                     <v-col cols="12">
                         <v-text-field v-model="search_field" :label="'Busca avançada em ' + items.length + ' registro(s)'" prepend-inner-icon="mdi-magnify"
                             density="compact" clearable color="green" />
                     </v-col>
                 </v-row>
                 <v-list v-if="smAndDown" style="background-color: rgba(0, 0, 0, 0);">
-                    <v-alert v-if="!items.length || !paginated_items.length" icon="mdi-information" border="bottom" class="mb-2" :color="dark_theme ? 'rgba(50, 50, 50, 0.6)' : 'rgba(250, 250, 250, 0.8)'">
-                        {{ !items.length ? 'Lista vazia, inclua um item clicando no botão "Novo" acima' : ('Não há dados para o filtro "' + search_field + '"') }}
+                    <v-alert v-if="!items.length || !paginated_items.length" icon="mdi-information" border="bottom"
+                        class="mb-2" :color="dark_theme ? 'rgba(50, 50, 50, 0.6)' : 'rgba(250, 250, 250, 0.8)'">
+                        {{ !items.length ? (loading ? 'Carregando, aguarde...' : 'Lista vazia, inclua um item clicando no botão "Novo" acima') : ('Não há dados para o filtro "' + search_field + '"') }}
                     </v-alert>
                     <v-list-item v-for="item in paginated_items" :key="item.id"
-                        :class="dark_theme ? 'list-item-dark' : 'list-item'" @click="openEditDialog(item)">
+                        :class="dark_theme ? 'list-item-dark' : 'list-item'" @click="auth.user.level < 1 ? null : openEditDialog(item)">
                         <v-list-item-title :class="dark_theme ? 'text-shadow-black-2' : ''">
                             <v-row class="align-center">
                                 <v-col cols="12">
@@ -42,10 +46,10 @@
                         </v-col>
                     </v-row>
                 </v-list>
-                <v-data-table v-else class="mb-2 clickable-table" :headers="headers" :items="paginated_items"
-                    fixed-header :no-data-text="loading ? 'Carregando...' : 'Nenhum registro encontrado'">
+                <v-data-table v-else class="mb-2 clickable-table" :headers="headers" :items="paginated_items" :loading="loading"
+                    fixed-header :no-data-text="loading ? 'Carregando, aguarde...' : 'Nenhum registro encontrado'">
                     <template #item="{ item }">
-                        <tr :class="dark_theme ? 'table-row' : 'table-row-light'" @click="openEditDialog(item)">
+                        <tr :class="dark_theme ? 'table-row' : 'table-row-light'" @click="auth.user.level < 1 ? null : openEditDialog(item)">
                             <td>
                                 <span :class="dark_theme ? 'text-shadow-black-1' : ''">
                                     {{ item.name }}
@@ -58,7 +62,7 @@
                                             @click.stop />
                                     </template>
                                     <div class="my-1 ml-1">
-                                        <v-btn class="mx-1 hover-buttons" color="orange" variant="elevated" icon
+                                        <v-btn class="mx-1 hover-buttons" color="orange" variant="elevated" icon :disabled="auth.user.level < 1"
                                             size="x-small" @click="openEditDialog(item)">
                                             <v-icon>mdi-pencil</v-icon>
                                         </v-btn>
@@ -131,10 +135,7 @@ const filtered_items = computed(() => {
     const search = search_field.value.toLowerCase().trim()
     return items.value.filter(item => {
         return searchable_fields.some(field => {
-            if (!(field.key in item)) {
-                return false
-            }
-            const raw_value = item[field.key]
+            const raw_value = getNestedValue(item, field.key)
             if (raw_value === null || raw_value === undefined) {
                 return false
             }
@@ -175,6 +176,10 @@ watch(items_per_page, () => {
 })
 
 // Methods
+function getNestedValue(obj, path) {
+    return path.split('.').reduce((acc, key) => acc?.[key], obj)
+}
+
 function getItems(attempt = 1) {
     loading.value = true
     api.get('get_tractors')

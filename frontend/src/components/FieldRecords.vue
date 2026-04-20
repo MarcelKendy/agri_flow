@@ -1,8 +1,10 @@
 <template>
     <div>
-        <v-card flat style="background-color:rgba(0,0,0,0)">
-            <v-card-title class="text-h5 bold" :class="dark_theme ? 'text-shadow-black-2' : ''"
-                :style="smAndDown ? (dark_theme ? 'background-color:rgba(90,90,90,0.2)' : 'background-color:rgba(150,150,150,0.2)') : ''">
+        <v-card flat style="background-color:rgba(0,0,0,0)" :loading="loading">
+            <template v-slot:loader="{ isActive }">
+                <v-progress-linear :active="isActive" color="green" height="5" indeterminate></v-progress-linear>
+            </template>
+            <v-card-title class="text-h5 bold" :class="dark_theme ? 'text-shadow-black-2' : ''" :style="smAndDown ? (dark_theme ? 'background-color:rgba(90,90,90,0.2)' : 'background-color:rgba(150,150,150,0.2)') : ''"> 
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
                 <span class="mr-10">{{ title }}</span>
                 <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'x-small' : 'default'"
@@ -13,9 +15,9 @@
 
             <v-card-text>
 
-                <v-row>
+                <v-row v-if="items_length">
                     <v-col cols="12" class="d-flex flex-wrap ga-2">
-                        <v-btn @click="filter_active = !filter_active" color="teal" prepend-icon="mdi-filter"
+                        <v-btn @click="filter_active = !filter_active" color="teal" prepend-icon="mdi-filter" :disabled="loading || !items_length"
                             :append-icon="filter_active ? 'mdi-eye-off' : 'mdi-eye'" size="small">
                             {{ filter_active ? 'Esconder filtros' : 'Exibir filtros' }}
                         </v-btn>
@@ -26,7 +28,7 @@
                         </v-btn>
 
                         <v-expand-transition>
-                            <div v-if="items.length && filter_active"
+                            <div v-if="items_length && filter_active"
                                 :class="dark_theme ? 'filter-section-dark' : 'filter-section-light'" class="mt-3 w-100">
                                 <div class="bold mb-5" style="font-size: 15px;">
                                     <v-icon>mdi-filter</v-icon>
@@ -85,7 +87,7 @@
                     </v-col>
                 </v-row>
 
-                <v-row v-if="items.length" class="align-center">
+                <v-row v-if="items_length" class="align-center">
                     <v-col cols="12">
                         <v-text-field v-model="search_field"
                             :label="'Busca avançada em ' + filtered_items.length + ' registro(s)'"
@@ -93,16 +95,16 @@
                     </v-col>
                 </v-row>
 
-                <v-alert v-if="!items.length || !paginated_items.length" icon="mdi-information" border="bottom"
-                    class="mb-3" :color="dark_theme ? 'rgba(50,50,50,0.6)' : 'rgba(250,250,250,0.8)'">
-                    {{ !items.length ? 'Lista vazia, inclua um item clicando no botão "Novo" acima' : ('Não há dados para o filtro ' + (search_field.length ? ('"' + search_field + '"') : 'selecionado')) }}
+                <v-alert v-if="!items_length || !paginated_items.length" icon="mdi-information" border="bottom"
+                    class="mb-2" :color="dark_theme ? 'rgba(50, 50, 50, 0.6)' : 'rgba(250, 250, 250, 0.8)'">
+                    {{ !items_length ? (loading ? 'Carregando, aguarde...' : 'Lista vazia, inclua um item clicando no botão "Novo" acima') : ('Não há dados para o filtro ' + (search_field.length ? ('"' + search_field + '"') : '')) }}
                 </v-alert>
 
                 <v-row v-else>
                     <v-col cols="12" lg="6" v-for="item in paginated_items" :key="item.id"
                         :class="dark_theme ? 'text-shadow-black-2' : ''">
                         <v-card class="pa-3 items-card" :class="dark_theme ? 'list-item-dark' : 'list-item'"
-                            @click="openEditDialog(item)">
+                            @click="auth.user.level < 1 ? null : openEditDialog(item)">
                             <v-row class="align-center">
                                 <v-col cols="8" class="align-start">
                                     <div class="d-flex align-center">
@@ -213,13 +215,21 @@
 
                             <v-row>
                                 <v-col cols="9" class="align-start">
-                                    <v-switch @click.stop :disabled="loading_status[item.id]" :loading="loading_status[item.id]" v-model="item.status" @change="editFieldRecordStatus(item.id, item.status)" label="Concluído" color="green" style="margin-bottom: -35px !important; margin-right: 30px;"></v-switch>  
+                                    <v-switch @click.stop :disabled="loading_status[item.id] || auth.user.level < 1"
+                                        :loading="loading_status[item.id]" v-model="item.status"
+                                        @change="editFieldRecordStatus(item.id, item.status)" label="Concluído"
+                                        color="green"  
+                                        style="margin-bottom: -35px !important; margin-right: 30px;"></v-switch>
                                 </v-col>
-                                <v-col cols="3" class="align-end">                                                                                                                    
-                                    <v-btn v-if="auth.user.level > 1" icon size="x-small" color="red"
-                                        @click.stop="openDeleteDialog(item)">
-                                        <v-icon>mdi-delete</v-icon>
-                                    </v-btn>
+                                <v-col cols="3" class="align-end">
+                                    <v-tooltip text="Deletar Ficha" content-class="tooltip-red" location="left">
+                                        <template v-slot:activator="{ props }">
+                                            <v-btn v-bind="props" icon size="x-small" :disabled="auth.user.level < 2"
+                                                color="red" @click.stop="openDeleteDialog(item)">
+                                                <v-icon>mdi-delete</v-icon>
+                                            </v-btn>
+                                        </template>
+                                    </v-tooltip>
                                 </v-col>
                             </v-row>
                         </v-card>
@@ -234,7 +244,7 @@
 
                     <v-col cols="12" class="align-end">
                         <v-select label="Itens por página:" color="green" density="compact"
-                            :items="[5, 10, 15, 50, 'Todos']" style="max-width:130px" variant="outlined"
+                            :items="[5, 10, 15, 50, 'Todos']" style="max-width: 130px" variant="outlined"
                             v-model="items_per_page" />
                     </v-col>
                 </v-row>
@@ -371,6 +381,10 @@ const total_pages = computed(() => {
     return Math.ceil(filtered_items.value.length / items_per_page.value)
 })
 
+const items_length = computed(() => {
+    return items.value.length
+})
+
 // Created
 getItems()
 getCrops()
@@ -382,6 +396,13 @@ getProducts()
 // Watchers
 watch(items_per_page, () => {
     current_page.value = 1
+})
+
+watch(items_length, (value) => {
+    if (value == 0) {
+        clearFilters()
+        filter_active.value = false
+    }
 })
 
 // Methods
@@ -396,16 +417,16 @@ function getNestedValue(obj, path) {
 }
 
 function editFieldRecordStatus(id, status) {
-  loading_status[id] = true
-  api.put('edit_field_record/' + id, { status: Number(status) }).then(response => {
-    loading_status[id] = false
-  }).catch(error => {
-    console.log(error)
-    const item = items.value.find(item => item.id === id)
-    item.status = !item.status
-    snackbar.open({ preset: 'error' })
-    loading_status[id] = false
-  })
+    loading_status[id] = true
+    api.put('edit_field_record/' + id, { status: Number(status) }).then(response => {
+        loading_status[id] = false
+    }).catch(error => {
+        console.log(error)
+        const item = items.value.find(item => item.id === id)
+        item.status = !item.status
+        snackbar.open({ preset: 'error' })
+        loading_status[id] = false
+    })
 }
 
 function getItems(attempt = 1) {
@@ -421,6 +442,7 @@ function getItems(attempt = 1) {
         if (attempt <= 5) {
             setTimeout(() => getItems(attempt + 1), 1000)
         } else {
+            snackbar.open({ preset: 'error' })
             loading.value = false
         }
     })
@@ -436,6 +458,7 @@ function getCrops(attempt = 1) {
         if (attempt <= 5) {
             setTimeout(() => getCrops(attempt + 1), 1000)
         } else {
+            snackbar.open({ preset: 'error' })
             loading_crops.value = false
         }
     })
@@ -451,6 +474,7 @@ function getPlantings(attempt = 1) {
         if (attempt <= 5) {
             setTimeout(() => getPlantings(attempt + 1), 1000)
         } else {
+            snackbar.open({ preset: 'error' })
             loading_plantings.value = false
         }
     })
@@ -466,6 +490,7 @@ function getTractors(attempt = 1) {
         if (attempt <= 5) {
             setTimeout(() => getTractors(attempt + 1), 1000)
         } else {
+            snackbar.open({ preset: 'error' })
             loading_tractors.value = false
         }
     })
@@ -481,6 +506,7 @@ function getImplements(attempt = 1) {
         if (attempt <= 5) {
             setTimeout(() => getImplements(attempt + 1), 1000)
         } else {
+            snackbar.open({ preset: 'error' })
             loading_implements.value = false
         }
     })
@@ -496,6 +522,7 @@ function getProducts(attempt = 1) {
         if (attempt <= 5) {
             setTimeout(() => getProducts(attempt + 1), 1000)
         } else {
+            snackbar.open({ preset: 'error' })
             loading_products.value = false
         }
     })
