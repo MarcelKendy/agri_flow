@@ -101,6 +101,7 @@
 // Imports
 import api from '@/plugins/axios.js'
 import { useAuthStore } from '@/stores/auth.js'
+import { useSnackbarStore } from '@/stores/snackbar'
 import { ref, computed, reactive, watch } from 'vue'
 import { useTheme, useDisplay } from 'vuetify'
 import DialogAddCrop from '@/components/dialogs/DialogAddCrop.vue'
@@ -117,6 +118,7 @@ const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 const auth = useAuthStore()
+const snackbar = useSnackbarStore()
 const items = ref([])
 const loading = ref(false)
 const search_field = ref('')
@@ -216,19 +218,18 @@ function getChipColor(index) {
 
 function getItems(attempt = 1) {
     loading.value = true
-    api.get('get_crops')
-        .then(response => {
-            items.value = response.data
+    api.get('get_crops').then(response => {
+        items.value = response.data
+        loading.value = false
+    }).catch(error => {
+        console.log(error)
+        if (attempt <= 5) {
+            setTimeout(() => getItems(attempt + 1), 1000)
+        } else {
+            snackbar.open({ preset: 'error' })
             loading.value = false
-        })
-        .catch(error => {
-            console.log(error)
-            if (attempt <= 5) {
-                setTimeout(() => getItems(attempt + 1), 1000)
-            } else {
-                loading.value = false
-            }
-        })
+        }
+    })
 }
 
 function editItem(edited_item) {

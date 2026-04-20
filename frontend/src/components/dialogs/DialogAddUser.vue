@@ -111,7 +111,7 @@
 </template>
 
 <script setup>
-//Imports
+// Imports
 import { ref, watch, reactive, computed } from 'vue'
 import api from '@/plugins/axios.js'
 import CryptoJS from 'crypto-js'
@@ -130,17 +130,17 @@ const alert_message = ref('')
 const alert = ref(false)
 const alert_fail = ref(true)
 
-//Computeds
+// Computeds
 const model_computed = computed(() => props.model)
 
-//Watchers
+// Watchers
 watch(model_computed, (v) => {
   if (v) {
     item = reactive({ name: '', cpf: '', email: '', password: '', password_confirmation: '' })
   }
 })
 
-//Methods
+// Methods
 function setEmail(full_name) {
   if (!/^[A-Z][\p{L}\s´~]* [A-Z][\p{L}\s´~]*$/u.test(full_name)) return
   let full_name_array = full_name.trim().toLowerCase().split(' ')
@@ -162,19 +162,17 @@ async function addUser() {
   let item_copy = { ...item }
   item_copy.password = encryptPassword(item_copy.password)
   delete item_copy['password_confirmation']
-  api.post('add_user', item_copy)
-    .then(response => {
-      emit('new_register', response.data)
-      closeDialog()
-      setTimeout(() => { loading.value = false }, 300)
-    })
-    .catch(err => {
-      console.log(err)
-      loading.value = false
-      alert_message.value = err?.response?.data?.message || 'Ocorreu um erro, tente novamente'
-      alert.value = true
-      setTimeout(() => { alert.value = false }, 4000)
-    })
+  api.post('add_user', item_copy).then(response => {
+    emit('new_register', response.data)
+    closeDialog()
+    setTimeout(() => { loading.value = false }, 300)
+  }).catch(err => {
+    console.log(err)
+    loading.value = false
+    alert_message.value = err?.response?.data?.message || 'Ocorreu um erro, tente novamente'
+    alert.value = true
+    setTimeout(() => { alert.value = false }, 4000)
+  })
 }
 
 function closeDialog() {

@@ -44,21 +44,21 @@
               </v-col>
               <v-col cols="12" md="6">
                 <v-select v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name"
-                  item-value="id" clearable :loading="loading_plantings" :disabled="loading || loading_plantings"
+                  item-value="id" no-data-text="Nenhum dado cadastrado..." clearable :loading="loading_plantings" :disabled="loading || loading_plantings"
                   :color="color" :rules="getRules({ required: true })" />
               </v-col>
               <v-col cols="12" md="6">
                 <v-select v-model="item.tractor_id" label="Trator" :items="tractors" item-title="name" item-value="id"
-                  clearable :loading="loading_tractors" :disabled="loading || loading_tractors" :color="color" />
+                  clearable :loading="loading_tractors" no-data-text="Nenhum dado cadastrado..." :disabled="loading || loading_tractors" :color="color" />
               </v-col>
               <v-col cols="12" md="6">
                 <v-select v-model="item.implement_id" label="Implemento" :items="implements_items" item-title="name"
-                  item-value="id" clearable :loading="loading_implements"
+                  item-value="id" clearable :loading="loading_implements" no-data-text="Nenhum dado cadastrado..."
                   :disabled="loading || loading_implements" :color="color" />
               </v-col>
               <v-col cols="12" md="6">
                 <v-select v-model="item.product_id" label="Produto" :items="products" item-title="name" item-value="id"
-                  clearable :loading="loading_products" :disabled="loading || loading_products" :color="color"
+                  clearable :loading="loading_products" :disabled="loading || loading_products" :color="color" no-data-text="Nenhum dado cadastrado..."
                   :rules="getRules({ required: true })" />
               </v-col>
               <v-col cols="12" md="6">
@@ -204,6 +204,7 @@ function getPlantings(attempt = 1) {
     if (attempt <= 5) {
       setTimeout(() => getPlantings(attempt + 1), 1000)
     } else {
+      snackbar.open({ preset: 'error' })
       loading_plantings.value = false
     }
   })
@@ -219,6 +220,7 @@ function getTractors(attempt = 1) {
     if (attempt <= 5) {
       setTimeout(() => getTractors(attempt + 1), 1000)
     } else {
+      snackbar.open({ preset: 'error' })
       loading_tractors.value = false
     }
   })
@@ -234,6 +236,7 @@ function getImplements(attempt = 1) {
     if (attempt <= 5) {
       setTimeout(() => getImplements(attempt + 1), 1000)
     } else {
+      snackbar.open({ preset: 'error' })
       loading_implements.value = false
     }
   })
@@ -249,6 +252,7 @@ function getProducts(attempt = 1) {
     if (attempt <= 5) {
       setTimeout(() => getProducts(attempt + 1), 1000)
     } else {
+      snackbar.open({ preset: 'error' })
       loading_products.value = false
     }
   })

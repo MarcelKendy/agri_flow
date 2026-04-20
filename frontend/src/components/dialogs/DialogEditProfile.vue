@@ -163,7 +163,7 @@
 </template>
 
 <script setup>
-//Imports
+// Imports
 import { ref, watch, reactive, computed } from 'vue'
 import api from '@/plugins/axios.js'
 import { useAuthStore } from '@/stores/auth.js'
@@ -188,13 +188,13 @@ const loading_profile = ref(false)
 const snackbar_text = ref('')
 const snackbar = ref(false)
 
-//Computeds
+// Computeds
 const model_computed = computed(() => props.model)
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 
-//Created
+// Created
 
-//Watchers
+// Watchers
 watch(model_computed, (v) => {
   if (v) {
     profile_form = reactive({})
@@ -203,7 +203,7 @@ watch(model_computed, (v) => {
   }
 })
 
-//Methods
+// Methods
 async function editUser() {
   const { valid } = await form.value.validate()
   if (!valid) return false

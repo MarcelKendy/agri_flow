@@ -48,25 +48,25 @@
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-select v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name"
-                  item-value="id" clearable :loading="loadingPlantings" :disabled="loading || loadingPlantings"
+                <v-select v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name" no-data-text="Nenhum dado cadastrado..."
+                  item-value="id" clearable :loading="loading_plantings" :disabled="loading || loading_plantings"
                   :color="color" :rules="getRules({ required: true })" />
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-select v-model="item.tractor_id" label="Trator" :items="tractors" item-title="name" item-value="id"
-                  clearable :loading="loadingTractors" :disabled="loading || loadingTractors" :color="color" />
+                <v-select v-model="item.tractor_id" label="Trator" :items="tractors" item-title="name" item-value="id" no-data-text="Nenhum dado cadastrado..."
+                  clearable :loading="loading_tractors" :disabled="loading || loading_tractors" :color="color" />
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-select v-model="item.implement_id" label="Implemento" :items="implementsItems" item-title="name"
-                  item-value="id" clearable :loading="loadingImplements" :disabled="loading || loadingImplements"
+                <v-select v-model="item.implement_id" label="Implemento" :items="implements_items" item-title="name" no-data-text="Nenhum dado cadastrado..."
+                  item-value="id" clearable :loading="loading_implements" :disabled="loading || loading_implements"
                   :color="color" />
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-select v-model="item.product_id" label="Produto" :items="products" item-title="name" item-value="id"
-                  clearable :loading="loadingProducts" :disabled="loading || loadingProducts" :color="color"
+                <v-select v-model="item.product_id" label="Produto" :items="products" item-title="name" item-value="id" no-data-text="Nenhum dado cadastrado..."
+                  clearable :loading="loading_products" :disabled="loading || loading_products" :color="color"
                   :rules="getRules({ required: true })" />
               </v-col>
 
@@ -97,7 +97,7 @@
             <v-spacer />
             <v-btn :disabled="loading" color="red" variant="outlined" @click="closeDialog">Cancelar</v-btn>
             <v-btn :loading="loading"
-              :disabled="loading || loadingImplements || loadingPlantings || loadingProducts || loadingTractors"
+              :disabled="loading || loading_implements || loading_plantings || loading_products || loading_tractors"
               :color="color" @click="editItem">Confirmar</v-btn>
           </v-card-actions>
         </div>
@@ -134,13 +134,13 @@ const form = ref(null)
 
 const plantings = ref([])
 const tractors = ref([])
-const implementsItems = ref([])
+const implements_items = ref([])
 const products = ref([])
 
-const loadingPlantings = ref(false)
-const loadingTractors = ref(false)
-const loadingImplements = ref(false)
-const loadingProducts = ref(false)
+const loading_plantings = ref(false)
+const loading_tractors = ref(false)
+const loading_implements = ref(false)
+const loading_products = ref(false)
 
 const services = [
   'Ferti Irrigação',
@@ -217,61 +217,65 @@ async function editItem() {
 }
 
 function getPlantings(attempt = 1) {
-  loadingPlantings.value = true
+  loading_plantings.value = true
   api.get('get_plantings').then(response => {
     plantings.value = response.data
-    loadingPlantings.value = false
+    loading_plantings.value = false
   }).catch(error => {
     console.log(error)
     if (attempt <= 5) {
       setTimeout(() => getPlantings(attempt + 1), 1000)
     } else {
-      loadingPlantings.value = false
+      snackbar.open({ preset: 'error' })
+      loading_plantings.value = false
     }
   })
 }
 
 function getTractors(attempt = 1) {
-  loadingTractors.value = true
+  loading_tractors.value = true
   api.get('get_tractors').then(response => {
     tractors.value = response.data
-    loadingTractors.value = false
+    loading_tractors.value = false
   }).catch(error => {
     console.log(error)
     if (attempt <= 5) {
       setTimeout(() => getTractors(attempt + 1), 1000)
     } else {
-      loadingTractors.value = false
+      snackbar.open({ preset: 'error' })
+      loading_tractors.value = false
     }
   })
 }
 
 function getImplements(attempt = 1) {
-  loadingImplements.value = true
+  loading_implements.value = true
   api.get('get_implements').then(response => {
-    implementsItems.value = response.data
-    loadingImplements.value = false
+    implements_items.value = response.data
+    loading_implements.value = false
   }).catch(error => {
     console.log(error)
     if (attempt <= 5) {
       setTimeout(() => getImplements(attempt + 1), 1000)
     } else {
-      loadingImplements.value = false
+      snackbar.open({ preset: 'error' })
+      loading_implements.value = false
     }
   })
 }
 
 function getProducts(attempt = 1) {
-  loadingProducts.value = true
+  loading_products.value = true
   api.get('get_products').then(response => {
     products.value = response.data
-    loadingProducts.value = false
+    loading_products.value = false
   }).catch(error => {
     console.log(error)
     if (attempt <= 5) {
       setTimeout(() => getProducts(attempt + 1), 1000)
     } else {
-      loadingProducts.value = false
+      snackbar.open({ preset: 'error' })
+      loading_products.value = false
     }
   })
 }

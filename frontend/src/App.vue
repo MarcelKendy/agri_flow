@@ -218,7 +218,7 @@
 </template>
 
 <script setup>
-//Imports
+// Imports
 import { RouterView, RouterLink, useRoute } from 'vue-router'
 import api from '@/plugins/axios.js';
 import { useAuthStore } from '@/stores/auth.js'
@@ -227,7 +227,7 @@ import { ref, reactive, watch, computed, onMounted } from 'vue'
 import DialogEditProfile from '@/components/dialogs/DialogEditProfile.vue'
 import { useTheme, useDisplay } from 'vuetify'
 
-//Variables
+// Variables
 const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
@@ -256,10 +256,10 @@ const breadcrumbs_items = reactive([])
 const password_expire_time = reactive([])
 const change_password_card_prop = ref(true)
 
-//Computeds
+// Computeds
 const auth_computed = computed(() => auth?.user?.configs)
 
-//Watchers
+// Watchers
 watch(auth_computed, (v) => {
   if (v == undefined || !v.hasOwnProperty('theme')) return
   use_theme.change(v.theme == 0 ? 'customLight' : 'customDark')
@@ -278,6 +278,7 @@ watch(dark_theme_model, (v) => {
     loading_theme.value = false
   }).catch((error) => {
     console.log(error)
+    snackbar.open({ preset: 'error' })
     loading_theme.value = false
   })
 })
@@ -302,7 +303,7 @@ watch(path, () => {
   }
 })
 
-//Mounted
+// Mounted
 onMounted(() => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -316,11 +317,11 @@ onMounted(() => {
   }
 })
 
-//Created
+// Created
 setTheme()
 checkPasswordResetExpire()
 
-//Methods
+// Methods
 function checkPasswordResetExpire(attempt = 1) {
   if (auth_computed.value == undefined || !auth_computed.value.hasOwnProperty('theme')) return
   api.get('get_user_password_expire', { params: { user_id: auth.user.id } }).then((response) => {

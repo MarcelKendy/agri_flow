@@ -150,16 +150,17 @@
     </div>
 </template>
 <script setup>
-//Imports
+// Imports
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useTheme, useDisplay } from 'vuetify'
 import api from '@/plugins/axios.js'
 import { useAuthStore } from '@/stores/auth.js'
+import { useSnackbarStore } from '@/stores/snackbar'
 import DialogEditProfile from '@/components/dialogs/DialogEditProfile.vue'
 import { useRoute } from 'vue-router'
 import { Chart, registerables } from 'chart.js'
 
-//Variables
+// Variables
 Chart.register(...registerables)
 const chartCanvas = ref(null)
 let chartInstance = null
@@ -168,6 +169,7 @@ const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 const auth = useAuthStore()
+const snackbar = useSnackbarStore()
 const profile_dialog = ref(false)
 let profile_form = ''
 const last_login = ref('')
@@ -182,15 +184,15 @@ const accesses_translations = {
     2: 'Administrador'
 }
 
-//Computeds
+// Computeds
 const my_profile = computed(() => user_data.id === auth.user.id)
 
-//Mounted
+// Mounted
 onMounted(() => {
 
 })
 
-//Watchers
+// Watchers
 watch(edit_note, (value) => {
     if (value) {
         requestAnimationFrame(() => {
@@ -205,10 +207,10 @@ watch(() => route.params.user_id, (new_user_id, old_user_id) => {
     }
 })
 
-//Created
+// Created
 getUserProfile()
 
-//Methods
+// Methods
 
 function getProfileData() {
     getActiveSession()
@@ -227,6 +229,7 @@ function saveNote(attempt = 1) {
         if (attempt <= 5) {
             setTimeout(() => saveNote(attempt + 1), 1000)
         } else {
+            snackbar.open({ preset: 'error' })
             loading_note.value = false
         }
     })
@@ -252,6 +255,7 @@ function getUserProfile(attempt = 1) {
         if (attempt <= 5) {
             setTimeout(() => getUserProfile(attempt + 1), 1000)
         } else {
+            snackbar.open({ preset: 'error' })
             loading_user.value = false
         }
     })

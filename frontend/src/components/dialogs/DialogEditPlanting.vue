@@ -175,19 +175,18 @@ function convertISOToBR(date) {
 
 function getCrops(attempt = 1) {
   loading_crops.value = true
-  api.get('get_crops')
-    .then(response => {
-      crops.value = response.data
+  api.get('get_crops').then(response => {
+    crops.value = response.data
+    loading_crops.value = false
+  }).catch(error => {
+    console.log(error)
+    if (attempt <= 5) {
+      setTimeout(() => getCrops(attempt + 1), 1000)
+    } else {
+      snackbar.open({ preset: 'error' })
       loading_crops.value = false
-    })
-    .catch(error => {
-      console.log(error)
-      if (attempt <= 5) {
-        setTimeout(() => getCrops(attempt + 1), 1000)
-      } else {
-        loading_crops.value = false
-      }
-    })
+    }
+  })
 }
 
 function getPivots(attempt = 1) {
@@ -202,6 +201,7 @@ function getPivots(attempt = 1) {
       if (attempt <= 5) {
         setTimeout(() => getPivots(attempt + 1), 1000)
       } else {
+        snackbar.open({ preset: 'error' })
         loading_pivots.value = false
       }
     })

@@ -84,9 +84,11 @@
 <script setup>
 import { ref } from 'vue'
 import api from '@/plugins/axios.js'
+import { useSnackbarStore } from '@/stores/snackbar'
 
 const emit = defineEmits(['close', 'deleted'])
 const loading = ref(false)
+const snackbar = useSnackbarStore()
 const props = defineProps({
   data: { type: Object, required: true },
   data_name: { type: String, required: true },

@@ -262,7 +262,7 @@ const disable_resend_otp_timer = ref(60)
 const disable_resend_otp_interval = ref(null)
 const loading_resend_otp = ref(false)
 
-//Mounted
+// Mounted
 onMounted(() => {
     if (route.params.reset_password_uid && route.params.reset_password_token) {
         verifyPasswordResetToken()
@@ -274,10 +274,10 @@ onBeforeUnmount(() => {
     clearInterval(disable_resend_otp_interval.value)
 })
 
-//Computeds
+// Computeds
 const otp_form_otp = computed(() => otp_form?.otp || '')
 
-//Watchers
+// Watchers
 watch(start, (v) => {
     if (v) {
         setTimeout(() => { logo_animation.value = true }, 300)
@@ -291,10 +291,10 @@ watch(otp_form_otp, (v) => {
     }
 })
 
-//Created
+// Created
 setTimeout(() => { start.value = true }, 300)
 
-//Methods
+// Methods
 function resendOtp() {
     loading_resend_otp.value = true
     api.post('resend_otp', otp_form).then((response) => {

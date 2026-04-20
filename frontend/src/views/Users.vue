@@ -126,6 +126,7 @@ import api from '@/plugins/axios.js'
 import { ref, reactive, watch, computed } from 'vue'
 import DialogAddUser from '@/components/dialogs/DialogAddUser.vue'
 import { useAuthStore } from '@/stores/auth.js'
+import { useSnackbarStore } from '@/stores/snackbar'
 import { useTheme, useDisplay } from 'vuetify'
 
 const { smAndDown } = useDisplay()
@@ -135,6 +136,7 @@ const items = ref([])
 const loading_users = ref(false)
 const add_user_dialog = ref(false)
 const auth = useAuthStore()
+const snackbar = useSnackbarStore()
 const search_field = ref('')
 const edit_loader = reactive({})
 const current_page = ref(1)
@@ -144,7 +146,7 @@ const items_per_page = ref(10);
 // Created
 getUsers()
 
-//Computeds
+// Computeds
 const filtered_items = computed(() => {
     current_page.value = 1
     return (!search_field.value || search_field.value.length === 0)
@@ -195,6 +197,7 @@ function getUsers(attempt = 1) {
         if (attempt <= 5) {
             setTimeout(() => getUsers(attempt + 1), 1000)
         } else {
+            snackbar.open({ preset: 'error' })
             loading_users.value = false
         }        
     })
@@ -208,6 +211,7 @@ function editUser(loader_index, item, field) {
         edit_loader[loader_index] = false
     }).catch((error) => {
         console.log(error)
+        snackbar.open({ preset: 'error' })
         edit_loader[loader_index] = false
     })
 }
@@ -219,6 +223,7 @@ function switchClick(new_value) {
         item.loading_status = false
     }).catch(error => {
         console.log(error)
+        snackbar.open({ preset: 'error' })
         item.loading_status = false
     })
 }
@@ -233,6 +238,7 @@ function resetPassword(data) {
         setTimeout(() => { item.reset_password_icon = 'mdi-lock-reset' }, 2000)
     }).catch(error => {
         console.log(error)
+        snackbar.open({ preset: 'error' })
         item.loading_password = false
     })
 }

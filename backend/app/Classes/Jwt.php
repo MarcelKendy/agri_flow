@@ -19,7 +19,7 @@ class Jwt {
     public static function create(User $data) {
         $key = config('app.jwt_key');
         $payload = [
-            "exp" => time() + 86400, //86400s = 24h
+            "exp" => time() + 604800, //604800s = 1sem
             "iat" => time(),
             "data" => $data
         ];

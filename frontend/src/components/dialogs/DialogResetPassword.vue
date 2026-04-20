@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-//Imports
+// Imports
 import { ref, watch, reactive, computed } from 'vue'
 import api from '@/plugins/axios.js'
 
@@ -98,15 +98,15 @@ const form = ref(null)
 const sending_error = ref(false)
 const error_text = ref('')
 
-//Computeds
+// Computeds
 const model_computed = computed(() => props.model)
 
-//Watchers
+// Watchers
 watch(model_computed, (v) => {
   if (v) reset_password = reactive({ email: '' })
 })
 
-//Methods
+// Methods
 async function sendPasswordResetMail(attempts = 1) {
   if (attempts == 1) {
     const { valid } = await form.value.validate()

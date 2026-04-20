@@ -258,12 +258,12 @@
 // Imports
 import api from '@/plugins/axios.js'
 import { useAuthStore } from '@/stores/auth.js'
+import { useSnackbarStore } from '@/stores/snackbar'
 import { ref, computed, reactive, watch } from 'vue'
 import { useTheme, useDisplay } from 'vuetify'
 import DialogAddPlanting from '@/components/dialogs/DialogAddPlanting.vue'
 import DialogEditPlanting from '@/components/dialogs/DialogEditPlanting.vue'
 import DialogDelete from '@/components/dialogs/DialogDelete.vue'
-import { useSnackbarStore } from '@/stores/snackbar'
 
 // Variables
 const props = defineProps({
@@ -272,11 +272,12 @@ const props = defineProps({
     color: { type: String, default: 'green' },
 })
 
-const snackbar = useSnackbarStore()
+
 const { smAndDown } = useDisplay()
 const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 const auth = useAuthStore()
+const snackbar = useSnackbarStore()
 
 const items = ref([])
 const crops = ref([])
