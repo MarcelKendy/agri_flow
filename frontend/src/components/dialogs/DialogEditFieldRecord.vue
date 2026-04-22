@@ -35,7 +35,20 @@
           <v-form ref="form" @submit.prevent="editItem">
             <v-row>
               <v-col cols="12">
+                <div class="d-flex justify-space-between">
                   <v-switch v-model="item.status" :color="color" label="Concluído"></v-switch>
+                   <v-tooltip text="Copiar para Whatsapp" content-class="tooltip-green" location="left">
+                        <template v-slot:activator="{ props }">
+                            <v-btn v-bind="props" size="small" class="mt-2" color="green"
+                                @click.stop="wppCopyText(data)">
+                                Copiar
+                                <template #prepend>
+                                  <v-icon color="white" size="x-large">mdi-whatsapp</v-icon>
+                                </template>                                
+                            </v-btn>
+                        </template>
+                    </v-tooltip>
+                </div>                  
               </v-col>
               <v-col cols="12">
                 <v-select style="margin-top: -40px !important" v-model="item.service" label="Serviço" :items="services" clearable :disabled="loading"
@@ -248,6 +261,128 @@ watch(() => item.product_id, value => {
 })
 
 // Methods
+function wppCopyText(item) {
+    const safe = value => value ?? ''
+
+    const formatDateBR = date => {
+        if (!date) return ''
+        const [year, month, day] = date.split('-')
+        return `${day}/${month}/${year}`
+    }
+
+    const getDaysAfterPlanting = date => {
+        if (!date) return ''
+        const planting = new Date(date + 'T00:00:00')
+        const today = new Date()
+
+        planting.setHours(0, 0, 0, 0)
+        today.setHours(0, 0, 0, 0)
+
+        return Math.floor((today - planting) / 86400000)
+    }
+
+    const getCropEmoji = name => {
+        if (!name) return '🌱'
+
+        const crop = name.toLowerCase()
+
+        const dictionary = {
+            alho: '🧄',
+            cenoura: '🥕',
+            milho: '🌽',
+            soja: '🫘',
+            batata: '🥔',
+            abacate: '🥑',
+            tomate: '🍅',
+            cebola: '🧅',
+            cana: '🎋',
+            café: '☕',
+            cafe: '☕',
+            trigo: '🌾',
+            feijão: '🫘',
+            feijao: '🫘',
+            brachiaria: '🌿',
+            braquiaria: '🌿'
+        }
+
+        for (const key in dictionary) {
+            if (crop.includes(key)) return dictionary[key]
+        }
+
+        return '🌱'
+    }
+
+    const cropName = safe(item.planting?.crop?.name)
+    const emoji = getCropEmoji(cropName)
+    const service = safe(item.service)
+    const plantingName = safe(item.planting?.name)
+    const pivotName = safe(item.planting?.pivot?.name)
+    const date = formatDateBR(item.date)
+    const dap = getDaysAfterPlanting(item.planting?.date)
+    const tractor = safe(item.tractor?.name)
+    const implement = safe(item.implement?.name)
+    const variety = safe(item.planting?.variety)
+    const size = item.planting?.size_ha ? `${item.planting.size_ha} ha` : ''
+    const notes = safe(item.notes)
+
+    const code = `FC-${item.id}`
+
+    const products = item.products?.length
+    ? item.products.map(product => {
+        const name = safe(product.product?.name)
+        const dosage = safe(product.dosage)
+
+        const unitMap = {
+            1: 'L/ha',
+            0: 'Kg/ha',
+        }
+        const unit = unitMap[product.product?.unit] ?? ''
+        return `• ${name} ${dosage} ${unit}`.trim()
+    }).join('\n')
+    : ''
+    const dapText =
+        dap === ''
+            ? ''
+            : dap < 0
+                ? `${Math.abs(dap)} dias até o plantio`
+                : `${dap} dias`
+
+    const text = [
+    `${emoji} *${cropName}${service ? ' — ' + service : ''}*`,
+    '——————————————',
+    `*Ficha:* ${code}`,
+    `📍 *Área:* ${plantingName}`,
+    `💧 *Pivô:* ${pivotName}`,
+    `📅 *Data:* ${date}`,
+    `🌿 *DAP:* ${dapText}`,
+    `🚜 *Trator:* ${tractor}`,
+    `⚙️ *Implemento:* ${implement}`,
+    `📌 *Local:* `,
+    `🌱 *Cultura:* ${cropName}`,
+    `🔩 *Horímetro inicial:* `,
+    `🔩 *Horímetro final:* `,
+    `📐 *Tamanho:* ${size}`,
+    `💧 *Vol. calda:* `,
+    `👤 *Operador:* `,
+    `🧬 *Variedade:* ${variety}`,
+    `📝 *Observações:* ${notes}`,
+    '——————————————',
+    '🧪 *Produtos:*',
+    products,
+    '——————————————',
+    '_Quirino Agronegócios_'
+    ].join('\n')
+
+    navigator.clipboard.writeText(text)
+
+    snackbar.open({
+        color: 'green',
+        prependIcon: 'mdi-whatsapp',
+        text: 'Texto copiado para a área de transferência!',
+        timer: true
+    })
+}
+
 function isProductDisabled(product_id, current_index) {
   return item.products.some((p, index) =>
     index !== current_index && p.product_id == product_id

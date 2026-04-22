@@ -534,6 +534,7 @@ function wppCopyText(item) {
     const date = formatDateBR(item.date)
     const dap = getDaysAfterPlanting(item.planting?.date)
     const tractor = safe(item.tractor?.name)
+    const implement = safe(item.implement?.name)
     const variety = safe(item.planting?.variety)
     const size = item.planting?.size_ha ? `${item.planting.size_ha} ha` : ''
     const notes = safe(item.notes)
@@ -569,6 +570,7 @@ function wppCopyText(item) {
     `📅 *Data:* ${date}`,
     `🌿 *DAP:* ${dapText}`,
     `🚜 *Trator:* ${tractor}`,
+    `⚙️ *Implemento:* ${implement}`,
     `📌 *Local:* `,
     `🌱 *Cultura:* ${cropName}`,
     `🔩 *Horímetro inicial:* `,

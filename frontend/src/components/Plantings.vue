@@ -303,19 +303,21 @@
                                         @click.stop="add_field_record_dialog_planting_id = item.id; add_field_record_dialog = true">
                                         Nova Ficha
                                     </v-btn>
+                                     <v-tooltip :text="item.status == 0 ? 'Retomar Plantio' : 'Pausar Plantio'" :content-class="item.status == 0 ? 'tooltip-green' : 'tooltip-red'" location="top">
+                                        <template v-slot:activator="{ props }">
+                                            <v-avatar v-bind="props" :color="item.status == 0 ? 'green' : 'red'" style="text-shadow: none;"
+                                                size="x-small" @click.stop="auth.user.level < 1 || loading_status[item.id]
+                                                    ? null
+                                                    : editPlanting(item.id, { status: item.status == 1 ? 0 : 1 })">
+                                                <v-progress-circular v-if="loading_status[item.id]" indeterminate size="15"
+                                                    width="3" />
 
-                                    <v-avatar :color="item.status == 0 ? 'green' : 'red'" style="text-shadow: none;"
-                                        size="x-small" @click.stop="auth.user.level < 1 || loading_status[item.id]
-                                            ? null
-                                            : editPlanting(item.id, { status: item.status == 1 ? 0 : 1 })">
-                                        <v-progress-circular v-if="loading_status[item.id]" indeterminate size="15"
-                                            width="3" />
-
-                                        <v-icon size="small" v-else>
-                                            {{ item.status == 1 ? 'mdi-pause' : 'mdi-play' }}
-                                        </v-icon>
-                                    </v-avatar>
-
+                                                <v-icon size="small" v-else>
+                                                    {{ item.status == 1 ? 'mdi-pause' : 'mdi-play' }}
+                                                </v-icon>
+                                            </v-avatar>
+                                        </template>
+                                    </v-tooltip>                                    
                                     <v-btn prepend-icon="mdi-pencil" variant="flat" size="x-small" color="orange"
                                         @click.stop="openEditDialog(item)">
                                         Editar
@@ -350,11 +352,11 @@
                                                 dot-color="grey-darken-3"
                                                 icon="mdi-information"
                                             >
-                                                <v-card class="pa-3 mb-2 timeline-card" :style="`
+                                                <v-card class="pa-3 mb-2 timeline-card" :style="` 
                                                         border: 1px solid grey;
                                                         cursor: pointer;
-                                                    `">
-                                                    Nenhuma ficha cadastrada, clique em "Nova Ficha" para adicionar.    
+                                                    `" @click.stop="add_field_record_dialog_planting_id = item.id; add_field_record_dialog = true">
+                                                    Nenhuma ficha cadastrada, clique em "Nova Ficha" ou aqui para adicionar. +    
                                                 </v-card>
                                             </v-timeline-item>
                                             <v-timeline-item
@@ -372,31 +374,61 @@
                                                         border: 1px solid ${getColorHex(getServiceColor(record.service))};
                                                         cursor: pointer;
                                                     `"
-                                                    @click.stop="openEditFieldRecord(record)"
+                                                    @click.stop="openEditFieldRecord(record, item)"
                                                 >
                                                     <div class="bold mb-2 d-flex justify-space-between">
                                                         <div>
-                                                            <v-chip size="small" class="pl-2 mr-1 mb-2">                                                    
+                                                            <v-chip size="small" class="pl-2 mr-1 mb-2">
                                                                 <template #prepend>
                                                                     <v-avatar start size="26" style="border: solid 1px white;">
-                                                                        <strong style="letter-spacing: 1px;" :style="dark_theme ? 'color: white' : 'color: black'">
+                                                                        <strong
+                                                                            style="letter-spacing: 1px;"
+                                                                            :style="dark_theme ? 'color: white' : 'color: black'"
+                                                                        >
                                                                             FC
                                                                         </strong>
                                                                     </v-avatar>
-                                                                </template>                    
-                                                                {{ record.id }}                                
+                                                                </template>
+                                                                {{ record.id }}
                                                             </v-chip>
-                                                            <span class="align-center">{{ record.service }}</span>
+
+                                                            <span class="align-center">
+                                                                {{ record.service }}
+                                                            </span>
                                                         </div>
-                                                        
-                                                        <v-chip
-                                                            variant="outlined"
-                                                            size="small"
-                                                            :color="getFieldRecordDateColor(record)"
-                                                        >
-                                                            {{ formatDateBR(record.date) }}
-                                                        </v-chip>
+
+                                                        <div class="d-flex flex-column align-end">
+                                                            <v-chip
+                                                                variant="outlined"
+                                                                size="small"
+                                                                class="mb-1"
+                                                                :color="getFieldRecordDateColor(record)"
+                                                            >
+                                                                {{ formatDateBR(record.date) }}
+                                                            </v-chip>
+
+                                                            <v-tooltip
+                                                                text="Copiar para Whatsapp"
+                                                                content-class="tooltip-green"
+                                                                location="left"
+                                                            >
+                                                                <template v-slot:activator="{ props }">
+                                                                    <v-btn
+                                                                        v-bind="props"
+                                                                        size="28"
+                                                                        icon                                                                                                                                              
+                                                                        color="green"
+                                                                        @click.stop="wppCopyText(prepareWppCopyText(record, item))"
+                                                                    >
+                                                                        <v-icon color="white">
+                                                                            mdi-whatsapp
+                                                                        </v-icon>
+                                                                    </v-btn>
+                                                                </template>
+                                                            </v-tooltip>
+                                                        </div>
                                                     </div>
+
                                                     <v-divider class="mb-2"></v-divider>
                                                     <v-row density="compact">
                                                         <v-col cols="12" lg="6">
@@ -678,10 +710,10 @@ function getFieldRecordDateColor(record) {
     return target < today ? 'red' : 'blue'
 }
 
-function openEditFieldRecord(item) {
-    Object.assign(edit_field_record_dialog_data, item)
+function openEditFieldRecord(item, full_item) {    
+    Object.assign(edit_field_record_dialog_data, prepareWppCopyText(item, full_item))    
     edit_field_record_dialog_planting_id.value = item.id 
-    edit_field_record_dialog.value = true
+    edit_field_record_dialog.value = true        
 }
 
 function getColorHex(color) {
@@ -805,7 +837,7 @@ function getAlerts(item) {
                     title: 'Inatividade',
                     text: `Inativo por ${inactiveDays} dia(s)`,
                     icon: 'mdi-calendar-alert',
-                    color: 'orange',
+                    color: 'red',
                     fixedTop: true
                 })
             }
@@ -836,6 +868,136 @@ function hasCriticalAlert(item) {
         alert.text.includes('Atrasado') ||
         alert.text.includes('Inativo')
     )
+}
+
+function prepareWppCopyText(item, full_item) {
+    let item_copy = {...item}    
+    let full_item_copy = {...full_item}    
+    delete full_item_copy.field_records
+    item_copy['planting'] = full_item_copy
+    return item_copy
+}
+
+function wppCopyText(item) {
+    const safe = value => value ?? ''
+
+    const formatDateBR = date => {
+        if (!date) return ''
+        const [year, month, day] = date.split('-')
+        return `${day}/${month}/${year}`
+    }
+
+    const getDaysAfterPlanting = date => {
+        if (!date) return ''
+        const planting = new Date(date + 'T00:00:00')
+        const today = new Date()
+
+        planting.setHours(0, 0, 0, 0)
+        today.setHours(0, 0, 0, 0)
+
+        return Math.floor((today - planting) / 86400000)
+    }
+
+    const getCropEmoji = name => {
+        if (!name) return '🌱'
+
+        const crop = name.toLowerCase()
+
+        const dictionary = {
+            alho: '🧄',
+            cenoura: '🥕',
+            milho: '🌽',
+            soja: '🫘',
+            batata: '🥔',
+            abacate: '🥑',
+            tomate: '🍅',
+            cebola: '🧅',
+            cana: '🎋',
+            café: '☕',
+            cafe: '☕',
+            trigo: '🌾',
+            feijão: '🫘',
+            feijao: '🫘',
+            brachiaria: '🌿',
+            braquiaria: '🌿'
+        }
+
+        for (const key in dictionary) {
+            if (crop.includes(key)) return dictionary[key]
+        }
+
+        return '🌱'
+    }
+
+    const cropName = safe(item.planting?.crop?.name)
+    const emoji = getCropEmoji(cropName)
+    const service = safe(item.service)
+    const plantingName = safe(item.planting?.name)
+    const pivotName = safe(item.planting?.pivot?.name)
+    const date = formatDateBR(item.date)
+    const dap = getDaysAfterPlanting(item.planting?.date)
+    const tractor = safe(item.tractor?.name)
+    const implement = safe(item.implement?.name)
+    const variety = safe(item.planting?.variety)
+    const size = item.planting?.size_ha ? `${item.planting.size_ha} ha` : ''
+    const notes = safe(item.notes)
+
+    const code = `FC-${item.id}`
+
+    const products = item.products?.length
+    ? item.products.map(product => {
+        const name = safe(product.product?.name)
+        const dosage = safe(product.dosage)
+
+        const unitMap = {
+            1: 'L/ha',
+            0: 'Kg/ha',
+        }
+        const unit = unitMap[product.product?.unit] ?? ''
+        return `• ${name} ${dosage} ${unit}`.trim()
+    }).join('\n')
+    : ''
+    const dapText =
+        dap === ''
+            ? ''
+            : dap < 0
+                ? `${Math.abs(dap)} dias até o plantio`
+                : `${dap} dias`
+
+    const text = [
+    `${emoji} *${cropName}${service ? ' — ' + service : ''}*`,
+    '——————————————',
+    `*Ficha:* ${code}`,
+    `📍 *Área:* ${plantingName}`,
+    `💧 *Pivô:* ${pivotName}`,
+    `📅 *Data:* ${date}`,
+    `🌿 *DAP:* ${dapText}`,
+    `🚜 *Trator:* ${tractor}`,
+    `⚙️ *Implemento:* ${implement}`,
+    `📌 *Local:* `,
+    `🌱 *Cultura:* ${cropName}`,
+    `🔩 *Horímetro inicial:* `,
+    `🔩 *Horímetro final:* `,
+    `📐 *Tamanho:* ${size}`,
+    `💧 *Vol. calda:* `,
+    `👤 *Operador:* `,
+    `🧬 *Variedade:* ${variety}`,
+    `📝 *Observações:* ${notes}`,
+    '——————————————',
+    '🧪 *Produtos:*',
+    products,
+    '——————————————',
+    '_Quirino Agronegócios_'
+    ].join('\n')
+
+    navigator.clipboard.writeText(text)
+
+    snackbar.open({
+        color: 'green',
+        prependIcon: 'mdi-whatsapp',
+        text: 'Texto copiado para a área de transferência!',
+        timer: true
+    })
 }
 
 function getServiceIcon(service) {
