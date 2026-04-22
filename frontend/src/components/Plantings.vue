@@ -217,6 +217,11 @@
                                             </div>
 
                                             <div class="dashboard-value">
+                                                <v-chip v-if="item.field_records.length == 0" size="x-small"
+                                                    class="mr-1 mb-1" style="padding-left: 6px;"
+                                                    variant="outlined" color="grey-darken-2">
+                                                    Vazio
+                                                </v-chip>
                                                 <v-chip
                                                     v-for="service in getGroupedServices(item.field_records)"
                                                     :key="service.name"
@@ -324,8 +329,8 @@
                                     >
                                         <v-divider class="my-3"></v-divider>
 
-                                        <div class="d-flex justify-space-between">
-                                            <div class="mb-7 bold d-flex align-start ga-2" style="font-size: 16px;">
+                                        <div class="d-flex justify-space-between pt-3">
+                                            <div class="mb-7 bold d-flex align-start ga-2 mt-1" style="font-size: 16px;">
                                                 <v-icon color="teal">mdi-timeline-clock</v-icon>
                                                 Timeline de Serviços                                                                                                                               
                                             </div>
@@ -340,6 +345,18 @@
                                             side="end"
                                             truncate-line="both"
                                         >
+                                            <v-timeline-item                                                                                                
+                                                v-if="item.field_records.length == 0"
+                                                dot-color="grey-darken-3"
+                                                icon="mdi-information"
+                                            >
+                                                <v-card class="pa-3 mb-2 timeline-card" :style="`
+                                                        border: 1px solid grey;
+                                                        cursor: pointer;
+                                                    `">
+                                                    Nenhuma ficha cadastrada, clique em "Nova Ficha" para adicionar.    
+                                                </v-card>
+                                            </v-timeline-item>
                                             <v-timeline-item
                                                 v-for="record in getSortedFieldRecords(item.field_records)"
                                                 :key="record.id"
@@ -1062,10 +1079,10 @@ function openDeleteDialog(item) {
 
 <style scoped>
 .alerts-box-dark {
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(255, 255, 255, 0.144);
     border-radius: 12px;
     overflow: hidden;
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.034);
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
@@ -1073,7 +1090,7 @@ function openDeleteDialog(item) {
     border: 1px solid rgba(0, 0, 0, 0.315);
     border-radius: 12px;
     overflow: hidden;
-    background: rgba(0,0,0,0.015);
+    background: rgba(0, 0, 0, 0.034);
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
@@ -1085,7 +1102,7 @@ function openDeleteDialog(item) {
 }
 
 .alerts-header-light {
-    background: rgba(0,0,0,0.08);
+    background: rgba(0, 0, 0, 0.171);
     padding: 10px 12px;
     display: flex;
     align-items: center;
@@ -1110,4 +1127,9 @@ function openDeleteDialog(item) {
     transform: translateY(-4px);
     box-shadow: 0 12px 25px rgba(0,0,0,.28);
 }
+
+:deep(.v-timeline-item__body) {
+    width: 100%;
+}
+
 </style>

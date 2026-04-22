@@ -101,7 +101,7 @@
 }
 
 .list-item-dark {
-    background-color: rgba(29, 29, 29, 0.603);
+    background-color: rgba(30, 30, 32, 0.712);
     padding: 20px;    
     margin-bottom: 20px;
     box-shadow: rgba(0, 0, 0, 0.075) 0px 2px 4px, rgba(0, 0, 0, 0.658) 0px 7px 13px -3px, rgba(0, 0, 0, 0.212) 0px -3px 0px inset;
@@ -116,7 +116,7 @@
 }
 
 .list-item {
-    background-color: rgba(219, 219, 219, 0.603);
+    background-color: rgba(202, 202, 202, 0.603);
     padding: 20px;    
     margin-bottom: 20px;
     box-shadow: rgba(0, 0, 0, 0.075) 0px 2px 2px, rgba(0, 0, 0, 0.658) 0px 5px 4px -3px, rgb(180, 180, 180) 0px -3px 0px inset;
