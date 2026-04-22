@@ -43,23 +43,23 @@
               </v-col>             
               <v-col cols="12" md="6">
                 <v-text-field v-model="item.date" label="Data" placeholder="dd/mm/aaaa" maxlength="10" clearable
-                  append-inner-icon="mdi-calendar" :disabled="loading" :color="color" @keyup="dateMask(item, 'date')"
+                  append-icon="mdi-calendar" :disabled="loading" :color="color" @keyup="dateMask(item, 'date')"
                   :rules="getRules({ required: true, date_br: true })" />
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-select v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name" no-data-text="Nenhum dado cadastrado..."
-                  item-value="id" clearable :loading="loading_plantings" :disabled="loading || loading_plantings"
+                <v-select v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name"  append-icon="mdi-sprout" :readonly="planting_id && planting_id > 0" no-data-text="Nenhum dado cadastrado..."
+                  item-value="id" :clearable="!planting_id" :loading="loading_plantings" :disabled="loading || loading_plantings"
                   :color="color" :rules="getRules({ required: true })" />
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-select v-model="item.tractor_id" label="Trator" :items="tractors" item-title="name" item-value="id" no-data-text="Nenhum dado cadastrado..."
+                <v-select v-model="item.tractor_id" label="Trator" :items="tractors" item-title="name" item-value="id" no-data-text="Nenhum dado cadastrado..." append-icon="mdi-tractor"
                   clearable :loading="loading_tractors" :disabled="loading || loading_tractors" :color="color" />
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-select v-model="item.implement_id" label="Implemento" :items="implements_items" item-title="name" no-data-text="Nenhum dado cadastrado..."
+                <v-select v-model="item.implement_id" label="Implemento" :items="implements_items" item-title="name" no-data-text="Nenhum dado cadastrado..." append-icon="mdi-cog-outline"
                   item-value="id" clearable :loading="loading_implements" :disabled="loading || loading_implements"
                   :color="color" />
               </v-col>
@@ -135,7 +135,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-textarea v-model="item.notes" label="Observações" rows="3" auto-grow clearable :disabled="loading" maxLength="500" counter
+                <v-textarea v-model="item.notes" label="Observações" rows="3" auto-grow clearable :disabled="loading" maxLength="500" counter append-icon="mdi-note-text-outline"
                   :color="color" />
               </v-col>
             </v-row>
@@ -174,6 +174,7 @@ const props = defineProps({
   color: { type: String },
   model: { type: Boolean, required: true },
   icon: { type: String, required: true },
+  planting_id : { type: Number, required: false },
   img: { type: String },
   data: { type: Object, required: true }
 })
@@ -197,7 +198,7 @@ const loading_products = ref(false)
 
 const services = [
   'Ferti Irrigação',
-  'Puverização',
+  'Pulverização',
   'Adubação',
   'Colheita',
   'Plantio'
@@ -207,7 +208,7 @@ const item = reactive({
   id: '',
   service: '',
   date: '',
-  planting_id: '',
+  planting_id: props.planting_id ?? '',
   tractor_id: '',
   implement_id: '',
   products: [ { product_id: '', dosage: '' } ],
@@ -233,6 +234,10 @@ watch(() => props.model, open => {
       dosage: p.dosage
     })) || [ { product_id: '', dosage: '' } ]
     item.date = convertISOToBR(item.date)
+    item.status =
+      typeof item.status === 'boolean'
+        ? item.status
+        : Number(item.status) === 1
   }
 })
 
@@ -383,7 +388,7 @@ function resetForm() {
   item.id = ''
   item.service = ''
   item.date = ''
-  item.planting_id = ''
+  item.planting_id = props.planting_id ?? ''
   item.tractor_id = ''
   item.implement_id = ''
   item.products = [ { product_id: '', dosage: '' } ]

@@ -106,23 +106,27 @@
                             @click="auth.user.level < 1 ? null : openEditDialog(item)">
                             <v-row class="align-center">
                                 <v-col cols="8" class="align-start">
-                                    <div class="d-flex align-center">
+                                    <div class="align-center">
                                         <v-icon :color="getServiceColor(item.service)" size="40" class="mr-2">
                                             {{ getServiceIcon(item.service) }}
                                         </v-icon>
-
                                         <div>
                                             <div class="bold" style="font-size:17px;">{{ item.service }}</div>
-
-                                            <div class="d-flex align-center mt-1">
-                                                <v-chip color="teal" prepend-icon="mdi-calendar" size="small">
-                                                    {{ formatDate(item.date) }}
+                                            <div class="mt-1">
+                                                <v-chip size="small" class="pl-2">                                                    
+                                                    <template #prepend>
+                                                        <v-avatar start size="26" style="border: solid 1px white;">
+                                                            <strong style="letter-spacing: 1px;" :style="dark_theme ? 'color: white' : 'color: black'">
+                                                                FC
+                                                            </strong>
+                                                        </v-avatar>
+                                                    </template>                    
+                                                    {{ item.id }}                                
                                                 </v-chip>
                                             </div>
                                         </div>
                                     </div>
                                 </v-col>
-
                                 <v-col cols="4" class="align-end">
                                     <v-chip :size="smAndDown ? 'x-small' : 'small'" variant="elevated" :color="getStatus(item).color"
                                         style="text-shadow:none;">
@@ -146,6 +150,34 @@
                                 <v-col cols="12" md="4">
                                     <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
                                         <div class="dashboard-label">
+                                            <v-icon size="14">mdi-calendar</v-icon>Data
+                                        </div>
+                                        <div class="dashboard-value">
+                                            <v-chip variant="outlined" size="small" :color="getDeadlineInfo(item).color">
+                                                {{ formatDate(item.date) }}
+                                            </v-chip>                                            
+                                        </div>
+                                    </div>
+                                </v-col>
+
+                                <v-col cols="12" md="4">
+                                    <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
+                                        <div class="dashboard-label">
+                                            <v-icon size="14" :color="getDeadlineInfo(item).color">
+                                                {{ getDeadlineInfo(item).icon }}
+                                            </v-icon>
+                                            Prazo
+                                        </div>
+
+                                        <div class="dashboard-value" :class="'text-' + getDeadlineInfo(item).color">
+                                            {{ getDeadlineInfo(item).text }}
+                                        </div>
+                                    </div>
+                                </v-col>
+
+                                <v-col cols="12" md="4">
+                                    <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
+                                        <div class="dashboard-label">
                                             <v-icon size="14">mdi-tractor</v-icon>Trator
                                         </div>
                                         <div class="dashboard-value">{{ item.tractor?.name || 'Não definido' }}</div>
@@ -161,7 +193,7 @@
                                     </div>
                                 </v-col>
 
-                                <v-col cols="12" md="6">
+                                <v-col cols="12" md="4">
                                     <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
                                         <div class="dashboard-label">
                                             <v-icon size="14">mdi-flask</v-icon>Produtos - Dose ha
@@ -195,23 +227,10 @@
                                     </div>
                                 </v-col>
 
-                                <v-col cols="12" md="6">
-                                    <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
-                                        <div class="dashboard-label">
-                                            <v-icon size="14" :color="getDeadlineInfo(item).color">
-                                                {{ getDeadlineInfo(item).icon }}
-                                            </v-icon>
-                                            Prazo
-                                        </div>
-
-                                        <div class="dashboard-value" :class="'text-' + getDeadlineInfo(item).color">
-                                            {{ getDeadlineInfo(item).text }}
-                                        </div>
-                                    </div>
-                                </v-col>
+                                
                             </v-row>
 
-                            <div class="mt-3">
+                            <div class="mt-3 mb-5">
                                 <v-btn v-if="item.notes" size="small" color="blue" variant="tonal"
                                     prepend-icon="mdi-note-text-outline"
                                     :append-icon="opened_notes.includes(item.id) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
@@ -228,15 +247,34 @@
                                 </v-expand-transition>
                             </div>
 
-                            <v-row>
-                                <v-col cols="8" class="align-start">
-                                    <v-switch @click.stop :disabled="loading_status[item.id] || auth.user.level < 1"
-                                        :loading="loading_status[item.id]" v-model="item.status"
-                                        @change="editFieldRecord(item.id, { status: Number(item.status) })" label="Concluído"
-                                        color="green"  
-                                        style="margin-bottom: -35px !important; margin-right: 30px;"></v-switch>
+                            <v-row class="align-center">
+                                <v-col cols="6" class="flex-column align-start">
+                                    <div style="font-size: 12px; line-height: 1; margin-bottom: -12px;">
+                                        <strong>
+                                            Concluído
+                                        </strong>
+                                    </div>
+                                    
+                                    <v-switch
+                                        @click.stop
+                                        :disabled="loading_status[item.id] || auth.user.level < 1"
+                                        :loading="loading_status[item.id]"
+                                        v-model="item.status"
+                                        @change="editFieldRecord(item.id, { status: Number(item.status) })"
+                                        color="green"
+                                        hide-details                                        
+                                        style="margin-top: 0 !important;"
+                                    />
                                 </v-col>
-                                <v-col cols="4" class="align-end">
+                                <v-col cols="6" class="align-end align-center">
+                                    <v-tooltip text="Copiar para Whatsapp" content-class="tooltip-green" location="left">
+                                        <template v-slot:activator="{ props }">
+                                            <v-btn v-bind="props" size="x-small" icon class="mr-4" color="green"
+                                                @click.stop="wppCopyText(item)">
+                                                <v-icon color="white" size="x-large">mdi-whatsapp</v-icon>
+                                            </v-btn>
+                                        </template>
+                                    </v-tooltip>
                                     <v-tooltip text="Deletar Ficha" content-class="tooltip-red" location="left">
                                         <template v-slot:activator="{ props }">
                                             <v-btn v-bind="props" size="x-small" prepend-icon="mdi-delete" :disabled="auth.user.level < 2"
@@ -328,7 +366,7 @@ const edit_dialog_data = reactive({})
 const delete_dialog_data = reactive({})
 const opened_notes = ref([])
 
-const services = ['Ferti Irrigação', 'Puverização', 'Adubação', 'Colheita', 'Plantio']
+const services = ['Ferti Irrigação', 'Pulverização', 'Adubação', 'Colheita', 'Plantio']
 
 const filters = reactive({
     crop: [],
@@ -376,6 +414,13 @@ const filtered_items = computed(() => {
     if (!search_field.value) return data
 
     const search = search_field.value.toLowerCase().trim()
+
+    const fcMatch = search.match(/^fc[\s-]?(\d+)$/i)
+
+    if (fcMatch) {
+        const id = Number(fcMatch[1])
+        return data.filter(item => item.id === id)
+    }
 
     return data.filter(item => {
         const match_basic_fields = searchable_fields.some(field => {
@@ -430,6 +475,126 @@ watch(items_length, (value) => {
 })
 
 // Methods
+function wppCopyText(item) {
+    const safe = value => value ?? ''
+
+    const formatDateBR = date => {
+        if (!date) return ''
+        const [year, month, day] = date.split('-')
+        return `${day}/${month}/${year}`
+    }
+
+    const getDaysAfterPlanting = date => {
+        if (!date) return ''
+        const planting = new Date(date + 'T00:00:00')
+        const today = new Date()
+
+        planting.setHours(0, 0, 0, 0)
+        today.setHours(0, 0, 0, 0)
+
+        return Math.floor((today - planting) / 86400000)
+    }
+
+    const getCropEmoji = name => {
+        if (!name) return '🌱'
+
+        const crop = name.toLowerCase()
+
+        const dictionary = {
+            alho: '🧄',
+            cenoura: '🥕',
+            milho: '🌽',
+            soja: '🫘',
+            batata: '🥔',
+            abacate: '🥑',
+            tomate: '🍅',
+            cebola: '🧅',
+            cana: '🎋',
+            café: '☕',
+            cafe: '☕',
+            trigo: '🌾',
+            feijão: '🫘',
+            feijao: '🫘',
+            brachiaria: '🌿',
+            braquiaria: '🌿'
+        }
+
+        for (const key in dictionary) {
+            if (crop.includes(key)) return dictionary[key]
+        }
+
+        return '🌱'
+    }
+
+    const cropName = safe(item.planting?.crop?.name)
+    const emoji = getCropEmoji(cropName)
+    const service = safe(item.service)
+    const plantingName = safe(item.planting?.name)
+    const pivotName = safe(item.planting?.pivot?.name)
+    const date = formatDateBR(item.date)
+    const dap = getDaysAfterPlanting(item.planting?.date)
+    const tractor = safe(item.tractor?.name)
+    const variety = safe(item.planting?.variety)
+    const size = item.planting?.size_ha ? `${item.planting.size_ha} ha` : ''
+    const notes = safe(item.notes)
+
+    const code = `FC-${item.id}`
+
+    const products = item.products?.length
+    ? item.products.map(product => {
+        const name = safe(product.product?.name)
+        const dosage = safe(product.dosage)
+
+        const unitMap = {
+            1: 'L/ha',
+            0: 'Kg/ha',
+        }
+        const unit = unitMap[product.product?.unit] ?? ''
+        return `• ${name} ${dosage} ${unit}`.trim()
+    }).join('\n')
+    : ''
+    const dapText =
+        dap === ''
+            ? ''
+            : dap < 0
+                ? `${Math.abs(dap)} dias até o plantio`
+                : `${dap} dias`
+
+    const text = [
+    `${emoji} *${cropName}${service ? ' — ' + service : ''}*`,
+    '——————————————',
+    `*Ficha:* ${code}`,
+    `📍 *Área:* ${plantingName}`,
+    `💧 *Pivô:* ${pivotName}`,
+    `📅 *Data:* ${date}`,
+    `🌿 *DAP:* ${dapText}`,
+    `🚜 *Trator:* ${tractor}`,
+    `📌 *Local:* `,
+    `🌱 *Cultura:* ${cropName}`,
+    `🔩 *Horímetro inicial:* `,
+    `🔩 *Horímetro final:* `,
+    `📐 *Tamanho:* ${size}`,
+    `💧 *Vol. calda:* `,
+    `👤 *Operador:* `,
+    `🧬 *Variedade:* ${variety}`,
+    `📝 *Observações:* ${notes}`,
+    '——————————————',
+    '🧪 *Produtos:*',
+    products,
+    '——————————————',
+    '_Quirino Agronegócios_'
+    ].join('\n')
+
+    navigator.clipboard.writeText(text)
+
+    snackbar.open({
+        color: 'green',
+        prependIcon: 'mdi-whatsapp',
+        text: 'Texto copiado para a área de transferência!',
+        timer: true
+    })
+}
+
 function clearFilters() {
     Object.keys(filters).forEach(key => {
         filters[key] = []
@@ -578,7 +743,7 @@ function getStatus(item) {
 function getServiceIcon(service) {
     const icons = {
         'Ferti Irrigação': 'mdi-water-sync',
-        'Puverização': 'mdi-spray',
+        'Pulverização': 'mdi-spray',
         'Adubação': 'mdi-shovel',
         'Colheita': 'mdi-food-apple',
         'Plantio': 'mdi-seed'
@@ -590,10 +755,10 @@ function getServiceIcon(service) {
 function getServiceColor(service) {
     const colors = {
         'Ferti Irrigação': 'blue',
-        'Puverização': 'deep-orange',
+        'Pulverização': 'teal',
         'Adubação': 'brown',
         'Colheita': 'green',
-        'Plantio': 'teal'
+        'Plantio': 'orange-darken-3'
     }
 
     return colors[service] || 'grey'

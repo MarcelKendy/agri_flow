@@ -25,6 +25,6 @@ class Planting extends Model
     }
 
     public function fieldRecords() {
-        return $this->hasMany(FieldRecord::class);
+        return $this->hasMany(FieldRecord::class)->with(['tractor', 'implement', 'products']);
     }
 }

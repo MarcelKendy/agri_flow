@@ -43,8 +43,8 @@
                   :rules="getRules({ required: true, date_br: true })" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name" append-icon="mdi-sprout"
-                  item-value="id" no-data-text="Nenhum dado cadastrado..." clearable :loading="loading_plantings" :disabled="loading || loading_plantings"
+                <v-select v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name" append-icon="mdi-sprout" :readonly="planting_id && planting_id > 0"
+                  item-value="id" no-data-text="Nenhum dado cadastrado..." :clearable="!planting_id" :loading="loading_plantings" :disabled="loading || loading_plantings"
                   :color="color" :rules="getRules({ required: true })" />
               </v-col>
               <v-col cols="12" md="6">
@@ -127,7 +127,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-textarea v-model="item.notes" label="Observações" rows="3" auto-grow clearable :disabled="loading" maxLength="500" counter
+                <v-textarea v-model="item.notes" label="Observações" rows="3" auto-grow clearable :disabled="loading" maxLength="500" counter append-icon="mdi-note-text-outline"
                   :color="color" />
               </v-col>
             </v-row>
@@ -162,6 +162,7 @@ const emit = defineEmits(['close', 'new_register'])
 const props = defineProps({
   color: { type: String, default: 'green' },
   icon: { type: String, required: true },
+  planting_id : { type: Number, required: false },
   img: { type: String },
   model: { type: Boolean, required: true },
 })
@@ -185,7 +186,7 @@ const loading_products = ref(false)
 const item = reactive({
   service: '',
   date: '',
-  planting_id: '',
+  planting_id: props.planting_id ?? '',
   tractor_id: '',
   implement_id: '',
   products: [ { product_id: '', dosage: '' } ],
@@ -194,7 +195,7 @@ const item = reactive({
 
 const services = [
   'Ferti Irrigação',
-  'Puverização',
+  'Pulverização',
   'Adubação',
   'Colheita',
   'Plantio'
@@ -346,7 +347,7 @@ function convertBRToISO(date) {
 function resetForm() {
   item.service = ''
   item.date = ''
-  item.planting_id = ''
+  item.planting_id = props.planting_id ?? ''
   item.tractor_id = ''
   item.implement_id = ''
   item.products = [ { product_id: '', dosage: '' } ]

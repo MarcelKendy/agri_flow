@@ -94,6 +94,7 @@ class FieldRecordController extends Controller
             return response()->json(['error' => 'Acesso negado'], 403);
         }
         $field_record->load(['planting', 'tractor', 'implement', 'products']);
+        $field_record->products()->delete();
         $field_record->delete();
         return response()->json($field_record);
     }

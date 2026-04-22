@@ -166,10 +166,10 @@
       </template>
     </v-navigation-drawer>
     <v-layout v-if="$route.name != 'login' && auth.is_auth && auth.hasData()">
-      <v-main v-if="$route.name == 'plantings'" :class="dark_theme ? 'background-dark' : 'background-light'">
-        <v-container class="main-container">
+      <v-main v-if="$route.name == 'plantings'" :class="dark_theme ? 'background-dark' : 'background-light'">                  
+        <div style="padding-right: 100px; padding-left: 100px; padding-bottom: 100px; padding-top: 100px;" :style="smAndDown ? 'padding-right: 2px; padding-left: 2px;' : ''">
           <router-view />
-        </v-container>
+        </div>
       </v-main>
       <v-main v-else :class="dark_theme ? 'background-dark' : 'background-light'">
         <v-container class="main-container">
@@ -207,8 +207,7 @@
       :model="profile_dialog" :data="profile_form" :change_password_card="change_password_card_prop" color="orange" />
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="snackbar.timeout"
       :location="snackbar.location" :variant="snackbar.variant" :timer="snackbar.timer"
-      :timer-color="snackbar.timerColor" :prepend-icon="snackbar.prependIcon">
-      <v-icon v-if="snackbar.prependIcon">{{ snackbar.prependIcon }}</v-icon>
+      :timer-color="snackbar.timerColor" :prepend-icon="snackbar.prependIcon">      
       {{ snackbar.text }}
       <template #actions>
         <v-btn @click="snackbar.close()" size="small" icon="mdi-close"></v-btn>

@@ -8,7 +8,7 @@ export const useSnackbarStore = defineStore('snackbar', {
         location: 'bottom',
         variant: 'elevated',
         prependIcon: '',
-        timer: false,
+        timer: true,
         timerColor: 'white'
     }),
     actions: {

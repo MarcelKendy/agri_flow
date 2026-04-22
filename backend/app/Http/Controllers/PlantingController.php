@@ -10,13 +10,13 @@ class PlantingController extends Controller
 {
     public function getPlanting($planting)
     {
-        $planting = Planting::with(['crop', 'pivot'])->findOrFail($planting);
+        $planting = Planting::with(['crop', 'pivot', 'fieldRecords'])->findOrFail($planting);
         return response()->json($planting);
     }
 
     public function getPlantings(Request $request)
     {
-        $plantings = Planting::with(['crop', 'pivot'])->get();
+        $plantings = Planting::with(['crop', 'pivot', 'fieldRecords'])->orderByDesc('id')->get();
         return response()->json($plantings);
     }
 
@@ -27,7 +27,7 @@ class PlantingController extends Controller
             return response()->json(['error' => 'Acesso negado'], 403);
         }
         $planting = Planting::create($request->all());
-        return response()->json($planting->load(['crop', 'pivot']));
+        return response()->json($planting->load(['crop', 'pivot', 'fieldRecords']));
     }
 
     public function editPlanting(Request $request, Planting $planting)
@@ -37,7 +37,7 @@ class PlantingController extends Controller
             return response()->json(['error' => 'Acesso negado'], 403);
         }
         $planting->update($request->all());
-        return response()->json($planting->fresh()->load(['crop', 'pivot']));
+        return response()->json($planting->fresh()->load(['crop', 'pivot', 'fieldRecords']));
     }
 
     public function deletePlanting(Planting $planting)
@@ -46,7 +46,7 @@ class PlantingController extends Controller
         if ($auth_user->level < 1) {
             return response()->json(['error' => 'Acesso negado'], 403);
         }
-        $planting->load(['crop', 'pivot']);
+        $planting->load(['crop', 'pivot', 'fieldRecords']);
         $planting->delete();
         return response()->json($planting);
     }
