@@ -21,7 +21,8 @@
             <v-card-text>
                 <v-row v-if="items_length" class="align-center">
                     <v-col cols="12" class="d-flex ga-2">
-                        <v-btn @click="filter_active = !filter_active" color="teal" prepend-icon="mdi-filter" :disabled="loading || !items_length"
+                        <v-btn @click="filter_active = !filter_active" color="teal" prepend-icon="mdi-filter"
+                            :disabled="loading || !items_length"
                             :append-icon="filter_active ? 'mdi-eye-off' : 'mdi-eye'" size="small">
                             {{ filter_active ? 'Esconder filtros' : 'Exibir filtros' }}
                         </v-btn>
@@ -29,11 +30,10 @@
                             prepend-icon="mdi-filter-remove">
                             Limpar filtros
                         </v-btn>
-                    </v-col> 
+                    </v-col>
                     <v-expand-transition>
-                        <v-col cols="12" v-if="items_length && filter_active">                        
-                            <div
-                                :class="dark_theme ? 'filter-section-dark' : 'filter-section-light'">
+                        <v-col cols="12" v-if="items_length && filter_active">
+                            <div :class="dark_theme ? 'filter-section-dark' : 'filter-section-light'">
                                 <div class="bold mb-5" style="font-size: 15px;">
                                     <v-icon>mdi-filter</v-icon>
                                     Filtros
@@ -41,26 +41,31 @@
 
                                 <v-row>
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select v-model="filters.crops" label="Culturas" :items="crops" multiple chips item-title="name" item-value="id"
-                                            closable-chips clearable variant="solo" color="teal" :loading="loading_crops" :disabled="loading_crops"
+                                        <v-select v-model="filters.crops" label="Culturas" :items="crops" multiple chips
+                                            item-title="name" item-value="id" closable-chips clearable variant="solo"
+                                            color="teal" :loading="loading_crops" :disabled="loading_crops"
                                             no-data-text="Nenhum dado cadastrado..." prepend-icon="mdi-seed" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
                                         <v-select v-model="filters.varieties" label="Variedades" :items="varieties"
-                                            multiple chips closable-chips clearable variant="solo" color="teal" :loading="loading_crops" :disabled="loading_crops"
-                                            no-data-text="Nenhum dado cadastrado..." prepend-icon="mdi-flower-tulip"/>
+                                            multiple chips closable-chips clearable variant="solo" color="teal"
+                                            :loading="loading_crops" :disabled="loading_crops"
+                                            no-data-text="Nenhum dado cadastrado..." prepend-icon="mdi-flower-tulip" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select v-model="filters.pivots" label="Pivôs" :items="pivots" multiple chips :loading="loading_pivots" :disabled="loading_pivots"
-                                            closable-chips clearable variant="solo" color="teal"  prepend-icon="mdi-water-pump" item-title="name" item-value="id"
+                                        <v-select v-model="filters.pivots" label="Pivôs" :items="pivots" multiple chips
+                                            :loading="loading_pivots" :disabled="loading_pivots" closable-chips
+                                            clearable variant="solo" color="teal" prepend-icon="mdi-water-pump"
+                                            item-title="name" item-value="id"
                                             no-data-text="Nenhum dado cadastrado..." />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
                                         <v-select v-model="filters.status" label="Status" :items="['Ativo', 'Inativo']"
-                                            multiple chips closable-chips clearable variant="solo" color="teal" prepend-icon="mdi-list-status" />
+                                            multiple chips closable-chips clearable variant="solo" color="teal"
+                                            prepend-icon="mdi-list-status" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
@@ -69,9 +74,9 @@
                                             clearable variant="solo" color="teal" prepend-icon="mdi-calendar" />
                                     </v-col>
                                 </v-row>
-                            </div>                        
+                            </div>
                         </v-col>
-                    </v-expand-transition>    
+                    </v-expand-transition>
                 </v-row>
 
                 <v-row v-if="items_length" class="align-center">
@@ -89,10 +94,8 @@
                     </v-alert>
                     <v-col v-else v-for="item in paginated_items" :key="item.id" cols="12" md="6"
                         :class="dark_theme ? 'text-shadow-black-2' : ''">
-                        <v-card
-                            class="items-card"
-                            :class="dark_theme ? 'list-item-dark' : 'list-item'" style="padding: 0;"                                                  
-                        >
+                        <v-card class="items-card" :class="dark_theme ? 'list-item-dark' : 'list-item'"
+                            style="padding: 0;">
                             <div @click="toggleExpand(item.id)" style="padding: 20px;">
                                 <div class="d-flex justify-space-between align-start mb-3">
                                     <div style="font-size: 34px;">
@@ -126,7 +129,7 @@
 
                                         <template v-else-if="getDaysAfterPlanting(item.date) == 0">
                                             <div class="bold" style="font-size: 22px;">
-                                                <v-chip color="info" size="large">Hoje!</v-chip>  
+                                                <v-chip color="info" size="large">Hoje!</v-chip>
                                             </div>
                                         </template>
 
@@ -213,24 +216,19 @@
                                         <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
                                             <div class="dashboard-label">
                                                 <v-icon size="14">mdi-file-document-multiple</v-icon>
-                                                Fichas - {{ item.field_records?.filter(r => r.id).length || 0 }}
+                                                Fichas - {{item.field_records?.filter(r => r.id).length || 0}}
                                             </div>
 
                                             <div class="dashboard-value">
                                                 <v-chip v-if="item.field_records.length == 0" size="x-small"
-                                                    class="mr-1 mb-1" style="padding-left: 6px;"
-                                                    variant="outlined" color="grey-darken-2">
+                                                    class="mr-1 mb-1" style="padding-left: 6px;" variant="outlined"
+                                                    color="grey-darken-2">
                                                     Vazio
                                                 </v-chip>
-                                                <v-chip
-                                                    v-for="service in getGroupedServices(item.field_records)"
-                                                    :key="service.name"
-                                                    size="x-small"
-                                                    class="mr-1 mb-1"
-                                                    style="padding-left: 6px;"
-                                                    variant="outlined"
-                                                    :color="service.color"
-                                                >
+                                                <v-chip v-for="service in getGroupedServices(item.field_records)"
+                                                    :key="service.name" size="x-small" class="mr-1 mb-1"
+                                                    style="padding-left: 6px;" variant="outlined"
+                                                    :color="service.color">
                                                     <template #prepend>
                                                         <v-avatar start size="18" :color="service.color">
                                                             {{ service.count }}
@@ -243,22 +241,24 @@
                                     </v-col>
 
                                     <v-col cols="12">
-                                        <div
-                                            :class="[
-                                                dark_theme ? 'alerts-box-dark' : 'alerts-box-light',
-                                                hasCriticalAlert(item) ? 'alerts-danger-border' : ''
-                                            ]"
-                                        >
+                                        <div :class="[
+                                            dark_theme ? 'alerts-box-dark' : 'alerts-box-light',
+                                            hasCriticalAlert(item) ? 'alerts-danger-border' : ''
+                                        ]">
                                             <!-- Header -->
-                                            <div :class="dark_theme ? 'alerts-header-dark' : 'alerts-header-light'" :style="hasCriticalAlert(item) ? (dark_theme ? 'color: rgb(250, 100, 100)' : 'color: rgb(195, 10, 0)' ) : ''">
-                                                <v-icon size="18" class="mr-2">{{ hasCriticalAlert(item) ? 'mdi-bell-alert' : (getAlerts(item).length ? 'mdi-bell-ring' : 'mdi-bell-off') }}</v-icon>
-                                                <strong>Alertas {{ getAlerts(item).length ? ' - ' + getAlerts(item).length : '' }}</strong>
+                                            <div :class="dark_theme ? 'alerts-header-dark' : 'alerts-header-light'"
+                                                :style="hasCriticalAlert(item) ? (dark_theme ? 'color: rgb(250, 100, 100)' : 'color: rgb(195, 10, 0)') : ''">
+                                                <v-icon size="18" class="mr-2">{{ hasCriticalAlert(item) ?
+                                                    'mdi-bell-alert' : (getAlerts(item).length ?
+                                                        'mdi-bell-ring' : 'mdi-bell-off') }}</v-icon>
+                                                <strong>Alertas {{ getAlerts(item).length ? ' - ' +
+                                                    getAlerts(item).length : '' }}</strong>
                                             </div>
 
                                             <!-- Rows -->
                                             <template v-if="getAlerts(item).length">
                                                 <div v-for="(alert, index) in getAlerts(item)" :key="index">
-                                                    <div class="alerts-row">                                                    
+                                                    <div class="alerts-row">
 
                                                         <v-icon :color="alert.color" size="18" class="mr-3">
                                                             {{ alert.icon }}
@@ -269,10 +269,13 @@
                                                             <div style="opacity: 0.7;">{{ alert.text }}</div>
                                                         </div>
 
-                                                        <v-chip size="small" :color="alert.color || 'grey'" class="pr-5">
+                                                        <v-chip size="small" :color="alert.color || 'grey'"
+                                                            class="pr-5">
                                                             <template #prepend>
-                                                                <v-avatar start size="20" style="border: solid 1px white;">
-                                                                    <strong style="letter-spacing: 1px;" :style="dark_theme ? 'color: white' : 'color: black'">
+                                                                <v-avatar start size="20"
+                                                                    style="border: solid 1px white;">
+                                                                    <strong style="letter-spacing: 1px;"
+                                                                        :style="dark_theme ? 'color: white' : 'color: black'">
                                                                         FC
                                                                     </strong>
                                                                 </v-avatar>
@@ -282,10 +285,7 @@
                                                         </v-chip>
                                                     </div>
 
-                                                    <v-divider
-                                                        v-if="index < getAlerts(item).length - 1"
-                                                        class="my-1"
-                                                    />
+                                                    <v-divider v-if="index < getAlerts(item).length - 1" class="my-1" />
                                                 </div>
                                             </template>
 
@@ -297,233 +297,373 @@
 
                                 </v-row>
 
-                                <v-card-actions class="align-end">
-
-                                    <v-btn prepend-icon="mdi-file-document-plus" variant="flat" size="x-small" color="green"
+                                <v-card-actions class="align-end" style="position: relative;">
+                                    <v-btn variant="elevated" style="position: absolute; left: 5px; bottom: 0px;"
+                                        size="x-small" :color="dark_theme ? 'grey-darken-2' : 'grey-darken-1'" icon>
+                                        <v-icon size="x-large">{{ expanded_items[item.id] ? 'mdi-chevron-up' :
+                                            'mdi-chevron-down' }}</v-icon>
+                                    </v-btn>
+                                    <v-btn prepend-icon="mdi-file-document-plus" variant="flat" size="x-small"
+                                        color="green"
                                         @click.stop="add_field_record_dialog_planting_id = item.id; add_field_record_dialog = true">
                                         Nova Ficha
                                     </v-btn>
-                                     <v-tooltip :text="item.status == 0 ? 'Retomar Plantio' : 'Pausar Plantio'" :content-class="item.status == 0 ? 'tooltip-green' : 'tooltip-red'" location="top">
+                                    <v-tooltip :text="item.status == 0 ? 'Retomar Plantio' : 'Pausar Plantio'"
+                                        :content-class="item.status == 0 ? 'tooltip-green' : 'tooltip-red'"
+                                        location="top">
                                         <template v-slot:activator="{ props }">
-                                            <v-avatar v-bind="props" :color="item.status == 0 ? 'green' : 'red'" style="text-shadow: none;"
-                                                size="x-small" @click.stop="auth.user.level < 1 || loading_status[item.id]
+                                            <v-avatar v-bind="props" :color="item.status == 0 ? 'green' : 'red'"
+                                                style="text-shadow: none;" size="x-small" @click.stop="auth.user.level < 1 || loading_status[item.id]
                                                     ? null
                                                     : editPlanting(item.id, { status: item.status == 1 ? 0 : 1 })">
-                                                <v-progress-circular v-if="loading_status[item.id]" indeterminate size="15"
-                                                    width="3" />
+                                                <v-progress-circular v-if="loading_status[item.id]" indeterminate
+                                                    size="15" width="3" />
 
                                                 <v-icon size="small" v-else>
                                                     {{ item.status == 1 ? 'mdi-pause' : 'mdi-play' }}
                                                 </v-icon>
                                             </v-avatar>
                                         </template>
-                                    </v-tooltip>                                    
+                                    </v-tooltip>
                                     <v-btn prepend-icon="mdi-pencil" variant="flat" size="x-small" color="orange"
                                         @click.stop="openEditDialog(item)">
                                         Editar
                                     </v-btn>
                                 </v-card-actions>
-                                                     
 
                                 <v-expand-transition>
-                                    <div
-                                        v-if="expanded_items[item.id]"
-                                    >
+                                    <div v-if="expanded_items[item.id]">
                                         <v-divider class="my-3"></v-divider>
+                                        <div class="d-flex ga-2 mb-4 py-2 menu-scroll" style="text-shadow: none">
+                                            <v-chip v-for="section in expanded_items_sections" :key="section.key"
+                                                clickable
+                                                :style="getExpandedSection(item.id) === section.key ? 'border: solid 2px rgba(50, 50, 50, 0.6)' : ''"
+                                                :variant="getExpandedSection(item.id) === section.key ? 'elevated' : 'outlined'"
+                                                class="px-4 menu-scroll-item"
+                                                :color="getExpandedSection(item.id) === section.key
+                                                    ? 'green-lighten-2'
+                                                    : (dark_theme ? 'rgba(190, 190, 190, 0.8)' : 'rgba(30, 30, 30, 0.6)')"
+                                                @click.stop="expanded_section[item.id] = section.key">
+                                                <v-icon start>{{ section.icon }}</v-icon>
+                                                {{ section.label }}
+                                            </v-chip>
+                                        </div>
 
-                                        <div class="d-flex justify-space-between pt-3">
-                                            <div class="mb-7 bold d-flex align-start ga-2 mt-1" style="font-size: 16px;">
-                                                <v-icon color="teal">mdi-timeline-clock</v-icon>
-                                                Timeline de Serviços                                                                                                                               
+                                        <div class="d-flex justify-space-between mb-6">
+                                            <div class="bold d-flex align-center ga-2" style="font-size: 16px;">
+                                                <v-icon color="teal">
+                                                    {{
+                                                        expanded_items_sections.find(
+                                                            s => s.key === getExpandedSection(item.id)
+                                                        )?.icon
+                                                    }}
+                                                </v-icon>
+
+                                                {{
+                                                    expanded_items_sections.find(
+                                                        s => s.key === getExpandedSection(item.id)
+                                                    )?.title
+                                                }}
                                             </div>
-                                            <v-chip size="small" >
+                                            <v-chip v-if="getExpandedSection(item.id) === 'timeline'" size="small">
                                                 Total: {{ getFilteredTimeline(item).length }}
                                             </v-chip>
-                                            
                                         </div>
-                                                                           
-                                        <v-row v-if="item.field_records.length > 0" class="align-center mb-8" style="margin-top: -10px;">
-                                            <v-col cols="12" lg="8" class="align-center" style="margin-bottom: -20px;">
-                                                <v-select variant="underlined" v-model="getTimelineFilter(item.id).services" label="Serviços" @click.stop placeholder="Filtre pelo serviço da ficha"
-                                                    :items="services" multiple chips closable-chips clearable color="teal"
-                                                    prepend-icon="mdi-briefcase" />
-                                            </v-col>
-                                            <v-col cols="12" lg="4" style="margin-bottom: -40px;" >
-                                                <v-checkbox v-model="getTimelineFilter(item.id).status" @click.stop label="Concluídos" color="teal"></v-checkbox>
-                                            </v-col>
-                                            <v-col cols="12" class="align-end">
-                                                <v-btn prepend-icon="mdi-filter-off" :disabled="getTimelineFilter(item.id).status == false && getTimelineFilter(item.id).services.length == 0"  @click.stop="clearTimelineFilter(item.id)" size="x-small" color="grey-lighten-2">
-                                                    Limpar Filtro
-                                                </v-btn>
-                                            </v-col>
-                                            
-                                        </v-row>
-                                        
-                                        <v-timeline
-                                            density="compact"
-                                            align="start"
-                                            side="end"
-                                            truncate-line="both"
-                                        >
-                                            <v-timeline-item                                                                                                
-                                                v-if="getFilteredTimeline(item).length == 0"
-                                                dot-color="grey-darken-3"
-                                                icon="mdi-information"                                                
-                                            >
-                                                <v-card class="pa-3 mb-2 timeline-card" :style="` 
+                                        <div v-if="getExpandedSection(item.id) === 'timeline'">
+                                            <v-row v-if="item.field_records.length > 0" class="align-center mb-8"
+                                                style="margin-top: -10px;">
+                                                <v-col cols="12" lg="8" class="align-center"
+                                                    style="margin-bottom: -20px;">
+                                                    <v-select variant="underlined"
+                                                        v-model="getTimelineFilter(item.id).services" label="Serviços"
+                                                        @click.stop placeholder="Filtre pelo serviço da ficha"
+                                                        :items="services" multiple chips closable-chips clearable
+                                                        color="teal" prepend-icon="mdi-briefcase" />
+                                                </v-col>
+                                                <v-col cols="12" lg="4" style="margin-bottom: -40px;">
+                                                    <v-checkbox v-model="getTimelineFilter(item.id).status" @click.stop
+                                                        label="Concluídos" color="teal"></v-checkbox>
+                                                </v-col>
+                                                <v-col cols="12" class="align-end">
+                                                    <v-btn prepend-icon="mdi-filter-off"
+                                                        :disabled="getTimelineFilter(item.id).status == false && getTimelineFilter(item.id).services.length == 0"
+                                                        @click.stop="clearTimelineFilter(item.id)" size="x-small"
+                                                        color="grey-lighten-2">
+                                                        Limpar Filtro
+                                                    </v-btn>
+                                                </v-col>
+
+                                            </v-row>
+
+                                            <v-timeline density="compact" align="start" side="end" truncate-line="both">
+                                                <v-timeline-item v-if="getFilteredTimeline(item).length == 0"
+                                                    dot-color="grey-darken-3" icon="mdi-information">
+                                                    <v-card class="pa-3 mb-2 timeline-card" :style="` 
                                                         border: 1px solid grey;
                                                         cursor: pointer;
-                                                    `" @click.stop="add_field_record_dialog_planting_id = item.id; add_field_record_dialog = true">
-                                                    Nenhuma ficha cadastrada{{ item.field_records.length > 0 ? ' com esse filtro' : '' }}, clique em "Nova Ficha" ou aqui para adicionar. +    
-                                                </v-card>
-                                            </v-timeline-item>
-                                            <v-timeline-item
-                                                v-for="record in getFilteredTimeline(item)"
-                                                :key="record.id"
-                                                :dot-color="getServiceColor(record.service)"
-                                                :icon="getServiceIcon(record.service)"
-                                                fill-dot
-                                            >
-                                               <v-card
-                                                    class="pa-3 mb-2 timeline-card"
-                                                    :class="dark_theme ? 'alerts-box-dark' : 'alerts-box-light'"
-                                                    :style="`
+                                                    `"
+                                                        @click.stop="add_field_record_dialog_planting_id = item.id; add_field_record_dialog = true">
+                                                        Nenhuma ficha cadastrada{{ item.field_records.length > 0 ? ' com esse filtro' : '' }}, clique em
+                                                        "Nova Ficha" ou aqui para adicionar. +
+                                                    </v-card>
+                                                </v-timeline-item>
+                                                <v-timeline-item v-for="record in getFilteredTimeline(item)"
+                                                    :key="record.id" :dot-color="getServiceColor(record.service)"
+                                                    :icon="getServiceIcon(record.service)" fill-dot>
+                                                    <v-card class="pa-3 mb-2 timeline-card"
+                                                        :class="dark_theme ? 'alerts-box-dark' : 'alerts-box-light'"
+                                                        :style="`
                                                         width: 100%;
                                                         border: 1px solid ${getColorHex(getServiceColor(record.service))};
                                                         cursor: pointer;
-                                                    `"
-                                                    @click.stop="openEditFieldRecord(record, item)"
-                                                >
-                                                    <div class="bold mb-2 d-flex justify-space-between">
-                                                        <div>
-                                                            <v-chip size="small" class="pl-2 mr-1 mb-2">
-                                                                <template #prepend>
-                                                                    <v-avatar start size="26" style="border: solid 1px white;">
-                                                                        <strong
-                                                                            style="letter-spacing: 1px;"
-                                                                            :style="dark_theme ? 'color: white' : 'color: black'"
-                                                                        >
-                                                                            FC
-                                                                        </strong>
-                                                                    </v-avatar>
-                                                                </template>
-                                                                {{ record.id }}
-                                                            </v-chip>
+                                                    `" @click.stop="openEditFieldRecord(record, item)">
+                                                        <div class="bold mb-2 d-flex justify-space-between">
+                                                            <div>
+                                                                <v-chip size="small" class="pl-2 mr-1 mb-2">
+                                                                    <template #prepend>
+                                                                        <v-avatar start size="26"
+                                                                            style="border: solid 1px white;">
+                                                                            <strong style="letter-spacing: 1px;"
+                                                                                :style="dark_theme ? 'color: white' : 'color: black'">
+                                                                                FC
+                                                                            </strong>
+                                                                        </v-avatar>
+                                                                    </template>
+                                                                    {{ record.id }}
+                                                                </v-chip>
 
-                                                            <span class="align-center">
-                                                                {{ record.service }}
-                                                            </span>
+                                                                <span class="align-center">
+                                                                    {{ record.service }}
+                                                                </span>
+                                                            </div>
+
+                                                            <div class="d-flex flex-column align-end">
+                                                                <v-chip variant="outlined" size="small" class="mb-1"
+                                                                    :color="getFieldRecordDateColor(record)">
+                                                                    {{ formatDateBR(record.date) }}
+                                                                </v-chip>
+
+                                                                <v-tooltip text="Copiar para Whatsapp"
+                                                                    content-class="tooltip-green" location="left">
+                                                                    <template v-slot:activator="{ props }">
+                                                                        <v-btn v-bind="props" size="28" icon
+                                                                            color="green"
+                                                                            @click.stop="wppCopyText(prepareWppCopyText(record, item))">
+                                                                            <v-icon color="white">
+                                                                                mdi-whatsapp
+                                                                            </v-icon>
+                                                                        </v-btn>
+                                                                    </template>
+                                                                </v-tooltip>
+                                                            </div>
                                                         </div>
 
-                                                        <div class="d-flex flex-column align-end">
-                                                            <v-chip
-                                                                variant="outlined"
-                                                                size="small"
-                                                                class="mb-1"
-                                                                :color="getFieldRecordDateColor(record)"
-                                                            >
-                                                                {{ formatDateBR(record.date) }}
-                                                            </v-chip>
+                                                        <v-divider class="mb-2"></v-divider>
+                                                        <v-row density="compact">
+                                                            <v-col cols="12" lg="6">
+                                                                <div
+                                                                    :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
+                                                                    <div class="dashboard-label">
+                                                                        <v-icon size="14">mdi-tractor</v-icon>
+                                                                        Trator
+                                                                    </div>
 
-                                                            <v-tooltip
-                                                                text="Copiar para Whatsapp"
-                                                                content-class="tooltip-green"
-                                                                location="left"
-                                                            >
-                                                                <template v-slot:activator="{ props }">
-                                                                    <v-btn
-                                                                        v-bind="props"
-                                                                        size="28"
-                                                                        icon                                                                                                                                              
-                                                                        color="green"
-                                                                        @click.stop="wppCopyText(prepareWppCopyText(record, item))"
-                                                                    >
-                                                                        <v-icon color="white">
-                                                                            mdi-whatsapp
-                                                                        </v-icon>
-                                                                    </v-btn>
-                                                                </template>
-                                                            </v-tooltip>
-                                                        </div>
-                                                    </div>
-
-                                                    <v-divider class="mb-2"></v-divider>
-                                                    <v-row density="compact">
-                                                        <v-col cols="12" lg="6">
-                                                            <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
-                                                                <div class="dashboard-label">
-                                                                    <v-icon size="14">mdi-tractor</v-icon>
-                                                                    Trator
-                                                                </div>
-
-                                                                <div class="dashboard-value">
-                                                                    {{ record.tractor?.name || 'Não definido' }}
-                                                                </div>
-                                                            </div>
-                                                        </v-col>
-
-                                                        <v-col cols="12" lg="6">
-                                                            <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
-                                                                <div class="dashboard-label">
-                                                                    <v-icon size="14">mdi-hammer-wrench</v-icon>
-                                                                    Implemento
-                                                                </div>
-
-                                                                <div class="dashboard-value">
-                                                                    {{ record.implement?.name || 'Não definido' }}
-                                                                </div>
-                                                            </div>
-                                                        </v-col>
-
-                                                        <v-col cols="12">
-                                                            <div :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
-                                                                <div class="dashboard-label">
-                                                                    <v-icon size="14">mdi-flask</v-icon>
-                                                                    Produtos - Dose ha
-                                                                </div>
-
-                                                                <div class="dashboard-value">
-                                                                    <div
-                                                                        v-for="product_item in record.products"
-                                                                        :key="product_item.id"
-                                                                        class="d-flex align-center mb-1"
-                                                                    >
-                                                                        <span class="mr-2 flex-grow-1">
-                                                                            {{ product_item.product?.name }}
-                                                                        </span>
-
-                                                                        <v-chip
-                                                                            size="small"
-                                                                            :color="product_item.product?.unit == 0 ? 'teal' : 'blue'"                                                                        
-                                                                        >
-                                                                            {{ Number(product_item.dosage).toFixed(2) }}
-                                                                            <template #append> 
-                                                                                <v-avatar v-if="!smAndDown" end>
-                                                                                    {{ product_item.product?.unit == 0 ? 'KG' : 'L' }}
-                                                                                </v-avatar>                                                                                                                                                                                                                                                                                                                                                                                                             
-                                                                            </template>
-                                                                            <template #prepend>                                                                               
-                                                                                <v-avatar start v-if="smAndDown">
-                                                                                    {{ product_item.product?.unit == 0 ? 'KG' : 'L' }}
-                                                                                </v-avatar>
-                                                                                <v-icon start v-else>
-                                                                                    {{ product_item.product?.unit == 0
-                                                                                        ? 'mdi-weight-kilogram'
-                                                                                        : 'mdi-bottle-tonic' }}
-                                                                                </v-icon>    
-                                                                            </template>
-                                                                        </v-chip>
+                                                                    <div class="dashboard-value">
+                                                                        {{ record.tractor?.name || 'Não definido' }}
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </v-col>
-                                                    </v-row>
-                                                </v-card>
-                                            </v-timeline-item>
-                                        </v-timeline>
+                                                            </v-col>
+
+                                                            <v-col cols="12" lg="6">
+                                                                <div
+                                                                    :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
+                                                                    <div class="dashboard-label">
+                                                                        <v-icon size="14">mdi-hammer-wrench</v-icon>
+                                                                        Implemento
+                                                                    </div>
+
+                                                                    <div class="dashboard-value">
+                                                                        {{ record.implement?.name || 'Não definido' }}
+                                                                    </div>
+                                                                </div>
+                                                            </v-col>
+
+                                                            <v-col cols="12">
+                                                                <div
+                                                                    :class="'dashboard-box-' + (dark_theme ? 'dark' : 'light')">
+                                                                    <div class="dashboard-label">
+                                                                        <v-icon size="14">mdi-flask</v-icon>
+                                                                        Produtos - Dose ha
+                                                                    </div>
+
+                                                                    <div class="dashboard-value">
+                                                                        <div v-for="product_item in record.products"
+                                                                            :key="product_item.id"
+                                                                            class="d-flex align-center mb-1">
+                                                                            <span class="mr-2 flex-grow-1">
+                                                                                {{ product_item.product?.name }}
+                                                                            </span>
+
+                                                                            <v-chip size="small"
+                                                                                :color="product_item.product?.unit == 0 ? 'teal' : 'blue'">
+                                                                                {{
+                                                                                    Number(product_item.dosage).toFixed(2)
+                                                                                }}
+                                                                                <template #append>
+                                                                                    <v-avatar v-if="!smAndDown" end>
+                                                                                        {{ product_item.product?.unit ==
+                                                                                            0 ?
+                                                                                            'KG' : 'L' }}
+                                                                                    </v-avatar>
+                                                                                </template>
+                                                                                <template #prepend>
+                                                                                    <v-avatar start v-if="smAndDown">
+                                                                                        {{ product_item.product?.unit ==
+                                                                                            0 ?
+                                                                                            'KG' : 'L' }}
+                                                                                    </v-avatar>
+                                                                                    <v-icon start v-else>
+                                                                                        {{ product_item.product?.unit ==
+                                                                                            0
+                                                                                            ? 'mdi-weight-kilogram'
+                                                                                            : 'mdi-bottle-tonic' }}
+                                                                                    </v-icon>
+                                                                                </template>
+                                                                            </v-chip>
+                                                                        </div>
+                                                                        <v-btn size="x-small" color="grey-lighten-2"
+                                                                            :append-icon="expanded_nutrition[record.id] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                                                                            prepend-icon="mdi-flask-outline"
+                                                                            @click.stop="toggleNutrition(record.id)">
+                                                                            Detalhes
+                                                                        </v-btn>
+                                                                        <v-expand-transition>
+                                                                            <div v-if="expanded_nutrition[record.id]">
+                                                                                <v-divider class="my-3"></v-divider>
+                                                                                <strong>- Gasto total no
+                                                                                    plantio</strong>
+                                                                                <div
+                                                                                    class="d-flex flex-wrap ga-1 mb-4 mt-2">
+                                                                                    <v-chip
+                                                                                        v-for="product_item in record.products"
+                                                                                        :key="product_item.id"
+                                                                                        variant="outlined" class="pr-0"
+                                                                                        style="border-radius: 6px; text-shadow: none;">
+                                                                                        {{ product_item.product?.name }}
+
+                                                                                        <template #append>
+                                                                                            <v-chip size="small"
+                                                                                                style="border-radius: 6px; text-shadow: none;"
+                                                                                                variant="elevated"
+                                                                                                class="ml-2"
+                                                                                                :color="product_item.product?.unit == 0 ? 'teal' : 'blue'">
+                                                                                                {{
+                                                                                                    getTotalProductAmount(product_item,
+                                                                                                        item).toFixed(2) }}
+                                                                                                <template #append>
+                                                                                                    <v-avatar end
+                                                                                                        :style="'border: solid 1px ' +
+                                                                                                            (dark_theme
+                                                                                                                ? 'rgba(190, 190, 190, 0.8)'
+                                                                                                                : 'rgba(50, 50, 50, 0.9)')">
+                                                                                                        {{
+                                                                                                            product_item.product?.unit
+                                                                                                                == 0 ? 'KG' :
+                                                                                                                'L' }}
+                                                                                                    </v-avatar>
+                                                                                                </template>
+                                                                                            </v-chip>
+                                                                                        </template>
+                                                                                    </v-chip>
+                                                                                </div>
+                                                                                <v-divider class="my-3"></v-divider>
+                                                                                <strong>- Nutrientes totais por
+                                                                                    ha</strong>
+                                                                                <div v-if="Object.keys(calculateNutrients(record)).length > 0"
+                                                                                    class="d-flex flex-wrap ga-1 mt-2">
+                                                                                    <v-chip
+                                                                                        v-for="(value, nutrient) in calculateNutrients(record)"
+                                                                                        :key="nutrient"
+                                                                                        :color="nutrient_colors[nutrient]"
+                                                                                        variant="flat" class="pr-0"
+                                                                                        style="text-shadow: none;">
+                                                                                        {{ getNutrientLabel(nutrient) }}
+                                                                                        <template #append>
+                                                                                            <v-chip size="small"
+                                                                                                variant="elevated"
+                                                                                                class="ml-2"
+                                                                                                :color="dark_theme ? 'rgba(190, 190, 190, 0.7)' : 'rgba(10, 10, 10, 0.6)'">
+                                                                                                {{ value.toFixed(2) }}
+                                                                                                <template #append>
+                                                                                                    <v-avatar end
+                                                                                                        :style="'border: solid 1px ' + (dark_theme ? 'rgba(190, 190, 190, 0.8)' : 'rgba(50, 50, 50, 0.9)')">ha</v-avatar>
+                                                                                                </template>
+                                                                                            </v-chip>
+                                                                                        </template>
+                                                                                    </v-chip>
+                                                                                </div>
+                                                                                <div v-else class="my-2"
+                                                                                    style="opacity: 0.8;">Nutrientes não
+                                                                                    definidos nos
+                                                                                    produtos</div>
+                                                                            </div>
+                                                                        </v-expand-transition>
+                                                                    </div>
+                                                                </div>
+                                                            </v-col>
+                                                        </v-row>
+                                                    </v-card>
+                                                </v-timeline-item>
+                                            </v-timeline>
+                                        </div>
+
+                                        <div v-if="getExpandedSection(item.id) === 'nutrition'">
+                                            <v-row density="comfortable">
+                                                <v-col v-for="nutrient in getPlantingNutrientCards(item)"
+                                                    :key="nutrient.key" cols="12" sm="4">
+                                                    <v-card class="nutrient-card" :style="`
+                                                            border: 2px solid ${getColorHex(nutrient.key)};
+                                                            background-color: ${hexToRgba(nutrient.key, 0.1)};
+                                                        `">
+                                                        <!-- Nome do elemento -->
+                                                        <div class="bold mb-2 align-center"
+                                                            :style="`color: ${dark_theme ? getColorHex(nutrient.key) : ''}`">
+                                                            {{ nutrient.label }}
+                                                        </div>
+
+                                                        <!-- Valor por ha -->
+                                                        <div class="bold align-center" style="font-size: 18px;">
+                                                            {{
+                                                                (calculatePlantingNutrientsPerHa(item)[nutrient.key] ||
+                                                                    0).toFixed(2)
+                                                            }}
+                                                        </div>
+                                                        <div style="opacity: 0.6;" class="align-center">
+                                                            kg / ha
+                                                        </div>
+
+                                                        <div class="bold align-center" style="font-size: 18px;">
+                                                            {{
+                                                                (
+                                                                    (calculatePlantingTotal(
+                                                                        calculatePlantingNutrientsPerHa(item),
+                                                                        item.size_ha
+                                                                    )[nutrient.key] || 0)
+                                                                ).toFixed(2)
+                                                            }} kg
+                                                        </div>
+                                                        <div style="opacity: 0.6;" class="align-center">
+                                                            Total plantio
+                                                        </div>
+
+                                                    </v-card>
+                                                </v-col>
+                                            </v-row>
+                                        </div>
+
                                     </div>
                                 </v-expand-transition>
-                            </div>   
+                            </div>
                         </v-card>
                     </v-col>
                 </v-row>
@@ -541,10 +681,13 @@
                     </v-col>
                 </v-row>
 
-                <DialogAddFieldRecord @new_register="pushNewFieldRecord" @close="add_field_record_dialog = false" icon="mdi-file-document-multiple" :model="add_field_record_dialog"
-                    color="rgb(90,180,80)" :planting_id="add_field_record_dialog_planting_id" />
+                <DialogAddFieldRecord @new_register="pushNewFieldRecord" @close="add_field_record_dialog = false"
+                    icon="mdi-file-document-multiple" :model="add_field_record_dialog" color="rgb(90,180,80)"
+                    :planting_id="add_field_record_dialog_planting_id" />
 
-                <DialogEditFieldRecord @edited_register="editFieldRecordItem" @close="edit_field_record_dialog = false" :planting_id="edit_field_record_dialog_planting_id" icon="mdi-file-document-multiple" :data="edit_field_record_dialog_data" :model="edit_field_record_dialog" color="orange"/>
+                <DialogEditFieldRecord @edited_register="editFieldRecordItem" @close="edit_field_record_dialog = false"
+                    :planting_id="edit_field_record_dialog_planting_id" icon="mdi-file-document-multiple"
+                    :data="edit_field_record_dialog_data" :model="edit_field_record_dialog" color="orange" />
 
                 <DialogAddPlanting @new_register="pushNewItem" @close="add_dialog = false" :icon="icon"
                     :model="add_dialog" color="rgb(90, 180, 80)" />
@@ -588,6 +731,8 @@ const snackbar = useSnackbarStore()
 
 const items = ref([])
 const expanded_items = reactive({})
+const expanded_section = reactive({})
+const expanded_nutrition = reactive({})
 const crops = ref([])
 const pivots = ref([])
 const varieties = ref([])
@@ -624,6 +769,54 @@ const filters = reactive({
     date: []
 })
 const timeline_filters = reactive({})
+
+const nutrient_colors = {
+    nitrogen: '#4CAF50',
+    phosphorus: '#009688',
+    potassium: '#673AB7',
+    calcium: '#2196F3',
+    magnesium: '#FB8C00',
+    sulfur: '#FBC02D',
+    boron: '#E91E63',
+    copper: '#795548',
+    manganese: '#3F51B5',
+    zinc: '#00BCD4',
+    iron: '#C62828',
+    molybdenum: '#9E9E9E',
+    silicon: '#CDDC39'
+}
+
+const nutrient_order = [
+    { key: 'nitrogen', label: 'Nitrogênio', always: true },
+    { key: 'phosphorus', label: 'Fósforo', always: true },
+    { key: 'potassium', label: 'Potássio', always: true },
+
+    { key: 'calcium', label: 'Cálcio' },
+    { key: 'magnesium', label: 'Magnésio' },
+    { key: 'sulfur', label: 'Enxofre' },
+    { key: 'boron', label: 'Boro' },
+    { key: 'copper', label: 'Cobre' },
+    { key: 'manganese', label: 'Manganês' },
+    { key: 'zinc', label: 'Zinco' },
+    { key: 'iron', label: 'Ferro' },
+    { key: 'molybdenum', label: 'Molibdênio' },
+    { key: 'silicon', label: 'Silício' },
+]
+
+const expanded_items_sections = [
+    {
+        key: 'timeline',
+        label: 'Timeline',
+        title: 'Timeline de Serviços',
+        icon: 'mdi-timeline-clock'
+    },
+    {
+        key: 'nutrition',
+        label: 'Nutrição',
+        title: 'Nutrição',
+        icon: 'mdi-flask-outline'
+    },
+]
 
 const searchable_fields = [
     { key: 'name' },
@@ -663,7 +856,7 @@ const filtered_items = computed(() => {
     if (filters.pivots.length) data = data.filter(item => filters.pivots.includes(item.pivot?.id))
     if (filters.status.length) data = data.filter(item => filters.status.includes(item.status == 1 ? 'Ativo' : 'Inativo'))
     if (filters.date.length) data = data.filter(item => filters.date.includes(getDateType(item.date)))
-    
+
     if (!search_field.value) return data
 
     const search = search_field.value.toLowerCase().trim()
@@ -716,40 +909,166 @@ watch(items_length, value => {
 })
 
 // Methods
+function getPlantingNutrientCards(planting) {
+    const perHa = calculatePlantingNutrientsPerHa(planting)
+    const total = calculatePlantingTotal(perHa, planting.size_ha)
+
+    return nutrient_order
+        .map(nutrient => ({
+            ...nutrient,
+            perHa: perHa[nutrient.key] || 0,
+            total: total[nutrient.key] || 0
+        }))
+        .filter(n =>
+            n.always || n.perHa > 0
+        )
+}
+
+function calculatePlantingTotal(nutrientsPerHa, size_ha) {
+    const totals = {}
+    if (!size_ha) return totals
+
+    Object.keys(nutrientsPerHa).forEach(key => {
+        totals[key] = nutrientsPerHa[key] * size_ha
+    })
+
+    return totals
+}
+
+function calculatePlantingNutrientsPerHa(planting) {
+    const totals = {}
+
+    if (!planting.field_records?.length) return totals
+
+    planting.field_records.forEach(record => {
+        record.products?.forEach(product_item => {
+            const product = product_item.product
+            const dosage = Number(product_item.dosage)
+
+            if (!product || !dosage) return
+
+            nutrient_order.forEach(({ key }) => {
+                const percent = Number(product[key])
+                if (!percent || percent <= 0 || percent > 100) return
+
+                const value = (percent / 100) * dosage
+                totals[key] = (totals[key] || 0) + value
+            })
+        })
+    })
+
+    return totals
+}
+
+function getExpandedSection(id) {
+    if (!expanded_section[id]) {
+        expanded_section[id] = 'timeline'
+    }
+    return expanded_section[id]
+}
+
+function getTotalProductAmount(product_item, planting) {
+    if (!product_item || !planting?.size_ha) return 0
+
+    const dosage = Number(product_item.dosage)
+    const size = Number(planting.size_ha)
+
+    if (!dosage || !size) return 0
+
+    return dosage * size
+}
+
+function calculateNutrients(record) {
+    const totals = {}
+
+    if (!record.products?.length) return totals
+
+    record.products.forEach(product_item => {
+        const product = product_item.product
+        const dosage = Number(product_item.dosage)
+
+        if (!product || !dosage) return
+
+        Object.keys(nutrient_colors).forEach(nutrient => {
+            const percent = Number(product[nutrient])
+
+            if (
+                !percent ||
+                percent <= 0 ||
+                percent > 100
+            ) return
+
+            const value = (percent / 100) * dosage
+
+            if (!totals[nutrient]) {
+                totals[nutrient] = 0
+            }
+
+            totals[nutrient] += value
+        })
+    })
+
+    return totals
+}
+
+function getNutrientLabel(key) {
+    const labels = {
+        nitrogen: 'Nitrogênio',
+        phosphorus: 'Fósforo',
+        potassium: 'Potássio',
+        calcium: 'Cálcio',
+        magnesium: 'Magnésio',
+        sulfur: 'Enxofre',
+        boron: 'Boro',
+        copper: 'Cobre',
+        manganese: 'Manganês',
+        zinc: 'Zinco',
+        iron: 'Ferro',
+        molybdenum: 'Molibdênio',
+        silicon: 'Silício'
+    }
+
+    return labels[key] || key
+}
+
+function toggleNutrition(record_id) {
+    expanded_nutrition[record_id] = !expanded_nutrition[record_id]
+}
+
 function clearTimelineFilter(id) {
-  timeline_filters[id] = {
-    services: [],
-    status: false
-  }
+    timeline_filters[id] = {
+        services: [],
+        status: false
+    }
 }
 
 function getFilteredTimeline(item) {
-  const filter = getTimelineFilter(item.id)
+    const filter = getTimelineFilter(item.id)
 
-  let records = [...(item.field_records || [])]
+    let records = [...(item.field_records || [])]
 
-  if (filter.services.length) {
-    records = records.filter(record =>
-      filter.services.includes(record.service)
-    )
-  }
+    if (filter.services.length) {
+        records = records.filter(record =>
+            filter.services.includes(record.service)
+        )
+    }
 
-  if (filter.status) {
-    records = records.filter(record => Number(record.status) === 1)
-  }
+    if (filter.status) {
+        records = records.filter(record => Number(record.status) === 1)
+    }
 
-  return records.sort((a, b) => new Date(b.date) - new Date(a.date))
+    return records.sort((a, b) => new Date(b.date) - new Date(a.date))
 }
 
 function getTimelineFilter(id) {
-  if (!timeline_filters[id]) {
-    timeline_filters[id] = {
-      services: [],
-      status: false
+    if (!timeline_filters[id]) {
+        timeline_filters[id] = {
+            services: [],
+            status: false
+        }
     }
-  }
 
-  return timeline_filters[id]
+    return timeline_filters[id]
 }
 
 function getFieldRecordDateColor(record) {
@@ -766,14 +1085,26 @@ function getFieldRecordDateColor(record) {
     return target < today ? 'red' : 'blue'
 }
 
-function openEditFieldRecord(item, full_item) {    
-    Object.assign(edit_field_record_dialog_data, prepareWppCopyText(item, full_item))    
-    edit_field_record_dialog_planting_id.value = item.id 
-    edit_field_record_dialog.value = true        
+function openEditFieldRecord(item, full_item) {
+    Object.assign(edit_field_record_dialog_data, prepareWppCopyText(item, full_item))
+    edit_field_record_dialog_planting_id.value = item.id
+    edit_field_record_dialog.value = true
 }
 
 function getColorHex(color) {
-    const map = {
+    if (!color) return '#888888'
+
+    // 1️⃣ Se já for HEX válido, retorna direto
+    if (
+        typeof color === 'string' &&
+        color.startsWith('#') &&
+        (color.length === 7 || color.length === 4)
+    ) {
+        return color
+    }
+
+    // 2️⃣ Tokens Vuetify conhecidos
+    const vuetifyColors = {
         red: '#f44336',
         blue: '#2196f3',
         teal: '#009688',
@@ -783,10 +1114,40 @@ function getColorHex(color) {
         warning: '#fb8c00',
         info: '#2196f3',
         error: '#f44336',
-        'orange-darken-3': '#ef6c00'
+
+        'orange-darken-3': '#ef6c00',
+        'green-lighten-2': '#81c784',
+        'grey-darken-1': '#757575',
+        'grey-darken-2': '#616161',
+        'grey-lighten-2': '#e0e0e0',
+        'grey-lighten-3': '#eeeeee',
+        'blue-darken-2': '#1976d2',
+        'teal-darken-2': '#00796b',
+        'brown-darken-1': '#6d4c41',
     }
 
-    return map[color] || '#888'
+    if (vuetifyColors[color]) {
+        return vuetifyColors[color]
+    }
+
+    // 3️⃣ Nutrientes (usa o mapa oficial)
+    if (nutrient_colors[color]) {
+        return nutrient_colors[color]
+    }
+
+    // 4️⃣ Fallback seguro
+    return '#888888'
+}
+
+function hexToRgba(color, alpha = 1) {
+    const hex = getColorHex(color).replace('#', '')
+
+    const bigint = parseInt(hex, 16)
+    const r = (bigint >> 16) & 255
+    const g = (bigint >> 8) & 255
+    const b = bigint & 255
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
 function getSortedFieldRecords(records = []) {
@@ -928,8 +1289,8 @@ function hasCriticalAlert(item) {
 }
 
 function prepareWppCopyText(item, full_item) {
-    let item_copy = {...item}    
-    let full_item_copy = {...full_item}    
+    let item_copy = { ...item }
+    let full_item_copy = { ...full_item }
     delete full_item_copy.field_records
     item_copy['planting'] = full_item_copy
     return item_copy
@@ -1002,18 +1363,18 @@ function wppCopyText(item) {
     const code = `FC-${item.id}`
 
     const products = item.products?.length
-    ? item.products.map(product => {
-        const name = safe(product.product?.name)
-        const dosage = safe(product.dosage)
+        ? item.products.map(product => {
+            const name = safe(product.product?.name)
+            const dosage = safe(product.dosage)
 
-        const unitMap = {
-            1: 'L/ha',
-            0: 'Kg/ha',
-        }
-        const unit = unitMap[product.product?.unit] ?? ''
-        return `• ${name} ${dosage} ${unit}`.trim()
-    }).join('\n')
-    : ''
+            const unitMap = {
+                1: 'L/ha',
+                0: 'Kg/ha',
+            }
+            const unit = unitMap[product.product?.unit] ?? ''
+            return `• ${name} ${dosage} ${unit}`.trim()
+        }).join('\n')
+        : ''
     const dapText =
         dap === ''
             ? ''
@@ -1022,29 +1383,29 @@ function wppCopyText(item) {
                 : `${dap} dias`
 
     const text = [
-    `${emoji} *${cropName}${service ? ' — ' + service : ''}*`,
-    '——————————————',
-    `*Ficha:* ${code}`,
-    `📍 *Área:* ${plantingName}`,
-    `💧 *Pivô:* ${pivotName}`,
-    `📅 *Data:* ${date}`,
-    `🌿 *DAP:* ${dapText}`,
-    `🚜 *Trator:* ${tractor}`,
-    `⚙️ *Implemento:* ${implement}`,
-    `📌 *Local:* `,
-    `🌱 *Cultura:* ${cropName}`,
-    `🔩 *Horímetro inicial:* `,
-    `🔩 *Horímetro final:* `,
-    `📐 *Tamanho:* ${size}`,
-    `💧 *Vol. calda:* `,
-    `👤 *Operador:* `,
-    `🧬 *Variedade:* ${variety}`,
-    `📝 *Observações:* ${notes}`,
-    '——————————————',
-    '🧪 *Produtos:*',
-    products,
-    '——————————————',
-    '_Quirino Agronegócios_'
+        `${emoji} *${cropName}${service ? ' — ' + service : ''}*`,
+        '——————————————',
+        `*Ficha:* ${code}`,
+        `📍 *Área:* ${plantingName}`,
+        `💧 *Pivô:* ${pivotName}`,
+        `📅 *Data:* ${date}`,
+        `🌿 *DAP:* ${dapText}`,
+        `🚜 *Trator:* ${tractor}`,
+        `⚙️ *Implemento:* ${implement}`,
+        `📌 *Local:* `,
+        `🌱 *Cultura:* ${cropName}`,
+        `🔩 *Horímetro inicial:* `,
+        `🔩 *Horímetro final:* `,
+        `📐 *Tamanho:* ${size}`,
+        `💧 *Vol. calda:* `,
+        `👤 *Operador:* `,
+        `🧬 *Variedade:* ${variety}`,
+        `📝 *Observações:* ${notes}`,
+        '——————————————',
+        '🧪 *Produtos:*',
+        products,
+        '——————————————',
+        '_Quirino Agronegócios_'
     ].join('\n')
 
     navigator.clipboard.writeText(text)
@@ -1314,7 +1675,7 @@ function openDeleteDialog(item) {
 }
 
 .alerts-header-dark {
-    background: rgba(0,0,0,0.35);
+    background: rgba(0, 0, 0, 0.35);
     padding: 10px 12px;
     display: flex;
     align-items: center;
@@ -1344,12 +1705,39 @@ function openDeleteDialog(item) {
 
 .timeline-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 25px rgba(0,0,0,.28);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, .28);
 }
 
 :deep(.v-timeline-item__body) {
     width: 100%;
-    padding-left: 10px;    
+    padding-left: 10px;
 }
 
+.menu-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    /* iOS smooth */
+}
+
+.menu-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.menu-scroll::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.4);
+    border-radius: 4px;
+}
+
+.menu-scroll-item {
+    flex: 0 0 auto;
+    /* 🔑 impede o chip de encolher/quebrar */
+}
+
+.nutrient-card {
+    padding: 20px;
+    background-color: rgba(50, 50, 50, 0.6);
+    border-radius: 15px;
+}
 </style>
