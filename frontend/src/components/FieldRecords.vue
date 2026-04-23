@@ -37,20 +37,20 @@
 
                                 <v-row>
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.service" label="Serviço"
+                                        <v-select variant="solo" v-model="filters.services" label="Serviços"
                                             :items="services" multiple chips closable-chips clearable color="teal"
                                             prepend-icon="mdi-briefcase" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.planting" label="Plantio"
+                                        <v-select variant="solo" v-model="filters.plantings" label="Plantios"
                                             :items="plantings" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-sprout"
                                             :loading="loading_plantings" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.crop" label="Cultura" :items="crops"
+                                        <v-select variant="solo" v-model="filters.crops" label="Culturas" :items="crops"
                                             item-title="name" item-value="id" multiple chips closable-chips clearable
                                             color="teal" prepend-icon="mdi-seed" :loading="loading_crops" />
                                     </v-col>
@@ -62,21 +62,21 @@
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.tractor" label="Trator"
+                                        <v-select variant="solo" v-model="filters.tractors" label="Tratores"
                                             :items="tractors" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-tractor"
                                             :loading="loading_tractors" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.implement" label="Implemento"
+                                        <v-select variant="solo" v-model="filters.implements" label="Implementos"
                                             :items="implements_items" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-hammer-wrench"
                                             :loading="loading_implements" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.product" label="Produto"
+                                        <v-select variant="solo" v-model="filters.products" label="Produtos"
                                             :items="products" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-flask"
                                             :loading="loading_products" />
@@ -369,13 +369,13 @@ const opened_notes = ref([])
 const services = ['Ferti Irrigação', 'Pulverização', 'Adubação', 'Colheita', 'Plantio']
 
 const filters = reactive({
-    crop: [],
-    planting: [],
-    status: [],
-    service: [],
-    implement: [],
-    product: [],
-    tractor: []
+    crops: [],
+    plantings: [],
+    status: ['Hoje!', 'Pendente', 'Atrasado'],
+    services: [],
+    implements: [],
+    products: [],
+    tractors: []
 })
 
 const searchable_fields = [
@@ -397,15 +397,15 @@ const filtered_items = computed(() => {
 
     let data = [...items.value]
 
-    if (filters.crop.length) data = data.filter(item => filters.crop.includes(item.planting?.crop?.id))
-    if (filters.planting.length) data = data.filter(item => filters.planting.includes(item.planting?.id))
-    if (filters.service.length) data = data.filter(item => filters.service.includes(item.service))
-    if (filters.tractor.length) data = data.filter(item => filters.tractor.includes(item.tractor?.id))
-    if (filters.implement.length) data = data.filter(item => filters.implement.includes(item.implement?.id))
-    if (filters.product.length) {
+    if (filters.crops.length) data = data.filter(item => filters.crops.includes(item.planting?.crop?.id))
+    if (filters.plantings.length) data = data.filter(item => filters.plantings.includes(item.planting?.id))
+    if (filters.services.length) data = data.filter(item => filters.services.includes(item.service))
+    if (filters.tractors.length) data = data.filter(item => filters.tractors.includes(item.tractor?.id))
+    if (filters.implements.length) data = data.filter(item => filters.implements.includes(item.implement?.id))
+    if (filters.products.length) {
         data = data.filter(item =>
             item.products?.some(product_item =>
-                filters.product.includes(product_item.product_id)
+                filters.products.includes(product_item.product_id)
             )
         )
     }

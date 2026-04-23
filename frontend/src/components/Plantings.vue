@@ -41,19 +41,19 @@
 
                                 <v-row>
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select v-model="filters.crop" label="Cultura" :items="crops" multiple chips item-title="name" item-value="id"
+                                        <v-select v-model="filters.crops" label="Culturas" :items="crops" multiple chips item-title="name" item-value="id"
                                             closable-chips clearable variant="solo" color="teal" :loading="loading_crops" :disabled="loading_crops"
                                             no-data-text="Nenhum dado cadastrado..." prepend-icon="mdi-seed" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select v-model="filters.variety" label="Variedade" :items="varieties"
+                                        <v-select v-model="filters.varieties" label="Variedades" :items="varieties"
                                             multiple chips closable-chips clearable variant="solo" color="teal" :loading="loading_crops" :disabled="loading_crops"
                                             no-data-text="Nenhum dado cadastrado..." prepend-icon="mdi-flower-tulip"/>
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select v-model="filters.pivot" label="Pivô" :items="pivots" multiple chips :loading="loading_pivots" :disabled="loading_pivots"
+                                        <v-select v-model="filters.pivots" label="Pivôs" :items="pivots" multiple chips :loading="loading_pivots" :disabled="loading_pivots"
                                             closable-chips clearable variant="solo" color="teal"  prepend-icon="mdi-water-pump" item-title="name" item-value="id"
                                             no-data-text="Nenhum dado cadastrado..." />
                                     </v-col>
@@ -337,10 +337,28 @@
                                                 Timeline de Serviços                                                                                                                               
                                             </div>
                                             <v-chip size="small" >
-                                                Total: {{ item.field_records.length }}
+                                                Total: {{ getFilteredTimeline(item).length }}
                                             </v-chip>
+                                            
                                         </div>
-                                                                            
+                                                                           
+                                        <v-row v-if="item.field_records.length > 0" class="align-center mb-8" style="margin-top: -10px;">
+                                            <v-col cols="12" lg="8" class="align-center" style="margin-bottom: -20px;">
+                                                <v-select variant="underlined" v-model="getTimelineFilter(item.id).services" label="Serviços" @click.stop placeholder="Filtre pelo serviço da ficha"
+                                                    :items="services" multiple chips closable-chips clearable color="teal"
+                                                    prepend-icon="mdi-briefcase" />
+                                            </v-col>
+                                            <v-col cols="12" lg="4" style="margin-bottom: -40px;" >
+                                                <v-checkbox v-model="getTimelineFilter(item.id).status" @click.stop label="Concluídos" color="teal"></v-checkbox>
+                                            </v-col>
+                                            <v-col cols="12" class="align-end">
+                                                <v-btn prepend-icon="mdi-filter-off" :disabled="getTimelineFilter(item.id).status == false && getTimelineFilter(item.id).services.length == 0"  @click.stop="clearTimelineFilter(item.id)" size="x-small" color="grey-lighten-2">
+                                                    Limpar Filtro
+                                                </v-btn>
+                                            </v-col>
+                                            
+                                        </v-row>
+                                        
                                         <v-timeline
                                             density="compact"
                                             align="start"
@@ -348,19 +366,19 @@
                                             truncate-line="both"
                                         >
                                             <v-timeline-item                                                                                                
-                                                v-if="item.field_records.length == 0"
+                                                v-if="getFilteredTimeline(item).length == 0"
                                                 dot-color="grey-darken-3"
-                                                icon="mdi-information"
+                                                icon="mdi-information"                                                
                                             >
                                                 <v-card class="pa-3 mb-2 timeline-card" :style="` 
                                                         border: 1px solid grey;
                                                         cursor: pointer;
                                                     `" @click.stop="add_field_record_dialog_planting_id = item.id; add_field_record_dialog = true">
-                                                    Nenhuma ficha cadastrada, clique em "Nova Ficha" ou aqui para adicionar. +    
+                                                    Nenhuma ficha cadastrada{{ item.field_records.length > 0 ? ' com esse filtro' : '' }}, clique em "Nova Ficha" ou aqui para adicionar. +    
                                                 </v-card>
                                             </v-timeline-item>
                                             <v-timeline-item
-                                                v-for="record in getSortedFieldRecords(item.field_records)"
+                                                v-for="record in getFilteredTimeline(item)"
                                                 :key="record.id"
                                                 :dot-color="getServiceColor(record.service)"
                                                 :icon="getServiceIcon(record.service)"
@@ -573,6 +591,7 @@ const expanded_items = reactive({})
 const crops = ref([])
 const pivots = ref([])
 const varieties = ref([])
+const services = ['Ferti Irrigação', 'Pulverização', 'Adubação', 'Colheita', 'Plantio']
 
 const loading = ref(false)
 const loading_crops = ref(false)
@@ -598,12 +617,13 @@ const edit_dialog_data = reactive({})
 const delete_dialog_data = reactive({})
 
 const filters = reactive({
-    crop: [],
-    variety: [],
-    pivot: [],
-    status: [],
+    crops: [],
+    varieties: [],
+    pivots: [],
+    status: ['Ativo'],
     date: []
 })
+const timeline_filters = reactive({})
 
 const searchable_fields = [
     { key: 'name' },
@@ -638,9 +658,9 @@ const filtered_items = computed(() => {
 
     let data = [...items.value]
 
-    if (filters.crop.length) data = data.filter(item => filters.crop.includes(item.crop?.id))
-    if (filters.variety.length) data = data.filter(item => filters.variety.includes(item.variety))
-    if (filters.pivot.length) data = data.filter(item => filters.pivot.includes(item.pivot?.id))
+    if (filters.crops.length) data = data.filter(item => filters.crops.includes(item.crop?.id))
+    if (filters.varieties.length) data = data.filter(item => filters.varieties.includes(item.variety))
+    if (filters.pivots.length) data = data.filter(item => filters.pivots.includes(item.pivot?.id))
     if (filters.status.length) data = data.filter(item => filters.status.includes(item.status == 1 ? 'Ativo' : 'Inativo'))
     if (filters.date.length) data = data.filter(item => filters.date.includes(getDateType(item.date)))
     
@@ -696,6 +716,42 @@ watch(items_length, value => {
 })
 
 // Methods
+function clearTimelineFilter(id) {
+  timeline_filters[id] = {
+    services: [],
+    status: false
+  }
+}
+
+function getFilteredTimeline(item) {
+  const filter = getTimelineFilter(item.id)
+
+  let records = [...(item.field_records || [])]
+
+  if (filter.services.length) {
+    records = records.filter(record =>
+      filter.services.includes(record.service)
+    )
+  }
+
+  if (filter.status) {
+    records = records.filter(record => Number(record.status) === 1)
+  }
+
+  return records.sort((a, b) => new Date(b.date) - new Date(a.date))
+}
+
+function getTimelineFilter(id) {
+  if (!timeline_filters[id]) {
+    timeline_filters[id] = {
+      services: [],
+      status: false
+    }
+  }
+
+  return timeline_filters[id]
+}
+
 function getFieldRecordDateColor(record) {
     if (Number(record.status) === 1) return 'green'
 
@@ -740,6 +796,7 @@ function getSortedFieldRecords(records = []) {
 }
 
 function toggleExpand(id) {
+    getTimelineFilter(id)
     expanded_items[id] = !expanded_items[id]
 }
 
@@ -1292,6 +1349,7 @@ function openDeleteDialog(item) {
 
 :deep(.v-timeline-item__body) {
     width: 100%;
+    padding-left: 10px;    
 }
 
 </style>
