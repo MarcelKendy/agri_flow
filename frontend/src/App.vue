@@ -1,10 +1,10 @@
 <template>
   <v-app>
-    <v-app-bar style="transition: 1.5s !important" v-if="$route.name != 'login' && auth.is_auth && auth.hasData()"
-      dark :elevation="14" scroll-behavior="fade-image elevate" scroll-threshold="200"
+    <v-app-bar style="transition: 1.5s !important" v-if="$route.name != 'login' && auth.is_auth && auth.hasData()" :color="dark_theme ? 'rgba(0, 0, 0, 0.5)' : 'rgba(200, 200, 200, 0.5)'"
+      dark :elevation="5" scroll-threshold="200" scroll-behavior="fade-image elevate"
       :height="appbar_density">
       <template v-slot:image>
-        <v-img :gradient="dark_theme ? 'to bottom right, rgba(8, 100, 100, 0.2), rgba(80, 160, 50, 0.4)' : 'to bottom right, rgba(50, 100, 50, 0.9), rgba(20, 30, 30, 0.9)'"></v-img>
+        <v-img :gradient="dark_theme ? 'to bottom right, rgba(8, 100, 100, 0.3), rgba(80, 160, 50, 0.4)' : 'to bottom right, rgba(80, 130, 10, 0.8), rgba(50, 80, 75, 0.8)'"></v-img>
       </template>
       <v-app-bar-nav-icon class="white" @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-img class="ma-1" style="max-width: 64px" src="media/icons/logo.png" />

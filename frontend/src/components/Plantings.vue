@@ -258,7 +258,12 @@
                                             <!-- Rows -->
                                             <template v-if="getAlerts(item).length">
                                                 <div v-for="(alert, index) in getAlerts(item)" :key="index">
-                                                    <div class="alerts-row">
+                                                    
+                                                    <div
+                                                        class="alerts-row"
+                                                        :class="getAlertRowClass(alert)"
+                                                        @click.stop="openAlertFieldRecord(alert, item)"
+                                                    >
 
                                                         <v-icon :color="alert.color" size="18" class="mr-3">
                                                             {{ alert.icon }}
@@ -285,7 +290,7 @@
                                                         </v-chip>
                                                     </div>
 
-                                                    <v-divider v-if="index < getAlerts(item).length - 1" class="my-1" />
+                                                    <v-divider v-if="index < getAlerts(item).length - 1" />
                                                 </div>
                                             </template>
 
@@ -303,7 +308,7 @@
                                         <v-icon size="x-large">{{ expanded_items[item.id] ? 'mdi-chevron-up' :
                                             'mdi-chevron-down' }}</v-icon>
                                     </v-btn>
-                                    <v-btn prepend-icon="mdi-file-document-plus" variant="flat" size="x-small"
+                                    <v-btn prepend-icon="mdi-file-document-plus" variant="elevated" size="x-small"
                                         color="green"
                                         @click.stop="add_field_record_dialog_planting_id = item.id; add_field_record_dialog = true">
                                         Nova Ficha
@@ -312,7 +317,7 @@
                                         :content-class="item.status == 0 ? 'tooltip-green' : 'tooltip-red'"
                                         location="top">
                                         <template v-slot:activator="{ props }">
-                                            <v-avatar v-bind="props" :color="item.status == 0 ? 'green' : 'red'"
+                                            <v-avatar v-bind="props" :color="item.status == 0 ? 'green' : 'red'" variant="elevated"
                                                 style="text-shadow: none;" size="x-small" @click.stop="auth.user.level < 1 || loading_status[item.id]
                                                     ? null
                                                     : editPlanting(item.id, { status: item.status == 1 ? 0 : 1 })">
@@ -325,7 +330,7 @@
                                             </v-avatar>
                                         </template>
                                     </v-tooltip>
-                                    <v-btn prepend-icon="mdi-pencil" variant="flat" size="x-small" color="orange"
+                                    <v-btn prepend-icon="mdi-pencil" variant="elevated" size="x-small" color="orange"
                                         @click.stop="openEditDialog(item)">
                                         Editar
                                     </v-btn>
@@ -618,57 +623,203 @@
                                         </div>
 
                                         <div v-if="getExpandedSection(item.id) === 'nutrition'">
-                                            <v-row density="comfortable">
-                                                <v-col v-for="nutrient in getPlantingNutrientCards(item)"
-                                                    :key="nutrient.key" cols="12" sm="4">
-                                                    <v-card class="nutrient-card" :style="`
-                                                            border: 2px solid ${getColorHex(nutrient.key)};
-                                                            background-color: ${hexToRgba(nutrient.key, 0.1)};
-                                                        `">
-                                                        <!-- Nome do elemento -->
-                                                        <div
-                                                            class="bold mb-2 d-flex align-center ga-2"
-                                                            :style="`font-size: 18px; color: ${getColorHex(nutrient.key)}`"
+                                            <div v-if="item.field_records.length">
+                                                <v-row density="comfortable" class="mb-6">  
+                                                    <v-col
+                                                        v-for="nutrient in getPlantingNutrientCards(item)"
+                                                        :key="nutrient.key"
+                                                        cols="12"
+                                                        sm="4"
+                                                    >
+                                                        <v-card
+                                                            class="nutrient-card"
+                                                            :style="`
+                                                                border: 2px solid ${getColorHex(nutrient.key)};
+                                                                background-color: ${hexToRgba(nutrient.key, 0.1)};
+                                                            `"
                                                         >
-                                                            {{ nutrient.label }}
-
-                                                            <span
-                                                                style="font-size: 14px; opacity: 0.7;"
+                                                            <div
+                                                                class="bold mb-2 d-flex align-center ga-2"
+                                                                :style="`font-size: 18px; color: ${getColorHex(nutrient.key)}`"
                                                             >
-                                                                ({{ nutrient.symbol }})
-                                                            </span>
+                                                                {{ nutrient.label }}
+                                                                <span style="font-size: 14px; opacity: 0.7;">
+                                                                    ({{ nutrient.symbol }})
+                                                                </span>
+                                                            </div>
+
+                                                            <div class="bold align-center" style="font-size: 20px;">
+                                                                {{ nutrient.perHa.toFixed(2) }}
+                                                            </div>
+                                                            <div style="opacity: 0.6;" class="align-center">kg / ha</div>
+
+                                                            <div class="bold mt-2 align-center" style="font-size: 20px;">
+                                                                {{ nutrient.total.toFixed(2) }} kg
+                                                            </div>
+                                                            <div style="opacity: 0.6;" class="align-center">
+                                                                Total no plantio ({{ item.size_ha }} ha)
+                                                            </div>
+                                                        </v-card>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-divider></v-divider>
+                                                <div class="ma-3">
+                                                    <strong>- Tabela detalhada</strong>
+                                                </div>                                                
+                                                <div :class="dark_theme ? 'nutrition-table-scroll-dark' : 'nutrition-table-scroll-light'">
+                                                
+                                                    <div
+                                                        class="nutrition-grid mb-2" :class="dark_theme ? 'nutrition-header-dark' : 'nutrition-header-light'"
+                                                        :style="`
+                                                            grid-template-columns:
+                                                                260px
+                                                                110px
+                                                                repeat(${getUsedNutrients(item).length}, 120px);
+                                                        `"
+                                                    >
+                                                        <div class="bold">Produto</div>
+                                                        <div class="bold text-center">Dose</div>
+
+                                                        <div
+                                                            v-for="nutrient in getUsedNutrients(item)"
+                                                            :key="nutrient.key"
+                                                            class="bold text-center"
+                                                            :style="`color: ${getColorHex(nutrient.key)}`"
+                                                        >
+                                                            {{ nutrient.symbol }}
+                                                        </div>
+                                                    </div>
+                                                
+                                                    <div
+                                                        v-for="record in getSortedFieldRecords(item.field_records)"
+                                                        :key="record.id"
+                                                        class="mb-4"
+                                                    >                                                   
+                                                        <div class="opacity-70 mb-1 pl-2">
+                                                            FC-{{ record.id }} • {{ formatDateBR(record.date) }}
                                                         </div>
 
-                                                        <!-- Valor por ha -->
-                                                        <div class="bold align-center" style="font-size: 20px;">
-                                                            {{
-                                                                (calculatePlantingNutrientsPerHa(item)[nutrient.key] ||
-                                                                    0).toFixed(2)
-                                                            }}
-                                                        </div>
-                                                        <div style="opacity: 0.6;" class="align-center">
-                                                            kg / ha
-                                                        </div>
+                                                        <div
+                                                            v-for="product_item in record.products"
+                                                            :key="product_item.id"
+                                                            class="nutrition-grid"
+                                                            :style="`
+                                                                grid-template-columns:
+                                                                    260px
+                                                                    110px
+                                                                    repeat(${getUsedNutrients(item).length}, 120px);
+                                                            `"
+                                                        >                                                      
+                                                            <div>
+                                                                {{ product_item.product?.name }}
+                                                            </div>
+
+                                                            <div class="text-center">
+                                                                {{ Number(product_item.dosage).toFixed(2) }}
+                                                                <span style="opacity: 0.6; font-size: 12px;">kg/ha</span>
+                                                            </div>
                                                         
-                                                        <div class="bold align-center" style="font-size: 20px;">
+                                                            <div
+                                                                v-for="nutrient in getUsedNutrients(item)"
+                                                                :key="nutrient.key"
+                                                                class="text-center"
+                                                                :style="`color: ${getColorHex(nutrient.key)}`"
+                                                            >
+                                                                {{
+                                                                    product_item.product?.[nutrient.key]
+                                                                        ? (
+                                                                            (product_item.product[nutrient.key] / 100) *
+                                                                            product_item.dosage
+                                                                        ).toFixed(2)
+                                                                        : '—'
+                                                                }}
+                                                                <span
+                                                                    v-if="product_item.product?.[nutrient.key]"
+                                                                    style="opacity: 0.5; font-size: 11px;"
+                                                                >
+                                                                    kg/ha
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                
+                                                    <div
+                                                        class="nutrition-grid mt-4" :class="dark_theme ? 'nutrition-total-dark' : 'nutrition-total-light'"
+                                                        :style="`
+                                                            grid-template-columns:
+                                                                260px
+                                                                110px
+                                                                repeat(${getUsedNutrients(item).length}, 120px);
+                                                        `"
+                                                    >
+                                                        <div class="bold"> <v-icon>mdi-sigma</v-icon> Acumulado por ha</div>
+                                                        <div></div>
+
+                                                        <div
+                                                            v-for="nutrient in getUsedNutrients(item)"
+                                                            :key="nutrient.key"
+                                                            class="bold text-center"
+                                                            :style="`color: ${getColorHex(nutrient.key)}`"
+                                                        >
+                                                            {{
+                                                                calculatePlantingNutrientsPerHa(item)[nutrient.key]
+                                                                    ?.toFixed(2) || '—'
+                                                            }}
+                                                            <span style="opacity: 0.6; font-size: 11px;">kg/ha</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        class="nutrition-grid" :class="dark_theme ? 'nutrition-total-dark' : 'nutrition-total-light'"
+                                                        :style="`
+                                                            grid-template-columns:
+                                                                260px
+                                                                110px
+                                                                repeat(${getUsedNutrients(item).length}, 120px);
+                                                        `"
+                                                    >
+                                                        <div class="bold">
+                                                            <v-icon>mdi-sigma</v-icon> Acumulado no plantio ({{ item.size_ha }} ha)
+                                                        </div>
+                                                        <div></div>
+
+                                                        <div
+                                                            v-for="nutrient in getUsedNutrients(item)"
+                                                            :key="nutrient.key"
+                                                            class="bold text-center"
+                                                            :style="`color: ${getColorHex(nutrient.key)}`"
+                                                        >
                                                             {{
                                                                 (
-                                                                    (calculatePlantingTotal(
-                                                                        calculatePlantingNutrientsPerHa(item),
-                                                                        item.size_ha
-                                                                    )[nutrient.key] || 0)
-                                                                ).toFixed(2)
-                                                            }} kg
+                                                                    calculatePlantingNutrientsPerHa(item)[nutrient.key] *
+                                                                    item.size_ha
+                                                                )?.toFixed(2) || '—'
+                                                            }}
+                                                            <span style="opacity: 0.6; font-size: 11px;">kg</span>
                                                         </div>
-                                                        <div style="opacity: 0.6;" class="align-center">
-                                                            Total plantio
-                                                        </div>
+                                                    </div>
 
-                                                    </v-card>
-                                                </v-col>
-                                            </v-row>
-                                        </div>
+                                                </div>
+                                            </div>    
+                                            <div v-else class="d-flex align-start w-100">
+                                                <v-avatar
+                                                    color="grey-darken-3"
+                                                    size="38"
+                                                    style="margin-right: 10px;"
+                                                >
+                                                    <v-icon>mdi-information</v-icon>
+                                                </v-avatar>
 
+                                                <v-card
+                                                    class="pa-3 mb-2 timeline-card flex-grow-1"
+                                                    style="border: 1px solid grey; cursor: pointer;"
+                                                    @click.stop="add_field_record_dialog_planting_id = item.id; add_field_record_dialog = true"
+                                                >
+                                                    Nenhuma ficha cadastrada{{ item.field_records.length > 0 ? ' com esse filtro' : '' }},
+                                                    clique em "Nova Ficha" ou aqui para adicionar. +
+                                                </v-card>
+                                            </div>                                                                                                                                                                      
+                                        </div>                                        
                                     </div>
                                 </v-expand-transition>
                             </div>
@@ -821,7 +972,7 @@ const expanded_items_sections = [
     {
         key: 'nutrition',
         label: 'Nutrição',
-        title: 'Nutrição',
+        title: 'Nutrição do Plantio',
         icon: 'mdi-flask-outline'
     },
 ]
@@ -917,6 +1068,47 @@ watch(items_length, value => {
 })
 
 // Methods
+function getAlertRowClass(alert) {
+    if (!alert?.color) return ''
+
+    if (alert.color === 'error' || alert.color === 'red') {
+        return dark_theme.value
+            ? 'alert-bg-red-dark'
+            : 'alert-bg-red-light'
+    }
+
+    if (alert.color === 'warning' || alert.color === 'orange') {
+        return dark_theme.value
+            ? 'alert-bg-orange-dark'
+            : 'alert-bg-orange-light'
+    }
+
+    return ''
+}
+
+function openAlertFieldRecord(alert, planting) {
+    const record = planting.field_records.find(r => r.id === alert.id)
+    if (!record) return
+    openEditFieldRecord(record, planting)
+}
+
+function getUsedNutrients(planting) {
+    const used = new Set()
+
+    planting.field_records?.forEach(record => {
+        record.products?.forEach(product_item => {
+            nutrient_order.forEach(n => {
+                const percent = Number(product_item.product?.[n.key])
+                if (percent && percent > 0) {
+                    used.add(n.key)
+                }
+            })
+        })
+    })
+
+    return nutrient_order.filter(n => used.has(n.key))
+}
+
 function getPlantingNutrientCards(planting) {
     const perHa = calculatePlantingNutrientsPerHa(planting)
     const total = calculatePlantingTotal(perHa, planting.size_ha)
@@ -1700,6 +1892,8 @@ function openDeleteDialog(item) {
     display: flex;
     align-items: center;
     padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.18s ease;
 }
 
 .alerts-danger-border {
@@ -1747,5 +1941,91 @@ function openDeleteDialog(item) {
     padding: 15px;
     background-color: rgba(50, 50, 50, 0.6);
     border-radius: 15px;
+}
+
+.nutrition-table-scroll-dark {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;    
+    border-radius: 10px;
+    border: solid 2px rgba(84, 84, 84, 0.38);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.nutrition-table-scroll-light {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;    
+    border-radius: 10px;
+    border: solid 2px rgba(105, 104, 104, 0.421);
+    background-color: rgba(255, 255, 255, 0.885);
+}
+
+.nutrition-grid {
+    display: grid;
+    gap: 6px;
+    align-items: center;
+    min-width: max-content;
+    padding: 5px;
+    padding-left: 15px;
+}
+
+.nutrition-header-dark {
+    position: sticky;
+    top: 0;
+    border-bottom: 2px solid rgba(150, 150, 150, 0.4);
+    background: rgba(10, 10, 10, 0.6);        
+    padding: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    z-index: 2;
+}
+
+.nutrition-header-light {
+    position: sticky;
+    top: 0;
+    border-bottom: 2px solid rgba(150, 150, 150, 0.4);
+    background: rgba(173, 173, 173, 0.6);
+    padding: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    z-index: 2;
+}
+
+.nutrition-total-dark {
+    border-top: 2px solid rgba(150, 150, 150, 0.4);
+    padding: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(50, 50, 50, 0.2);
+}
+
+.nutrition-total-light {
+    border-top: 2px solid rgba(150, 150, 150, 0.4);
+    padding: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(179, 179, 179, 0.195);
+}
+
+.alert-bg-red-light {
+    background-color: rgba(255, 35, 35, 0.363);
+}
+
+.alert-bg-red-dark {
+    background-color: rgba(255, 0, 0, 0.097);
+}
+
+.alert-bg-orange-light {
+    background-color: rgba(255, 213, 129, 0.619);
+}
+
+.alert-bg-orange-dark {
+    background-color: rgba(255, 136, 0, 0.151);
+}
+
+.alerts-row:hover {
+    transform: scale(101%);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 </style>

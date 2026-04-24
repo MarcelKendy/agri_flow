@@ -269,7 +269,7 @@
                                 <v-col cols="6" class="align-end align-center">
                                     <v-tooltip text="Copiar para Whatsapp" content-class="tooltip-green" location="left">
                                         <template v-slot:activator="{ props }">
-                                            <v-btn v-bind="props" size="x-small" icon class="mr-4" color="green"
+                                            <v-btn v-bind="props" size="x-small" icon class="mr-4" color="green" variant="elevated"
                                                 @click.stop="wppCopyText(item)">
                                                 <v-icon color="white" size="x-large">mdi-whatsapp</v-icon>
                                             </v-btn>
@@ -277,7 +277,7 @@
                                     </v-tooltip>
                                     <v-tooltip text="Deletar Ficha" content-class="tooltip-red" location="left">
                                         <template v-slot:activator="{ props }">
-                                            <v-btn v-bind="props" size="x-small" prepend-icon="mdi-delete" :disabled="auth.user.level < 2"
+                                            <v-btn v-bind="props" variant="elevated" size="x-small" prepend-icon="mdi-delete" :disabled="auth.user.level < 2"
                                                 color="red" @click.stop="openDeleteDialog(item)">Deletar</v-btn>
                                         </template>
                                     </v-tooltip>

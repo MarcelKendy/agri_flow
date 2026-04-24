@@ -98,7 +98,21 @@
                         :disabled="loading || !product_item.product_id"
                         :color="color"
                         :rules="product_item.product_id ? getRules({ required: true }) : []"
-                      />
+                      >
+                        <template #append-inner>
+                          <v-chip v-if="product_item.product_id" class="pl-1" :color="getProductUnitLabel(product_item.product_id) == 'KG' ? 'teal' : 'blue'">
+                            <template #prepend>
+                              <v-icon class="mr-1">
+                                {{ getProductUnitLabel(product_item.product_id) == 'KG' ? 'mdi-weight-kilogram' : 'mdi-bottle-tonic' }}</v-icon>
+                            </template>
+                            <span                              
+                              style="font-size: 13px;"
+                            >
+                              {{ getProductUnitLabel(product_item.product_id) }}/ha
+                            </span>
+                          </v-chip>                          
+                        </template>
+                      </v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="1" class="d-flex align-center">
@@ -221,6 +235,13 @@ watch(() => item.product_id, (value, old_value) => {
 })
 
 // Methods
+function getProductUnitLabel(product_id) {
+  if (!product_id) return ''
+  const product = products.value.find(p => p.id == product_id)
+  if (!product) return ''
+  return product.unit == 0 ? 'KG' : 'L'
+}
+
 function isProductDisabled(product_id, current_index) {
   return item.products.some((p, index) =>
     index !== current_index && p.product_id == product_id
