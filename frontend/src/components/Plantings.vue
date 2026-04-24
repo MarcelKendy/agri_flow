@@ -626,13 +626,21 @@
                                                             background-color: ${hexToRgba(nutrient.key, 0.1)};
                                                         `">
                                                         <!-- Nome do elemento -->
-                                                        <div class="bold mb-2 align-center"
-                                                            :style="`color: ${dark_theme ? getColorHex(nutrient.key) : ''}`">
+                                                        <div
+                                                            class="bold mb-2 d-flex align-center ga-2"
+                                                            :style="`font-size: 18px; color: ${getColorHex(nutrient.key)}`"
+                                                        >
                                                             {{ nutrient.label }}
+
+                                                            <span
+                                                                style="font-size: 14px; opacity: 0.7;"
+                                                            >
+                                                                ({{ nutrient.symbol }})
+                                                            </span>
                                                         </div>
 
                                                         <!-- Valor por ha -->
-                                                        <div class="bold align-center" style="font-size: 18px;">
+                                                        <div class="bold align-center" style="font-size: 20px;">
                                                             {{
                                                                 (calculatePlantingNutrientsPerHa(item)[nutrient.key] ||
                                                                     0).toFixed(2)
@@ -641,8 +649,8 @@
                                                         <div style="opacity: 0.6;" class="align-center">
                                                             kg / ha
                                                         </div>
-
-                                                        <div class="bold align-center" style="font-size: 18px;">
+                                                        
+                                                        <div class="bold align-center" style="font-size: 20px;">
                                                             {{
                                                                 (
                                                                     (calculatePlantingTotal(
@@ -783,24 +791,24 @@ const nutrient_colors = {
     zinc: '#00BCD4',
     iron: '#C62828',
     molybdenum: '#9E9E9E',
-    silicon: '#CDDC39'
+    silicon: '#95ab55'
 }
 
 const nutrient_order = [
-    { key: 'nitrogen', label: 'Nitrogênio', always: true },
-    { key: 'phosphorus', label: 'Fósforo', always: true },
-    { key: 'potassium', label: 'Potássio', always: true },
+    { key: 'nitrogen', label: 'Nitrogênio', symbol: 'N', always: true },
+    { key: 'phosphorus', label: 'Fósforo', symbol: 'P', always: true },
+    { key: 'potassium', label: 'Potássio', symbol: 'K', always: true },
 
-    { key: 'calcium', label: 'Cálcio' },
-    { key: 'magnesium', label: 'Magnésio' },
-    { key: 'sulfur', label: 'Enxofre' },
-    { key: 'boron', label: 'Boro' },
-    { key: 'copper', label: 'Cobre' },
-    { key: 'manganese', label: 'Manganês' },
-    { key: 'zinc', label: 'Zinco' },
-    { key: 'iron', label: 'Ferro' },
-    { key: 'molybdenum', label: 'Molibdênio' },
-    { key: 'silicon', label: 'Silício' },
+    { key: 'calcium', label: 'Cálcio', symbol: 'Ca' },
+    { key: 'magnesium', label: 'Magnésio', symbol: 'Mg' },
+    { key: 'sulfur', label: 'Enxofre', symbol: 'S' },
+    { key: 'boron', label: 'Boro', symbol: 'B' },
+    { key: 'copper', label: 'Cobre', symbol: 'Cu' },
+    { key: 'manganese', label: 'Manganês', symbol: 'Mn' },
+    { key: 'zinc', label: 'Zinco', symbol: 'Zn' },
+    { key: 'iron', label: 'Ferro', symbol: 'Fe' },
+    { key: 'molybdenum', label: 'Molibdênio', symbol: 'Mo' },
+    { key: 'silicon', label: 'Silício', symbol: 'Si' }
 ]
 
 const expanded_items_sections = [
@@ -1736,7 +1744,7 @@ function openDeleteDialog(item) {
 }
 
 .nutrient-card {
-    padding: 20px;
+    padding: 15px;
     background-color: rgba(50, 50, 50, 0.6);
     border-radius: 15px;
 }
