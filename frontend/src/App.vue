@@ -243,7 +243,7 @@ let profile_form = ''
 const appbar_density = ref('55')
 const basic_routes = reactive([
   { to: '/', title: 'Dashboard', value: '/', img: 'dashboard.png' },
-  { to: '/plantings', title: 'Plantios', value: 'plantings', img: 'users.png' }
+  { to: '/plantings', title: 'Plantios', value: 'plantings', icon: 'mdi-sprout' }
 ])
 const adm_routes = reactive([
   { to: '/users', title: 'Usuários', value: 'users', img: 'users.png' }

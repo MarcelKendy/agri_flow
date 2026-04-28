@@ -13,7 +13,7 @@
                     <v-card flat :style="smAndDown ? 'background-color: rgba(0, 0, 0, 0);': ''">
                         <v-card-text :style="smAndDown ? 'padding: 0px; padding-top: 10px;' : ''">
                             <keep-alive>
-                                <component :is="item.componentInstance" :title="item.title" :icon="item.icon" />
+                                <component :is="item.componentInstance" :title="item.title" :icon="item.icon" @change_tab="tab = $event" />
                             </keep-alive>
                         </v-card-text>
                     </v-card>

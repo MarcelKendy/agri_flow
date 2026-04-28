@@ -17,7 +17,53 @@
             </v-card-title>
 
             <v-divider :thickness="7" class="border-opacity-25 mb-4" color="green"></v-divider>
-
+            <v-expand-transition>
+                <v-row class="align-center" v-if="pendingFieldRecordsAlert && pending_alert">
+                    <v-col cols="12">
+                        <v-alert
+                            :color="pendingFieldRecordsAlert.color"
+                            variant="tonal"
+                            border="start"                        
+                            :icon="pendingFieldRecordsAlert.icon"
+                            class="alert-pending-records"
+                            @click="goToFieldRecordsTab"
+                        >   
+                            <div><strong style="font-size: 20px;">Alertas</strong></div>
+                            <div class="font-italic"><strong>Fichas pendentes:</strong></div>
+                            <div class="d-flex align-center flex-wrap ga-2 w-100 mb-1 mt-2">                            
+                                
+                                <v-chip
+                                    v-if="pendingFieldRecordsAlert.today > 0"
+                                    color="orange"
+                                    variant="elevated"
+                                    size="small"
+                                >
+                                    Hoje! 
+                                    <template #append>
+                                        <v-avatar end>
+                                            {{ pendingFieldRecordsAlert.today }}
+                                        </v-avatar>
+                                    </template>
+                                </v-chip>
+                                <v-chip
+                                    v-if="pendingFieldRecordsAlert.late > 0"
+                                    color="red"
+                                    variant="elevated"
+                                    size="small"
+                                >
+                                    Atrasadas
+                                    <template #append>
+                                        <v-avatar end>
+                                            {{ pendingFieldRecordsAlert.late }}
+                                        </v-avatar>
+                                    </template> 
+                                </v-chip>
+                            </div>
+                            <v-btn icon="mdi-close" size="x-small" @click.stop="pending_alert = false" :color="pendingFieldRecordsAlert.color" style="position: absolute; right: 10px; top: 10px;"></v-btn>
+                        </v-alert>
+                    </v-col>
+                </v-row>      
+            </v-expand-transition>                  
             <v-card-text>
                 <v-row v-if="items_length" class="align-center">
                     <v-col cols="12" class="d-flex ga-2">
@@ -274,20 +320,39 @@
                                                             <div style="opacity: 0.7;">{{ alert.text }}</div>
                                                         </div>
 
-                                                        <v-chip size="small" :color="alert.color || 'grey'"
-                                                            class="pr-5">
-                                                            <template #prepend>
-                                                                <v-avatar start size="20"
-                                                                    style="border: solid 1px white;">
-                                                                    <strong style="letter-spacing: 1px;"
-                                                                        :style="dark_theme ? 'color: white' : 'color: black'">
-                                                                        FC
+                                                        <div class="d-flex flex-column align-end" >
+                                                            <v-chip
+                                                                size="small" 
+                                                                :color="alert.color || 'grey'"
+                                                                class="pr-5"
+                                                            >
+                                                                <template #prepend>
+                                                                <v-avatar start size="20" style="border: solid 1px white;">
+                                                                    <strong
+                                                                    style="letter-spacing: 1px;"
+                                                                    :style="dark_theme ? 'color: white' : 'color: black'"
+                                                                    >
+                                                                    FC
                                                                     </strong>
                                                                 </v-avatar>
-                                                            </template>
+                                                                </template>
 
-                                                            {{ alert.id }}
-                                                        </v-chip>
+                                                                {{ alert.id }}
+                                                            </v-chip>
+
+                                                            <v-switch
+                                                                class="pr-3"                                                            
+                                                                style="margin: 0px !important;"
+                                                                hide-details                                                                
+                                                                density="compact"
+                                                                color="green"
+                                                                :loading="loading_field_record_status[alert.id]"
+                                                                :disabled="loading_field_record_status[alert.id]"
+                                                                @click.stop
+                                                                @update:model-value="finishFieldRecord(alert.id)"
+                                                            >
+                                                            </v-switch>
+                                                        </div>
                                                     </div>
 
                                                     <v-divider v-if="index < getAlerts(item).length - 1" />
@@ -423,7 +488,18 @@
                                                         cursor: pointer;
                                                     `" @click.stop="openEditFieldRecord(record, item)">
                                                         <div class="bold mb-2 d-flex justify-space-between">
-                                                            <div>
+                                                            <div>                                                                
+                                                                <span class="align-start">
+                                                                    {{ record.service }}
+                                                                    <v-icon class="ml-2" :color="getFieldRecordDateColor(record)">{{ getFieldRecordDateColor(record) == 'green' ? 'mdi-check-circle' : (getFieldRecordDateColor(record) == 'blue' ? 'mdi-timer-sand' : 'mdi-timer-sand-empty') }}</v-icon>
+                                                                </span>
+                                                                <v-chip variant="outlined" size="small" class="mt-3"
+                                                                    :color="getFieldRecordDateColor(record)">
+                                                                    {{ formatDateBR(record.date) }}
+                                                                </v-chip>
+                                                            </div>
+
+                                                            <div class="d-flex flex-column align-end">
                                                                 <v-chip size="small" class="pl-2 mr-1 mb-2">
                                                                     <template #prepend>
                                                                         <v-avatar start size="26"
@@ -435,18 +511,7 @@
                                                                         </v-avatar>
                                                                     </template>
                                                                     {{ record.id }}
-                                                                </v-chip>
-
-                                                                <span class="align-center">
-                                                                    {{ record.service }}
-                                                                </span>
-                                                            </div>
-
-                                                            <div class="d-flex flex-column align-end">
-                                                                <v-chip variant="outlined" size="small" class="mb-1"
-                                                                    :color="getFieldRecordDateColor(record)">
-                                                                    {{ formatDateBR(record.date) }}
-                                                                </v-chip>
+                                                                </v-chip>                                                                
 
                                                                 <v-tooltip text="Copiar para Whatsapp"
                                                                     content-class="tooltip-green" location="left">
@@ -744,7 +809,7 @@
                                                     </div>
                                                 
                                                     <div
-                                                        class="nutrition-grid mt-4" :class="dark_theme ? 'nutrition-total-dark' : 'nutrition-total-light'"
+                                                        class="nutrition-grid mt-4 nutrition-total-first" :class="dark_theme ? 'nutrition-total-dark' : 'nutrition-total-light'"
                                                         :style="`
                                                             grid-template-columns:
                                                                 260px
@@ -770,7 +835,7 @@
                                                     </div>
 
                                                     <div
-                                                        class="nutrition-grid" :class="dark_theme ? 'nutrition-total-dark' : 'nutrition-total-light'"
+                                                        class="nutrition-grid nutrition-total-second" :class="dark_theme ? 'nutrition-total-dark' : 'nutrition-total-light'"
                                                         :style="`
                                                             grid-template-columns:
                                                                 260px
@@ -887,6 +952,7 @@ const use_theme = useTheme()
 const dark_theme = computed(() => use_theme.global.name.value == 'customDark')
 const auth = useAuthStore()
 const snackbar = useSnackbarStore()
+const emit = defineEmits(['change_tab'])
 
 const items = ref([])
 const expanded_items = reactive({})
@@ -901,6 +967,7 @@ const loading = ref(false)
 const loading_crops = ref(false)
 const loading_pivots = ref(false)
 const loading_status = reactive({})
+const loading_field_record_status = reactive({})
 
 const search_field = ref('')
 const current_page = ref(1)
@@ -915,6 +982,8 @@ const edit_field_record_dialog_planting_id = ref(0)
 const add_dialog = ref(false)
 const edit_dialog = ref(false)
 const delete_dialog = ref(false)
+
+const pending_alert = ref(true)
 
 const edit_field_record_dialog_data = reactive({})
 const edit_dialog_data = reactive({})
@@ -1068,6 +1137,55 @@ watch(items_length, value => {
 })
 
 // Methods
+const pendingFieldRecordsAlert = computed(() => {
+    const allRecords = items.value.flatMap(item => item.field_records || [])
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    let todayCount = 0
+    let lateCount = 0
+
+    allRecords.forEach(record => {
+        // ignora concluídos
+        if (Number(record.status) === 1) return
+        if (!record.date) return
+
+        const target = new Date(record.date + 'T00:00:00')
+        target.setHours(0, 0, 0, 0)
+
+        if (target < today) lateCount++
+        else if (target.getTime() === today.getTime()) todayCount++
+    })
+
+    if (!todayCount && !lateCount) return null
+
+    return {
+        today: todayCount,
+        late: lateCount,
+        color: lateCount > 0 ? 'error' : 'warning',
+        icon: lateCount > 0 ? 'mdi-bell-alert' : 'mdi-bell-circle'
+    }
+})
+
+function goToFieldRecordsTab() {
+    emit('change_tab', 2)
+}
+
+function finishFieldRecord(id) {
+    loading_field_record_status[id] = true
+    api.put('edit_field_record/' + id, { status: 1 }).then(() => {
+        items.value.forEach(item => {
+            const record = item.field_records?.find(r => r.id == id)
+            if (record) record.status = 1
+        })
+    }).catch(error => {
+        console.log(error)
+        snackbar.open({ preset: 'error' })
+        loading_field_record_status[id] = false
+    })
+}
+
 function getAlertRowClass(alert) {
     if (!alert?.color) return ''
 
@@ -1891,9 +2009,13 @@ function openDeleteDialog(item) {
 .alerts-row {
     display: flex;
     align-items: center;
-    padding: 10px 12px;
+    padding: 10px;
     cursor: pointer;
     transition: all 0.18s ease;
+}
+
+:deep(.v-switch) {
+    height: 30px;
 }
 
 .alerts-danger-border {
@@ -1943,20 +2065,25 @@ function openDeleteDialog(item) {
     border-radius: 15px;
 }
 
-.nutrition-table-scroll-dark {
-    overflow-x: auto;
+/* CONTAINER COM SCROLL X + Y */
+.nutrition-table-scroll-dark,
+.nutrition-table-scroll-light {
+    overflow: auto;
+    max-height: 650px; /* ajuste aqui */
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 2px;    
+    padding-bottom: 2px;
     border-radius: 10px;
+    position: relative;
+}
+
+/* DARK */
+.nutrition-table-scroll-dark {
     border: solid 2px rgba(84, 84, 84, 0.38);
     background-color: rgba(0, 0, 0, 0.2);
 }
 
+/* LIGHT */
 .nutrition-table-scroll-light {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 2px;    
-    border-radius: 10px;
     border: solid 2px rgba(105, 104, 104, 0.421);
     background-color: rgba(255, 255, 255, 0.885);
 }
@@ -1966,46 +2093,52 @@ function openDeleteDialog(item) {
     gap: 6px;
     align-items: center;
     min-width: max-content;
-    padding: 5px;
-    padding-left: 15px;
+    padding: 5px 5px 5px 15px;
 }
 
-.nutrition-header-dark {
-    position: sticky;
-    top: 0;
-    border-bottom: 2px solid rgba(150, 150, 150, 0.4);
-    background: rgba(10, 10, 10, 0.6);        
-    padding: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    z-index: 2;
-}
-
+/* HEADER FIXO */
+.nutrition-header-dark,
 .nutrition-header-light {
     position: sticky;
     top: 0;
-    border-bottom: 2px solid rgba(150, 150, 150, 0.4);
-    background: rgba(173, 173, 173, 0.6);
-    padding: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    z-index: 2;
+    z-index: 30;
+    padding: 15px 15px 10px;
+    border-bottom: 2px solid rgba(150,150,150,.4);
+}
+
+.nutrition-header-dark {
+    background: rgba(10,10,10,.95);
+}
+
+.nutrition-header-light {
+    background: rgba(230,230,230,.96);
+}
+
+/* RODAPÉ FIXO */
+.nutrition-total-dark,
+.nutrition-total-light {
+    position: sticky;
+    z-index: 25;
+    padding: 15px 15px 10px;
+    border-top: 2px solid rgba(150,150,150,.4);
+}
+
+/* PRIMEIRA LINHA FIXA (fica acima da segunda) */
+.nutrition-total-first {
+    bottom: 48px; /* altura da última linha */
+}
+
+/* SEGUNDA LINHA FIXA */
+.nutrition-total-second {
+    bottom: 0;
 }
 
 .nutrition-total-dark {
-    border-top: 2px solid rgba(150, 150, 150, 0.4);
-    padding: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background-color: rgba(50, 50, 50, 0.2);
+    background: rgba(35,35,35,.96);
 }
 
 .nutrition-total-light {
-    border-top: 2px solid rgba(150, 150, 150, 0.4);
-    padding: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background-color: rgba(179, 179, 179, 0.195);
+    background: rgba(245,245,245,.97);
 }
 
 .alert-bg-red-light {
@@ -2028,4 +2161,19 @@ function openDeleteDialog(item) {
     transform: scale(101%);
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
+
+.alert-pending-records {
+    transition: 0.3s;
+    display: flex;
+    align-items: start;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.089) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.103) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0) 0px 2px 1px, rgba(0, 0, 0, 0) 0px 4px 2px, rgba(0, 0, 0, 0.041) 0px 8px 4px, rgba(0, 0, 0, 0.041) 0px 16px 8px, rgba(0, 0, 0, 0) 0px 32px 16px;
+}
+
+.alert-pending-records:hover {
+    cursor: pointer;
+    transform: scale(0.99)
+}
+
 </style>
