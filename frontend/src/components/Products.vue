@@ -4,9 +4,14 @@
             <template v-slot:loader="{ isActive }">
                 <v-progress-linear :active="isActive" color="green" height="5" indeterminate></v-progress-linear>
             </template>
-            <v-card-title style="position: relative;" class="bold" :class="dark_theme ? 'text-shadow-black-2' : ''" :style="smAndDown ? (dark_theme ? 'background-color: rgba(90, 90, 90, 0.2)' : 'background-color: rgba(150, 150, 150, 0.2)') : ''">
+            <v-card-title style="position: relative;" class="bold" :class="dark_theme ? 'text-shadow-black-2' : ''"
+                :style="smAndDown ? (dark_theme ? 'background-color: rgba(90, 90, 90, 0.2)' : 'background-color: rgba(150, 150, 150, 0.2)') : ''">
                 <v-icon :color="color" class="mr-2">{{ icon }}</v-icon>
-                <span class="mr-10">{{ title }}</span>
+                <span class="mr-2">{{ title }}</span>
+                <v-btn :class="'bold ' + (smAndDown ? 'import-button-sm' : 'import-button')" color="teal" append-icon="mdi-database-import"
+                    :size="smAndDown ? 'small' : 'default'" @click="import_dialog = true">
+                    {{ smAndDown ? 'JSON' : 'IMPORTAR JSON' }}
+                </v-btn>
                 <v-btn @click="add_dialog = true" color="green" :size="smAndDown ? 'small' : 'default'"
                     append-icon="mdi-plus" class="bold new-button">
                     NOVO
@@ -16,8 +21,9 @@
             <v-card-text>
                 <v-row v-if="items.length" class="align-center">
                     <v-col cols="12">
-                        <v-text-field v-model="search_field" :label="'Busca avançada em ' + items.length + ' registro(s)'" prepend-inner-icon="mdi-magnify"
-                            density="compact" clearable color="green" />
+                        <v-text-field v-model="search_field"
+                            :label="'Busca avançada em ' + items.length + ' registro(s)'"
+                            prepend-inner-icon="mdi-magnify" density="compact" clearable color="green" />
                     </v-col>
                 </v-row>
                 <v-list v-if="smAndDown" style="background-color: rgba(0, 0, 0, 0);">
@@ -26,7 +32,8 @@
                         {{ !items.length ? (loading ? 'Carregando, aguarde...' : 'Lista vazia, inclua um item clicando no botão "Novo" acima') : ('Não há dados para o filtro "' + search_field + '"') }}
                     </v-alert>
                     <v-list-item v-for="item in paginated_items" :key="item.id"
-                        :class="dark_theme ? 'list-item-dark' : 'list-item'" @click="auth.user.level < 1 ? null : openEditDialog(item)">
+                        :class="dark_theme ? 'list-item-dark' : 'list-item'"
+                        @click="auth.user.level < 1 ? null : openEditDialog(item)">
                         <v-list-item-title :class="dark_theme ? 'text-shadow-black-2' : ''">
                             <v-row class="align-center">
                                 <v-col :cols="auth.user.level > 1 && !item.field_record_products_count ? 6 : 9">
@@ -37,8 +44,10 @@
                                         {{ item.unit == 0 ? 'KG' : 'L' }}
                                     </v-chip>
                                 </v-col>
-                                <v-col v-if="auth.user.level > 1 && !item.field_record_products_count" cols="3" class="align-end">
-                                    <v-btn class="mx-1 hover-buttons" color="red" variant="elevated" icon :disabled="auth.user.level < 2 || item.field_record_products_count > 0"
+                                <v-col v-if="auth.user.level > 1 && !item.field_record_products_count" cols="3"
+                                    class="align-end">
+                                    <v-btn class="mx-1 hover-buttons" color="red" variant="elevated" icon
+                                        :disabled="auth.user.level < 2 || item.field_record_products_count > 0"
                                         size="28" @click.stop="openDeleteDialog(item)">
                                         <v-icon size="x-small">mdi-delete</v-icon>
                                     </v-btn>
@@ -55,15 +64,25 @@
                                 rounded="circle"></v-pagination>
                         </v-col>
                         <v-col cols="12" class="align-end">
-                            <v-select label="Itens por página:" color="green" density="compact" :items="[5, 10, 15, 50, 'Todos']" style="max-width: 130px;"
-                                variant="outlined" v-model="items_per_page"></v-select>
+                            <v-select label="Itens por página:" color="green" density="compact"
+                                :items="[5, 10, 15, 50, 'Todos']" style="max-width: 130px;" variant="outlined"
+                                v-model="items_per_page"></v-select>
                         </v-col>
                     </v-row>
                 </v-list>
-                <v-data-table v-else class="mb-2 clickable-table" :headers="headers" :items="paginated_items" :loading="loading"
-                    fixed-header no-data-text="Nenhum registro encontrado" loading-text="Carregando, aguarde...">
+                <v-data-table items-per-page-text="Itens por página" 
+                    :items-per-page-options="[
+                        {value: 10, title: '10'},
+                        {value: 25, title: '25'},
+                        {value: 50, title: '50'},
+                        {value: 100, title: '100'},
+                        {value: -1, title: 'Todos'}
+                    ]" v-else class="mb-2 clickable-table" :headers="headers" :items="filtered_items"
+                    :loading="loading" fixed-header no-data-text="Nenhum registro encontrado"
+                    loading-text="Carregando, aguarde...">
                     <template #item="{ item }">
-                        <tr :class="dark_theme ? 'table-row' : 'table-row-light'" @click="auth.user.level < 1 ? null : openEditDialog(item)">
+                        <tr :class="dark_theme ? 'table-row' : 'table-row-light'"
+                            @click="auth.user.level < 1 ? null : openEditDialog(item)">
                             <td>
                                 <span :class="dark_theme ? 'text-shadow-black-1' : ''">
                                     {{ item.name }}
@@ -79,8 +98,9 @@
                                     {{ item.unit == 0 ? 'KG' : 'L' }}
                                 </v-chip>
                             </td>
-                            <td>                                    
-                                <v-btn class="mx-1 hover-buttons" color="red" variant="elevated" icon :disabled="auth.user.level < 2 || item.field_record_products_count > 0"
+                            <td>
+                                <v-btn class="mx-1 hover-buttons" color="red" variant="elevated" icon
+                                    :disabled="auth.user.level < 2 || item.field_record_products_count > 0"
                                     size="x-small" @click.stop="openDeleteDialog(item)">
                                     <v-icon>mdi-delete</v-icon>
                                 </v-btn>
@@ -90,6 +110,8 @@
                 </v-data-table>
                 <DialogAddProduct @new_register="pushNewItem" @close="add_dialog = false" :icon="icon"
                     :model="add_dialog" color="rgb(90, 180, 80)" />
+                <DialogImportProducts :model="import_dialog" :icon="icon" @imported_products="pushImportedProducts"
+                    @close="import_dialog = false" />
                 <DialogEditProduct @edited_register="editItem" @close="edit_dialog = false" :icon="icon"
                     :data="edit_dialog_data" :model="edit_dialog" color="orange" />
                 <DialogDelete @deleted="popItem" @close="delete_dialog = false" :icon="icon" :data="delete_dialog_data"
@@ -107,6 +129,7 @@ import { useSnackbarStore } from '@/stores/snackbar'
 import { ref, computed, reactive, watch } from 'vue'
 import { useTheme, useDisplay } from 'vuetify'
 import DialogAddProduct from '@/components/dialogs/DialogAddProduct.vue'
+import DialogImportProducts from '@/components/dialogs/DialogImportProducts.vue'
 import DialogEditProduct from '@/components/dialogs/DialogEditProduct.vue'
 import DialogDelete from '@/components/dialogs/DialogDelete.vue'
 
@@ -128,6 +151,7 @@ const search_field = ref('')
 const current_page = ref(1)
 const items_per_page = ref(10)
 const add_dialog = ref(false)
+const import_dialog = ref(false)
 const edit_dialog = ref(false)
 const delete_dialog = ref(false)
 const edit_dialog_data = reactive({})
@@ -258,4 +282,29 @@ function openDeleteDialog(item) {
 function pushNewItem(item) {
     items.value.unshift(item)
 }
+
+function pushImportedProducts(products) {
+    items.value.unshift(...products)
+}
 </script>
+<style scoped>
+.import-button {
+    border-radius: 7px;
+    border: solid 1px rgba(255, 255, 255, 0.4);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -2px 0px inset;
+    position: absolute;
+    right: 110px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.import-button-sm {
+    border-radius: 7px;
+    border: solid 1px rgba(255, 255, 255, 0.4);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -2px 0px inset;
+    position: absolute;
+    right: 92px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+</style>

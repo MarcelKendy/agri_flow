@@ -98,6 +98,7 @@ use App\Http\Controllers\UserProfileController;
             //Route::get('/get_product/{product}', [ProductController::class, 'getProduct']);
             Route::get('/get_products', [ProductController::class, 'getProducts']);
             Route::post('/add_product', [ProductController::class, 'addProduct']);
+            Route::post('/import_products', [ProductController::class, 'importProducts']);
             Route::put('/edit_product/{product}', [ProductController::class, 'editProduct']);
             Route::delete('/delete_product/{product}', [ProductController::class, 'deleteProduct']);
         // PRODUCT ROUTES

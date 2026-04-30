@@ -69,7 +69,13 @@
       </v-list>
 
       <!-- DESKTOP -->
-      <v-data-table v-else class="mb-2 clickable-table" :headers="headers" :items="paginated_items" fixed-header
+      <v-data-table items-per-page-text="Itens por página" :items-per-page-options="[
+        { value: 10, title: '10' },
+        { value: 25, title: '25' },
+        { value: 50, title: '50' },
+        { value: 100, title: '100' },
+        { value: -1, title: 'Todos' }
+      ]" v-else class="mb-2 clickable-table" :headers="headers" :items="filtered_items" fixed-header
         no-data-text="Nenhum registro encontrado" loading-text="Carregando, aguarde...">
         <template #item="{ item }">
           <tr :class="dark_theme ? 'table-row' : 'table-row-light'"
