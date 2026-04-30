@@ -5,21 +5,45 @@
         <template v-slot:loader="{ isActive }">
           <v-progress-linear :active="isActive" :color="color" height="7" indeterminate></v-progress-linear>
         </template>
-        <v-card-title style="position: relative" v-if="!loading">
-          <v-row>
-            <v-col cols="11" class="mt-1">
-              <v-row>
-                <v-col cols="1" style="margin-right: -5px">
-                  <v-img v-if="img" width="32" :src="'media/icons/' + img" />
-                  <v-icon v-else :color="color">{{ icon }}</v-icon>
-                </v-col>
-                <v-col cols="11" class="pl-0">
-                  <span :style="'color:' + color">Deletar Registro</span>
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col cols="1">
-              <v-img style="width: 32px; position:absolute; top: 20px" src="media/icons/logo.png" />
+        <v-card-title
+          v-if="!loading"
+          class="py-3"
+          style="position: relative"
+        >
+          <v-row no-gutters>
+            <v-col
+              cols="10"
+              class="d-flex align-left"
+            >
+              <div class="mr-2">
+                <v-img
+                  v-if="img"
+                  width="32"
+                  height="32"
+                  :src="'media/icons/' + img"
+                />
+                <v-icon
+                  v-else
+                  :color="color"
+                  size="32"
+                >
+                  {{ icon }}
+                </v-icon>
+              </div>
+
+              <span class="bold" :style="{ color }">
+                Deletar Registro
+              </span>
+            </v-col>            
+            <v-col
+              cols="2"
+              class="d-flex justify-end"
+            >
+              <v-img
+                src="media/icons/logo.png"
+                width="32"
+                height="32"
+              />
             </v-col>
           </v-row>
         </v-card-title>
@@ -96,7 +120,7 @@ const props = defineProps({
   name_title: { type: String, default: 'Nome' },
   created_at: { type: Boolean, default: true },
   info: { type: Array, default: () => [] },
-  color: { type: String },
+  color: { type: String, default: 'red' },
   icon: { type: String, required: true },
   img: { type: String },
   model: { type: Boolean, required: true },

@@ -8,16 +8,10 @@
         <div class="card-header-sticky">
           <v-card-title class="mt-1">
             <v-row>
-              <v-col :cols="smAndDown ? 12 : 10">
-                <v-row>
-                  <v-col v-if="!smAndDown" cols="1">
-                    <v-img v-if="img" width="32" :src="'media/icons/' + img" />
-                    <v-icon v-else :color="color">{{ icon }}</v-icon>
-                  </v-col>
-                  <v-col :cols="smAndDown ? 12 : 11">
-                    <span :style="{ color }">{{ (loading ? 'Adicionando ' : 'Adicionar ') + translation.pt_upper }}</span>
-                  </v-col>
-                </v-row>
+              <v-col :cols="smAndDown ? 12 : 10">      
+                <v-img v-if="img" class="mr-1" width="32" :src="'media/icons/' + img" />
+                <v-icon v-else class="mr-1" :color="color">{{ icon }}</v-icon>
+                <span :style="{ color }">{{ (loading ? 'Adicionando ' : 'Adicionar ') + translation.pt_upper }}</span>                
               </v-col>
               <v-col v-if="!smAndDown" cols="2" class="align-center">
                 <v-img height="48" src="media/icons/logo.png" />
@@ -43,16 +37,16 @@
                   :rules="getRules({ required: true, date_br: true })" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name" append-icon="mdi-sprout" :readonly="planting_id && planting_id > 0"
+                <v-autocomplete v-model="item.planting_id" label="Plantio" :items="plantings" item-title="name" append-icon="mdi-sprout" :readonly="planting_id && planting_id > 0"
                   item-value="id" no-data-text="Nenhum dado cadastrado..." :clearable="!planting_id" :loading="loading_plantings" :disabled="loading || loading_plantings"
                   :color="color" :rules="getRules({ required: true })" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="item.tractor_id" label="Trator" :items="tractors" item-title="name" item-value="id" append-icon="mdi-tractor"
+                <v-autocomplete v-model="item.tractor_id" label="Trator" :items="tractors" item-title="name" item-value="id" append-icon="mdi-tractor"
                   clearable :loading="loading_tractors" no-data-text="Nenhum dado cadastrado..." :disabled="loading || loading_tractors" :color="color" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="item.implement_id" label="Implemento" :items="implements_items" item-title="name" append-icon="mdi-cog-outline"
+                <v-autocomplete v-model="item.implement_id" label="Implemento" :items="implements_items" item-title="name" append-icon="mdi-cog-outline"
                   item-value="id" clearable :loading="loading_implements" no-data-text="Nenhum dado cadastrado..."
                   :disabled="loading || loading_implements" :color="color" />
               </v-col>
@@ -68,7 +62,7 @@
                 >
                   <v-row class="align-center">
                     <v-col cols="12" md="6">
-                      <v-select
+                      <v-autocomplete
                         v-model="product_item.product_id"
                         label="Produto"
                         :items="products"

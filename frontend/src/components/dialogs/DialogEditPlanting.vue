@@ -8,16 +8,10 @@
         <div class="card-header-sticky">
           <v-card-title class="mt-1">
             <v-row>
-              <v-col :cols="smAndDown ? 12 : 10">
-                <v-row>
-                  <v-col v-if="!smAndDown" cols="1">
-                    <v-img v-if="img" width="32" :src="'media/icons/' + img" />
-                    <v-icon v-else :color="color">{{ icon }}</v-icon>
-                  </v-col>
-                  <v-col :cols="smAndDown ? 12 : 11">
-                    <span :style="{ color }">{{ (loading ? 'Editando ' : 'Editar ') + translation.pt_upper }}</span>
-                  </v-col>
-                </v-row>
+              <v-col :cols="smAndDown ? 12 : 10">              
+                <v-img v-if="img" width="32" class="mr-1" :src="'media/icons/' + img" />
+                <v-icon v-else :color="color" class="mr-1">{{ icon }}</v-icon>
+                <span :style="{ color }">{{ (loading ? 'Editando ' : 'Editar ') + translation.pt_upper }}</span>                                
               </v-col>
               <v-col v-if="!smAndDown" cols="2" class="align-center">
                 <v-img height="48" src="media/icons/logo.png" />
@@ -44,17 +38,17 @@
                   :color="color" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="item.crop_id" :loading="loading_crops" :disabled="loading_crops || loading"
+                <v-autocomplete v-model="item.crop_id" :loading="loading_crops" :disabled="loading_crops || loading"
                   no-data-text="Nenhum dado cadastrado..." label="Cultura" :items="crops" item-title="name"
                   item-value="id" clearable :color="color" :rules="getRules({ required: true })" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="item.variety" label="Variedade" hint="Opcional" persistent-hint :items="varieties"
+                <v-autocomplete v-model="item.variety" label="Variedade" hint="Opcional" persistent-hint :items="varieties"
                   no-data-text="Nenhum dado cadastrado..." clearable :loading="loading_crops"
                   :disabled="loading || loading_crops || !item.crop_id || !varieties" :color="color" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select v-model="item.pivot_id" :loading="loading_pivots" :disabled="loading_pivots || loading"
+                <v-autocomplete v-model="item.pivot_id" :loading="loading_pivots" :disabled="loading_pivots || loading"
                   no-data-text="Nenhum dado cadastrado..." label="Pivô" :items="pivots" item-title="name"
                   item-value="id" clearable :color="color" :rules="getRules({ required: true })" />
               </v-col>

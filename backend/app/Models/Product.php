@@ -29,7 +29,8 @@ class Product extends Model
         'silicon'
     ];
 
-    public function fieldRecords() {
-        return $this->hasMany(FieldRecord::class);
+    public function fieldRecordProducts()
+    {
+        return $this->hasMany(FieldRecordProduct::class);
     }
 }

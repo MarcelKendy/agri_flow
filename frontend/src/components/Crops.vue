@@ -29,8 +29,14 @@
                         :class="dark_theme ? 'list-item-dark' : 'list-item'" @click="auth.user.level < 1 ? null : openEditDialog(item)">
                         <v-list-item-title :class="dark_theme ? 'text-shadow-black-2' : ''">
                             <v-row class="align-center">
-                                <v-col cols="12">
+                                <v-col :cols="auth.user.level > 1 && !item.plantings_count ? 9 : 12">
                                     <strong>{{ item.name }}</strong>
+                                </v-col>
+                                <v-col v-if="auth.user.level > 1 && !item.plantings_count" cols="3" class="align-end">
+                                    <v-btn class="mx-1 hover-buttons" color="red" variant="elevated" icon :disabled="auth.user.level < 2 || item.plantings_count > 0"
+                                        size="28" @click.stop="openDeleteDialog(item)">
+                                        <v-icon size="x-small">mdi-delete</v-icon>
+                                    </v-btn>
                                 </v-col>
                             </v-row>
                         </v-list-item-title>
@@ -53,7 +59,7 @@
                     </v-row>
                 </v-list>
                 <v-data-table v-else class="mb-2 clickable-table" :headers="headers" :items="paginated_items" :loading="loading"
-                    fixed-header :no-data-text="loading ? 'Carregando, aguarde...' : 'Nenhum registro encontrado'">
+                    fixed-header no-data-text="Nenhum registro encontrado" loading-text="Carregando, aguarde...">
                     <template #item="{ item }">
                         <tr :class="dark_theme ? 'table-row' : 'table-row-light'" @click="auth.user.level < 1 ? null : openEditDialog(item)">
                             <td>
@@ -70,18 +76,10 @@
                                 </v-chip-group>
                             </td>
                             <td>
-                                <v-menu open-on-hover location="start">
-                                    <template #activator="{ props }">
-                                        <v-btn v-bind="props" variant="text" size="small" icon="mdi-dots-vertical"
-                                            @click.stop />
-                                    </template>
-                                    <div class="my-1 ml-1">
-                                        <v-btn class="mx-1 hover-buttons" color="orange" variant="elevated" icon :disabled="auth.user.level < 1"
-                                            size="x-small" @click="openEditDialog(item)">
-                                            <v-icon>mdi-pencil</v-icon>
-                                        </v-btn>
-                                    </div>
-                                </v-menu>
+                                <v-btn class="mx-1 hover-buttons" color="red" variant="elevated" icon :disabled="auth.user.level < 2 || item.plantings_count > 0"
+                                    size="x-small" @click.stop="openDeleteDialog(item)">
+                                    <v-icon>mdi-delete</v-icon>
+                                </v-btn>
                             </td>
                         </tr>
                     </template>
@@ -113,6 +111,7 @@ const props = defineProps({
     title: { type: String, required: true },
     icon: { type: String, required: true },
     color: { type: String, default: 'green' },
+    active_tab: { type: Boolean, default: false }
 })
 const { smAndDown } = useDisplay()
 const use_theme = useTheme()
@@ -154,9 +153,6 @@ const chip_colors = [
     'purple',
     'orange'
 ]
-
-// Created
-getItems()
 
 // Computeds
 const filtered_items = computed(() => {
@@ -202,7 +198,16 @@ const total_pages = computed(() => {
     return Math.ceil(filtered_items.value.length / items_per_page.value)
 })
 
+// Created
+getItems()
+
 // Watchers
+watch(() => props.active_tab, (active) => {
+    if (active) {
+        getItems()
+    }
+})
+
 watch(items_per_page, () => {
     current_page.value = 1
 })

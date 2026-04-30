@@ -43,10 +43,9 @@ class PlantingController extends Controller
     public function deletePlanting(Planting $planting)
     {
         $auth_user = auth()->user();
-        if ($auth_user->level < 1) {
+        if ($auth_user->level < 2) {
             return response()->json(['error' => 'Acesso negado'], 403);
         }
-        $planting->load(['crop', 'pivot', 'fieldRecords']);
         $planting->delete();
         return response()->json($planting);
     }

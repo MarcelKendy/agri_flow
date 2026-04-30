@@ -13,7 +13,7 @@
                     <v-card flat :style="smAndDown ? 'background-color: rgba(0, 0, 0, 0);': ''">
                         <v-card-text :style="smAndDown ? 'padding: 0px; padding-top: 10px;' : ''">
                             <keep-alive>
-                                <component :is="item.componentInstance" :title="item.title" :icon="item.icon" @change_tab="tab = $event" />
+                                <component :is="item.componentInstance" :active_tab="tab === item.id" :title="item.title" :icon="item.icon" @change_tab="tab = $event" />
                             </keep-alive>
                         </v-card-text>
                     </v-card>
@@ -41,7 +41,6 @@ const items = [
     {
         id: 1,
         icon: 'mdi-sprout',
-        text: 'Plantings',
         title: 'Plantios',
         component: 'Plantings',
         componentInstance: defineAsyncComponent(() => import('@/components/Plantings.vue'))
@@ -49,7 +48,6 @@ const items = [
     {
         id: 2,
         icon: 'mdi-file-document-multiple',
-        text: 'Field Records',
         title: 'Fichas de Campo',
         component: 'FieldRecords',
         componentInstance: defineAsyncComponent(() => import('@/components/FieldRecords.vue'))
@@ -57,7 +55,6 @@ const items = [
     {
         id: 3,
         icon: 'mdi-seed',
-        text: 'Crops',
         title: 'Culturas',
         component: 'Crops',
         componentInstance: defineAsyncComponent(() => import('@/components/Crops.vue'))
@@ -65,34 +62,15 @@ const items = [
     {
         id: 4,
         icon: 'mdi-flask-outline',
-        text: 'Products',
         title: 'Produtos',
         component: 'Products',
         componentInstance: defineAsyncComponent(() => import('@/components/Products.vue'))
     },
     {
         id: 5,
-        icon: 'mdi-water-pump',
-        text: 'Pivots',
-        title: 'Pivôs',
-        component: 'Pivots',
-        componentInstance: defineAsyncComponent(() => import('@/components/Pivots.vue'))
-    },
-    {
-        id: 6,
-        icon: 'mdi-tractor',
-        text: 'Tractors',
-        title: 'Tratores',
-        component: 'Tractors',
-        componentInstance: defineAsyncComponent(() => import('@/components/Tractors.vue'))
-    },
-    {
-        id: 7,
         icon: 'mdi-cog-outline',
-        text: 'Implements',
-        title: 'Implementos',
-        component: 'Implements',
-        componentInstance: defineAsyncComponent(() => import('@/components/Implements.vue'))
+        title: 'Máquinas e Equipamentos',
+        componentInstance: defineAsyncComponent(() => import('@/components/Equipments.vue'))
     }
 ]
 

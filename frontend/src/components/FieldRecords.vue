@@ -43,14 +43,14 @@
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.plantings" label="Plantios"
+                                        <v-autocomplete variant="solo" v-model="filters.plantings" label="Plantios"
                                             :items="plantings" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-sprout"
                                             :loading="loading_plantings" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.crops" label="Culturas" :items="crops"
+                                        <v-autocomplete variant="solo" v-model="filters.crops" label="Culturas" :items="crops"
                                             item-title="name" item-value="id" multiple chips closable-chips clearable
                                             color="teal" prepend-icon="mdi-seed" :loading="loading_crops" />
                                     </v-col>
@@ -62,21 +62,21 @@
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.tractors" label="Tratores"
+                                        <v-autocomplete variant="solo" v-model="filters.tractors" label="Tratores"
                                             :items="tractors" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-tractor"
                                             :loading="loading_tractors" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.implements" label="Implementos"
+                                        <v-autocomplete variant="solo" v-model="filters.implements" label="Implementos"
                                             :items="implements_items" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-hammer-wrench"
                                             :loading="loading_implements" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select variant="solo" v-model="filters.products" label="Produtos"
+                                        <v-autocomplete variant="solo" v-model="filters.products" label="Produtos"
                                             :items="products" item-title="name" item-value="id" multiple chips
                                             closable-chips clearable color="teal" prepend-icon="mdi-flask"
                                             :loading="loading_products" />
@@ -329,7 +329,8 @@ import { useSnackbarStore } from '@/stores/snackbar'
 const props = defineProps({
     title: { type: String, required: true },
     icon: { type: String, required: true },
-    color: { type: String, default: 'green' }
+    color: { type: String, default: 'green' },
+    active_tab: { type: Boolean, default: false }
 })
 
 const snackbar = useSnackbarStore()
@@ -463,6 +464,17 @@ getImplements()
 getProducts()
 
 // Watchers
+watch(() => props.active_tab, (active) => {
+    if (active) {
+        getItems()
+        getCrops()
+        getPlantings()
+        getTractors()
+        getImplements()
+        getProducts()
+    }
+})
+
 watch(items_per_page, () => {
     current_page.value = 1
 })

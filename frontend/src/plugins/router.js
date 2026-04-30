@@ -5,7 +5,7 @@ const router = createRouter({
     history: createWebHistory('/'),
     routes: [
         { path: '/', name: 'dashboard', component: () => import('@/views/Dashboard.vue'), meta: { view: 'Dashboard', img: 'dashboard.png', auth: true } },
-        { path: '/plantings', name: 'plantings', component: () => import('@/views/FieldRecordsManagement.vue'), meta: { view: '', icon: 'mdi-sprout', auth: true } },
+        { path: '/plantings', name: 'plantings', component: () => import('@/views/PlantingsManagement.vue'), meta: { view: '', icon: 'mdi-sprout', auth: true } },
         { path: '/login/:reset_password_uid?/:reset_password_token?', name: 'login', component: () => import('@/views/Login.vue'), meta: { view: 'Login' } },
         { path: '/profile/:user_id?', name: 'profile', component: () => import('@/views/Profile.vue'), meta: { view: 'Perfil', img: 'profile.png', auth: true } },        
         { path: '/users', name: 'users', component: () => import('@/views/Users.vue'), meta: { view: 'Usuários', img: 'users.png', auth: true, level: 2 } },

@@ -90,10 +90,9 @@ class FieldRecordController extends Controller
     public function deleteFieldRecord(FieldRecord $field_record)
     {
         $auth_user = auth()->user();
-        if ($auth_user->level < 1) {
+        if ($auth_user->level < 2) {
             return response()->json(['error' => 'Acesso negado'], 403);
         }
-        $field_record->load(['planting', 'tractor', 'implement', 'products']);
         $field_record->products()->delete();
         $field_record->delete();
         return response()->json($field_record);

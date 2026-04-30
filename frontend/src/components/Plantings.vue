@@ -1,6 +1,9 @@
 <template>
     <div>
-        <v-card flat style="background-color: rgba(0, 0, 0, 0)">
+        <v-card flat style="background-color: rgba(0, 0, 0, 0)" :loading="loading">
+            <template v-slot:loader="{ isActive }">
+                <v-progress-linear :active="isActive" color="green" height="5" indeterminate></v-progress-linear>
+            </template>
             <v-card-title style="position: relative;" class="bold" :class="dark_theme ? 'text-shadow-black-2' : ''"
                 :style="smAndDown
                     ? (dark_theme
@@ -87,21 +90,21 @@
 
                                 <v-row>
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select v-model="filters.crops" label="Culturas" :items="crops" multiple chips
+                                        <v-autocomplete v-model="filters.crops" label="Culturas" :items="crops" multiple chips
                                             item-title="name" item-value="id" closable-chips clearable variant="solo"
                                             color="teal" :loading="loading_crops" :disabled="loading_crops"
                                             no-data-text="Nenhum dado cadastrado..." prepend-icon="mdi-seed" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select v-model="filters.varieties" label="Variedades" :items="varieties"
+                                        <v-autocomplete v-model="filters.varieties" label="Variedades" :items="varieties"
                                             multiple chips closable-chips clearable variant="solo" color="teal"
                                             :loading="loading_crops" :disabled="loading_crops"
                                             no-data-text="Nenhum dado cadastrado..." prepend-icon="mdi-flower-tulip" />
                                     </v-col>
 
                                     <v-col cols="12" md="6" lg="4">
-                                        <v-select v-model="filters.pivots" label="Pivôs" :items="pivots" multiple chips
+                                        <v-autocomplete v-model="filters.pivots" label="Pivôs" :items="pivots" multiple chips
                                             :loading="loading_pivots" :disabled="loading_pivots" closable-chips
                                             clearable variant="solo" color="teal" prepend-icon="mdi-water-pump"
                                             item-title="name" item-value="id"
@@ -303,7 +306,7 @@
 
                                             <!-- Rows -->
                                             <template v-if="getAlerts(item).length">
-                                                <div v-for="(alert, index) in getAlerts(item)" :key="index">
+                                                <div v-for="(alert, index) in getAlerts(item)" :key="alert.id">
                                                     
                                                     <div
                                                         class="alerts-row"
@@ -373,6 +376,16 @@
                                         <v-icon size="x-large">{{ expanded_items[item.id] ? 'mdi-chevron-up' :
                                             'mdi-chevron-down' }}</v-icon>
                                     </v-btn>
+                                    <v-tooltip text="Deletar Plantio" content-class="tooltip-red" location="left">
+                                        <template v-slot:activator="{ props }">
+                                            <v-avatar v-if="auth.user.level > 1 && item?.field_records?.length == 0" v-bind="props" color="red" variant="elevated"
+                                                style="text-shadow: none;" size="x-small" @click.stop="openDeleteDialog(item)">
+                                                <v-icon size="x-small">
+                                                    mdi-delete
+                                                </v-icon>
+                                            </v-avatar>
+                                        </template>
+                                    </v-tooltip>
                                     <v-btn prepend-icon="mdi-file-document-plus" variant="elevated" size="x-small"
                                         color="green"
                                         @click.stop="add_field_record_dialog_planting_id = item.id; add_field_record_dialog = true">
@@ -944,6 +957,7 @@ const props = defineProps({
     title: { type: String, required: true },
     icon: { type: String, required: true },
     color: { type: String, default: 'green' },
+    active_tab: { type: Boolean, default: false }
 })
 
 
@@ -1062,11 +1076,6 @@ const searchable_fields = [
     }
 ]
 
-// Created
-getItems()
-getCrops()
-getPivots()
-
 // Computeds
 const items_length = computed(() => items.value.length)
 
@@ -1124,7 +1133,20 @@ const total_pages = computed(() => {
     return Math.ceil(filtered_items.value.length / items_per_page.value)
 })
 
+// Created
+getItems()
+getCrops()
+getPivots()
+
 // Watchers
+watch(() => props.active_tab, (active) => {
+    if (active) {
+        getItems()
+        getCrops()
+        getPivots()
+    }
+})
+
 watch(items_per_page, () => {
     current_page.value = 1
 })
@@ -2042,7 +2064,6 @@ function openDeleteDialog(item) {
     overflow-y: hidden;
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
-    /* iOS smooth */
 }
 
 .menu-scroll::-webkit-scrollbar {
@@ -2056,7 +2077,6 @@ function openDeleteDialog(item) {
 
 .menu-scroll-item {
     flex: 0 0 auto;
-    /* 🔑 impede o chip de encolher/quebrar */
 }
 
 .nutrient-card {
@@ -2065,24 +2085,21 @@ function openDeleteDialog(item) {
     border-radius: 15px;
 }
 
-/* CONTAINER COM SCROLL X + Y */
 .nutrition-table-scroll-dark,
 .nutrition-table-scroll-light {
     overflow: auto;
-    max-height: 650px; /* ajuste aqui */
+    max-height: 650px;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 2px;
     border-radius: 10px;
     position: relative;
 }
 
-/* DARK */
 .nutrition-table-scroll-dark {
     border: solid 2px rgba(84, 84, 84, 0.38);
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-/* LIGHT */
 .nutrition-table-scroll-light {
     border: solid 2px rgba(105, 104, 104, 0.421);
     background-color: rgba(255, 255, 255, 0.885);
@@ -2096,7 +2113,6 @@ function openDeleteDialog(item) {
     padding: 5px 5px 5px 15px;
 }
 
-/* HEADER FIXO */
 .nutrition-header-dark,
 .nutrition-header-light {
     position: sticky;
@@ -2114,7 +2130,6 @@ function openDeleteDialog(item) {
     background: rgba(230,230,230,.96);
 }
 
-/* RODAPÉ FIXO */
 .nutrition-total-dark,
 .nutrition-total-light {
     position: sticky;
@@ -2123,12 +2138,10 @@ function openDeleteDialog(item) {
     border-top: 2px solid rgba(150,150,150,.4);
 }
 
-/* PRIMEIRA LINHA FIXA (fica acima da segunda) */
 .nutrition-total-first {
-    bottom: 48px; /* altura da última linha */
+    bottom: 48px; 
 }
 
-/* SEGUNDA LINHA FIXA */
 .nutrition-total-second {
     bottom: 0;
 }

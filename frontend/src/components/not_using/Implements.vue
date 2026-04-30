@@ -16,7 +16,7 @@
             <v-card-text>
                 <v-row v-if="items.length" class="align-center">
                     <v-col cols="12">
-                        <v-text-field v-model="search_field" :label="'Busca avançada em ' + items.length + ' registro(s)'" prepend-inner-icon="mdi-magnify"
+                        <v-text-field v-model="search_field" :label="'Busca avançada em ' + items.length + ' registro(s)'" prepend-inner-icon="mdi-magnify" 
                             density="compact" clearable color="green" />
                     </v-col>
                 </v-row>
@@ -29,11 +29,17 @@
                         :class="dark_theme ? 'list-item-dark' : 'list-item'" @click="auth.user.level < 1 ? null : openEditDialog(item)">
                         <v-list-item-title :class="dark_theme ? 'text-shadow-black-2' : ''">
                             <v-row class="align-center">
-                                <v-col cols="12">
+                                <v-col :cols="auth.user.level > 1 && !item.field_records_count ? 9 : 12">
                                     <strong>{{ item.name }}</strong>
+                                </v-col>
+                                <v-col v-if="auth.user.level > 1 && !item.field_records_count" cols="3" class="align-end">
+                                    <v-btn class="mx-1 hover-buttons" color="red" variant="elevated" icon :disabled="auth.user.level < 2 || item.field_records_count"
+                                        size="28" @click.stop="openDeleteDialog(item)">
+                                        <v-icon size="x-small">mdi-delete</v-icon>
+                                    </v-btn>
                                 </v-col>                                
                             </v-row>
-                        </v-list-item-title>                        
+                        </v-list-item-title>
                     </v-list-item>
                     <v-row class="align-center pt-3" v-if="smAndDown && !loading && paginated_items.length > 0">
                         <v-col cols="12">
@@ -47,7 +53,7 @@
                     </v-row>
                 </v-list>
                 <v-data-table v-else class="mb-2 clickable-table" :headers="headers" :items="paginated_items" :loading="loading"
-                    fixed-header :no-data-text="loading ? 'Carregando, aguarde...' : 'Nenhum registro encontrado'">
+                    fixed-header no-data-text="Nenhum registro encontrado" loading-text="Carregando, aguarde...">
                     <template #item="{ item }">
                         <tr :class="dark_theme ? 'table-row' : 'table-row-light'" @click="auth.user.level < 1 ? null : openEditDialog(item)">
                             <td>
@@ -66,18 +72,22 @@
                                             size="x-small" @click="openEditDialog(item)">
                                             <v-icon>mdi-pencil</v-icon>
                                         </v-btn>
+                                        <v-btn class="mx-1 hover-buttons" color="red" variant="elevated" icon :disabled="auth.user.level < 2 || item.field_records_count"
+                                            size="x-small" @click="openDeleteDialog(item)">
+                                            <v-icon>mdi-delete</v-icon>
+                                        </v-btn>
                                     </div>
                                 </v-menu>
                             </td>
                         </tr>
                     </template>
                 </v-data-table>
-                <DialogAddPivot @new_register="pushNewItem" @close="add_dialog = false" :icon="icon"
+                <DialogAddImplement @new_register="pushNewItem" @close="add_dialog = false" :icon="icon"
                     :model="add_dialog" color="rgb(90, 180, 80)" />
-                <DialogEditPivot @edited_register="editItem" @close="edit_dialog = false" :icon="icon"
+                <DialogEditImplement @edited_register="editItem" @close="edit_dialog = false" :icon="icon"
                     :data="edit_dialog_data" :model="edit_dialog" color="orange" />
                 <DialogDelete @deleted="popItem" @close="delete_dialog = false" :icon="icon" :data="delete_dialog_data"
-                    data_name="pivot" :model="delete_dialog" color="rgb(230, 60, 60)" />
+                    data_name="implement" :model="delete_dialog" color="rgb(230, 60, 60)" />
             </v-card-text>
         </v-card>
     </div>
@@ -90,8 +100,8 @@ import { useAuthStore } from '@/stores/auth.js'
 import { useSnackbarStore } from '@/stores/snackbar'
 import { ref, computed, reactive, watch } from 'vue'
 import { useTheme, useDisplay } from 'vuetify'
-import DialogAddPivot from '@/components/dialogs/DialogAddPivot.vue'
-import DialogEditPivot from '@/components/dialogs/DialogEditPivot.vue'
+import DialogAddImplement from '@/components/dialogs/DialogAddImplement.vue'
+import DialogEditImplement from '@/components/dialogs/DialogEditImplement.vue'
 import DialogDelete from '@/components/dialogs/DialogDelete.vue'
 
 // Variables
@@ -99,6 +109,7 @@ const props = defineProps({
     title: { type: String, required: true },
     icon: { type: String, required: true },
     color: { type: String, default: 'green' },
+    active_tab: { type: Boolean, default: false }
 })
 const { smAndDown } = useDisplay()
 const use_theme = useTheme()
@@ -124,9 +135,6 @@ const searchable_fields = [
         key: 'name'
     }
 ]
-
-// Created
-getItems()
 
 // Computeds
 const filtered_items = computed(() => {
@@ -172,7 +180,16 @@ const total_pages = computed(() => {
     return Math.ceil(filtered_items.value.length / items_per_page.value)
 })
 
+// Created
+getItems()
+
 // Watchers
+watch(() => props.active_tab, (active) => {
+    if (active) {
+        getItems()
+    }
+})
+
 watch(items_per_page, () => {
     current_page.value = 1
 })
@@ -184,7 +201,7 @@ function getNestedValue(obj, path) {
 
 function getItems(attempt = 1) {
     loading.value = true
-    api.get('get_pivots').then(response => {
+    api.get('get_implements').then(response => {
         items.value = response.data
         loading.value = false
     }).catch(error => {
